@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Price tag shape -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,24
+                         L74,44
+                         L74,74
+                         Q74,78 70,78
+                         L38,78
+                         Q34,78 34,74
+                         L34,44
+                         L54,24
+                         Z"/>
+    <!-- Tag hole -->
+    <circle
+        android:fillColor="#4CAF50"
+        android:pathData="M44,44m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0"/>
+    <!-- Dollar sign -->
+    <path
+        android:fillColor="#4CAF50"
+        android:strokeWidth="0"
+        android:pathData="M54,50 L54,48 
+                         M50,52 Q50,50 54,50 Q58,50 58,53 Q58,56 54,57 Q50,58 50,61 Q50,64 54,64 Q58,64 58,62
+                         M54,64 L54,66"/>
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M54,48 L54,50 M54,64 L54,66"/>
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M50,53 Q50,50 54,50 Q58,50 58,53 Q58,56 54,57 Q50,58 50,61 Q50,64 54,64 Q58,64 58,61"/>
+</vector>
+

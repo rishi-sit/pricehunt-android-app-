@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Colors -->
+    <color name="primary">#00D4AA</color>
+    <color name="primary_variant">#00B894</color>
+    <color name="secondary">#9B5DE5</color>
+    <color name="background">#0A0A0F</color>
+    <color name="surface">#16161F</color>
+    <color name="surface_variant">#1A1A25</color>
+    <color name="on_primary">#0A0A0F</color>
+    <color name="on_background">#F5F5F7</color>
+    <color name="on_surface">#F5F5F7</color>
+    <color name="text_secondary">#A1A1AA</color>
+    <color name="text_tertiary">#71717A</color>
+    
+    <!-- Platform Colors -->
+    <color name="amazon">#FF9900</color>
+    <color name="amazon_fresh">#5EA03E</color>
+    <color name="flipkart">#2874F0</color>
+    <color name="flipkart_minutes">#FFCE00</color>
+    <color name="jiomart">#0078AD</color>
+    <color name="bigbasket">#84C225</color>
+    <color name="zepto">#8B5CF6</color>
+    <color name="blinkit">#F8CB46</color>
+    <color name="instamart">#FC8019</color>
+</resources>
+

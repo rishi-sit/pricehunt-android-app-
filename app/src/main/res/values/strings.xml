@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PriceHunt</string>
+    <string name="search_hint">Search for any product...</string>
+    <string name="pincode_hint">Pincode</string>
+    <string name="compare">Compare</string>
+    <string name="best_deal">Best Deal</string>
+    <string name="searching">Searching platforms...</string>
+    <string name="no_results">No results found</string>
+    <string name="cached">Cached</string>
+    <string name="view">View</string>
+</resources>
+
