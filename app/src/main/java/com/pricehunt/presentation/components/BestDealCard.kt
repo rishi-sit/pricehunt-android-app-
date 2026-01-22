@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pricehunt.data.model.Platforms
 import com.pricehunt.data.model.Product
+import com.pricehunt.data.search.SearchIntelligence
 import com.pricehunt.presentation.theme.*
 
 @Composable
@@ -276,6 +277,25 @@ private fun BestDealContent(
                             disc,
                             style = MaterialTheme.typography.labelMedium,
                             color = Primary
+                        )
+                    }
+                }
+                
+                // Per-unit price for fair comparison (e.g., ₹21.8/100ml)
+                val perUnitPrice = remember(product) {
+                    SearchIntelligence.calculatePerUnitPrice(product)
+                }
+                perUnitPrice?.let { pup ->
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            "💰 ${pup.toDisplayString()} - Best Value!",
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF4CAF50),
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }

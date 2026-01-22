@@ -13,6 +13,7 @@ import javax.inject.Singleton
 
 /**
  * Scraper for Swiggy Instamart using WebView with resilient extraction
+ * Instamart loads products dynamically - need to wait for them
  */
 @Singleton
 class InstamartScraper @Inject constructor(
@@ -28,14 +29,18 @@ class InstamartScraper @Inject constructor(
         withContext(Dispatchers.IO) {
             try {
                 val encodedQuery = URLEncoder.encode(query, "UTF-8")
-                val searchUrl = "$baseUrl/search?query=$encodedQuery"
+                // Use the full search URL with custom_back parameter as seen in browser
+                val searchUrl = "$baseUrl/search?custom_back=true&query=$encodedQuery"
                 
                 println("$platformName: Loading $searchUrl")
                 
                 webViewHelper.setLocation(pincode)
                 
+                // Wait longer and look for product images to load
                 val html = webViewHelper.loadAndGetHtml(
                     url = searchUrl,
+                    timeoutMs = 20_000L,  // 20 seconds for Instamart
+                    waitForSelector = "img[src*='swiggy'], img[src*='res.cloudinary'], [class*='product'], [class*='Product']",
                     pincode = pincode
                 )
                 
@@ -45,6 +50,12 @@ class InstamartScraper @Inject constructor(
                 }
                 
                 println("$platformName: Got ${html.length} chars HTML")
+                
+                // Debug: check what we got
+                val hasSwiggyImages = html.contains("swiggy") || html.contains("cloudinary")
+                val hasProductClasses = html.contains("product", ignoreCase = true)
+                val hasPrices = html.contains("₹") || html.contains("Rs")
+                println("$platformName: DEBUG - swiggy images: $hasSwiggyImages, product classes: $hasProductClasses, prices: $hasPrices")
                 
                 val products = ResilientExtractor.extractProducts(
                     html = html,
@@ -56,23 +67,23 @@ class InstamartScraper @Inject constructor(
                 
                 if (products.isEmpty()) {
                     println("$platformName: ✗ No products extracted")
-                    println("$platformName: HTML preview: ${html.take(500)}")
+                    // Show more of HTML to debug
+                    val snippet = html.take(800).replace("\n", " ").replace("\\s+".toRegex(), " ")
+                    println("$platformName: HTML snippet: $snippet")
                 }
                 
-                // Fix URLs - add pincode/location to all URLs
+                // Fix URLs
                 val fixedProducts = products.map { product ->
                     val finalUrl = if (product.url == baseUrl || product.url.isBlank() || product.url == "https://www.swiggy.com") {
                         val productSearchQuery = URLEncoder.encode(product.name, "UTF-8")
-                        "$baseUrl/search?query=$productSearchQuery&pincode=$pincode"
+                        "$baseUrl/search?custom_back=true&query=$productSearchQuery"
                     } else {
-                        // Add pincode to existing URL
-                        val separator = if (product.url.contains("?")) "&" else "?"
-                        "${product.url}${separator}pincode=$pincode"
+                        product.url
                     }
-                    println("$platformName: URL for '${product.name}' -> $finalUrl")
                     product.copy(url = finalUrl)
                 }
                 
+                println("$platformName: ✓ Found ${fixedProducts.size} products")
                 fixedProducts
                 
             } catch (e: Exception) {

@@ -13,6 +13,7 @@ import javax.inject.Singleton
 
 /**
  * Scraper for JioMart Quick (express delivery) using WebView with resilient extraction
+ * Express delivery products from JioMart
  */
 @Singleton
 class JioMartQuickScraper @Inject constructor(
@@ -24,61 +25,78 @@ class JioMartQuickScraper @Inject constructor(
     override val deliveryTime = "15-30 mins"
     override val baseUrl = "https://www.jiomart.com"
     
+    // JioMart Quick search URL patterns
+    private val searchUrlPatterns = listOf(
+        { query: String -> "$baseUrl/search/$query?deliveryType=express" },
+        { query: String -> "$baseUrl/catalogsearch/result/?q=$query&deliveryType=express" },
+        { query: String -> "$baseUrl/search?term=$query&deliveryType=express" }
+    )
+    
     override suspend fun search(query: String, pincode: String): List<Product> = 
         withContext(Dispatchers.IO) {
             try {
                 val encodedQuery = URLEncoder.encode(query, "UTF-8")
-                // JioMart Quick uses the same URL but with quick delivery filter
-                val searchUrl = "$baseUrl/search/$encodedQuery?deliveryType=express"
-                
-                println("$platformName: Loading $searchUrl")
                 
                 webViewHelper.setLocation(pincode)
                 
-                val html = webViewHelper.loadAndGetHtml(
-                    url = searchUrl,
-                    pincode = pincode
-                )
-                
-                if (html.isNullOrBlank()) {
-                    println("$platformName: ✗ WebView returned empty HTML")
-                    return@withContext emptyList()
-                }
-                
-                println("$platformName: Got ${html.length} chars HTML")
-                
-                val products = ResilientExtractor.extractProducts(
-                    html = html,
-                    platformName = platformName,
-                    platformColor = platformColor,
-                    deliveryTime = deliveryTime,
-                    baseUrl = baseUrl
-                )
-                
-                if (products.isEmpty()) {
-                    println("$platformName: ✗ No products extracted")
-                    println("$platformName: HTML preview: ${html.take(500)}")
-                }
-                
-                // Fix URLs - add pincode to all URLs (JioMart uses pincode for availability)
-                val fixedProducts = products.map { product ->
-                    val finalUrl = if (product.url == baseUrl || product.url.isBlank()) {
-                        val productSearchQuery = URLEncoder.encode(product.name, "UTF-8")
-                        "$baseUrl/search/$productSearchQuery?pincode=$pincode&deliveryType=express"
-                    } else {
-                        // Add pincode to existing URL
-                        val separator = if (product.url.contains("?")) "&" else "?"
-                        "${product.url}${separator}pincode=$pincode"
+                // Try multiple URL patterns
+                for (urlPattern in searchUrlPatterns) {
+                    val searchUrl = urlPattern(encodedQuery)
+                    println("$platformName: Trying $searchUrl")
+                    
+                    val html = webViewHelper.loadAndGetHtml(
+                        url = searchUrl,
+                        timeoutMs = 15_000L,
+                        waitForSelector = ".plp-card-container, .product-card, [data-qa='product']",
+                        pincode = pincode
+                    )
+                    
+                    if (html.isNullOrBlank()) {
+                        println("$platformName: ✗ Empty HTML from $searchUrl")
+                        continue
                     }
-                    println("$platformName: URL for '${product.name}' -> $finalUrl")
-                    product.copy(url = finalUrl)
+                    
+                    // Check if we got an error page
+                    if (html.contains("Something went wrong") || html.length < 5000) {
+                        println("$platformName: ⚠️ Error page from $searchUrl, trying next...")
+                        continue
+                    }
+                    
+                    println("$platformName: Got ${html.length} chars HTML")
+                    
+                    val products = ResilientExtractor.extractProducts(
+                        html = html,
+                        platformName = platformName,
+                        platformColor = platformColor,
+                        deliveryTime = deliveryTime,
+                        baseUrl = baseUrl
+                    )
+                    
+                    if (products.isNotEmpty()) {
+                        println("$platformName: ✓ Found ${products.size} products")
+                        return@withContext fixProductUrls(products, pincode)
+                    }
                 }
                 
-                fixedProducts
+                println("$platformName: ✗ All URL patterns failed")
+                emptyList()
                 
             } catch (e: Exception) {
                 println("$platformName: ✗ Error - ${e.message}")
                 emptyList()
             }
         }
+    
+    private fun fixProductUrls(products: List<Product>, pincode: String): List<Product> {
+        return products.map { product ->
+            val finalUrl = if (product.url == baseUrl || product.url.isBlank()) {
+                val productSearchQuery = URLEncoder.encode(product.name, "UTF-8")
+                "$baseUrl/search/$productSearchQuery?pincode=$pincode&deliveryType=express"
+            } else {
+                val separator = if (product.url.contains("?")) "&" else "?"
+                "${product.url}${separator}pincode=$pincode"
+            }
+            product.copy(url = finalUrl)
+        }
+    }
 }

@@ -13,6 +13,7 @@ import javax.inject.Singleton
 
 /**
  * Scraper for Flipkart Minutes (quick commerce) using WebView with resilient extraction
+ * Uses grocery-specific URLs for quick delivery products
  */
 @Singleton
 class FlipkartMinutesScraper @Inject constructor(
@@ -22,13 +23,15 @@ class FlipkartMinutesScraper @Inject constructor(
     override val platformName = Platforms.FLIPKART_MINUTES
     override val platformColor = Platforms.FLIPKART_MINUTES_COLOR
     override val deliveryTime = "10-15 mins"
-    override val baseUrl = "https://www.flipkart.com/grocery"
+    override val baseUrl = "https://www.flipkart.com"
     
     override suspend fun search(query: String, pincode: String): List<Product> = 
         withContext(Dispatchers.IO) {
             try {
                 val encodedQuery = URLEncoder.encode(query, "UTF-8")
-                val searchUrl = "$baseUrl/search?q=$encodedQuery"
+                
+                // Use grocery marketplace search URL
+                val searchUrl = "$baseUrl/search?q=$encodedQuery&marketplace=GROCERY&otracker=search&as-show=on"
                 
                 println("$platformName: Loading $searchUrl")
                 
@@ -36,6 +39,8 @@ class FlipkartMinutesScraper @Inject constructor(
                 
                 val html = webViewHelper.loadAndGetHtml(
                     url = searchUrl,
+                    timeoutMs = 20_000L,
+                    waitForSelector = "[data-id], ._1AtVbE, ._4ddWXP, .product-card",
                     pincode = pincode
                 )
                 
@@ -45,6 +50,12 @@ class FlipkartMinutesScraper @Inject constructor(
                 }
                 
                 println("$platformName: Got ${html.length} chars HTML")
+                
+                // Check if we got homepage instead of search results
+                if (html.contains("<title>Online Shopping India") && html.length < 10000) {
+                    println("$platformName: ⚠️ Detected homepage redirect")
+                    return@withContext emptyList()
+                }
                 
                 val products = ResilientExtractor.extractProducts(
                     html = html,
@@ -56,24 +67,23 @@ class FlipkartMinutesScraper @Inject constructor(
                 
                 if (products.isEmpty()) {
                     println("$platformName: ✗ No products extracted")
-                    println("$platformName: HTML preview: ${html.take(500)}")
+                    println("$platformName: HTML preview: ${html.take(300)}")
+                    return@withContext emptyList()
                 }
                 
-                // Fix URLs - add pincode to all URLs
-                val fixedProducts = products.map { product ->
-                    val finalUrl = if (product.url == baseUrl || product.url.isBlank() || product.url == "https://www.flipkart.com") {
+                println("$platformName: ✓ Found ${products.size} products")
+                
+                // Fix URLs
+                products.map { product ->
+                    val finalUrl = if (product.url == baseUrl || product.url.isBlank()) {
                         val productSearchQuery = URLEncoder.encode(product.name, "UTF-8")
-                        "https://www.flipkart.com/search?q=$productSearchQuery&marketplace=GROCERY&pincode=$pincode"
+                        "$baseUrl/search?q=$productSearchQuery&marketplace=GROCERY&pincode=$pincode"
                     } else {
-                        // Add pincode to existing URL
                         val separator = if (product.url.contains("?")) "&" else "?"
                         "${product.url}${separator}pincode=$pincode"
                     }
-                    println("$platformName: URL for '${product.name}' -> $finalUrl")
                     product.copy(url = finalUrl)
                 }
-                
-                fixedProducts
                 
             } catch (e: Exception) {
                 println("$platformName: ✗ Error - ${e.message}")

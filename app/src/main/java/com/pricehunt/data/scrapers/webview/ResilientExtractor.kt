@@ -1492,18 +1492,23 @@ object ResilientExtractor {
     
     /**
      * Zepto-specific price extraction
-     * Zepto typically shows prices like: "₹82" for selling price, "₹121" strikethrough for MRP
-     * And "₹39 OFF" or "Save ₹39" for discounts - we need to IGNORE these
+     * 
+     * CRITICAL: Zepto shows multiple variant prices on the same card (e.g., 200ml @ ₹109, 500ml @ ₹298)
+     * We need to extract the FIRST/PRIMARY displayed price, NOT the lowest!
+     * The first price shown is typically the selected/default variant.
      */
     private fun extractZeptoPrice(element: Element): Double? {
-        // Strategy 1: Look for specific Zepto price selectors
+        // Strategy 1: Look for specific Zepto price selectors (most reliable)
         val zeptoPriceSelectors = listOf(
             "[data-testid='selling-price']",
-            "[data-testid*='product-price']:not([data-testid*='mrp']):not([data-testid*='original'])",
+            "[data-testid='product-price']",
+            "[data-testid*='price']:first-of-type",  // First price element
+            "[class*='ProductPrice']:first-of-type",
             "[class*='sellingPrice']",
             "[class*='selling-price']",
-            "[class*='DiscountedPrice']",  // Current price after discount
-            "[class*='currentPrice']"
+            "[class*='DiscountedPrice']",
+            "[class*='currentPrice']",
+            "[class*='Price']:not([class*='mrp']):not([class*='strike']):first-of-type"
         )
         
         for (selector in zeptoPriceSelectors) {
@@ -1515,7 +1520,7 @@ object ResilientExtractor {
                     if (!text.lowercase().contains("save") && !text.lowercase().contains("off")) {
                         val price = extractPrice(text)
                         if (price != null && price > 0) {
-                            logD(TAG, "[Zepto] Found price via '$selector': ₹$price")
+                            logD(TAG, "[Zepto] Found price via selector '$selector': ₹$price")
                             return price
                         }
                     }
@@ -1523,77 +1528,71 @@ object ResilientExtractor {
             } catch (e: Exception) { }
         }
         
-        // Strategy 2: Parse all prices from element and filter out savings
+        // Strategy 2: Find the FIRST price in reading order (not the lowest!)
+        // Zepto displays the primary variant price first, then other variant prices
         val allText = element.text()
-        
-        // Find all price-like patterns
         val priceMatches = PRICE_REGEX.findAll(allText).toList()
         if (priceMatches.isEmpty()) return null
         
-        // Parse prices with context
-        val validPrices = mutableListOf<Double>()
+        // Collect prices in ORDER OF APPEARANCE with context
+        data class PriceCandidate(val price: Double, val position: Int, val isSavings: Boolean, val isPerUnit: Boolean)
         
-        for (match in priceMatches) {
-            val price = match.groupValues[1].replace(",", "").toDoubleOrNull() ?: continue
-            if (price <= 0) continue
+        val candidates = priceMatches.mapNotNull { match ->
+            val price = match.groupValues[1].replace(",", "").toDoubleOrNull() ?: return@mapNotNull null
+            if (price <= 0 || price < 10) return@mapNotNull null  // Skip tiny prices (likely savings amounts)
             
-            // Get text before this price (to check for "save", "off", etc.)
             val beforeIdx = maxOf(0, match.range.first - 25)
             val beforeText = allText.substring(beforeIdx, match.range.first).lowercase()
-            
-            // Get text after this price
             val afterIdx = minOf(allText.length, match.range.last + 1)
             val afterText = allText.substring(afterIdx).take(15).lowercase()
             
-            // Skip if this is a savings/discount amount
             val isSavings = beforeText.contains("save") ||
-                           beforeText.contains("you pay") == false && beforeText.endsWith("- ") ||
                            beforeText.contains("discount") ||
                            afterText.startsWith(" off") ||
-                           afterText.startsWith("off") ||
-                           afterText.startsWith(" discount")
+                           afterText.startsWith("off")
             
-            // Skip per-unit prices
             val isPerUnit = afterText.startsWith("/") ||
                            Regex("""^[\s/]*\d+\s*(g|gm|kg|ml|l)\b""").containsMatchIn(afterText)
             
-            if (!isSavings && !isPerUnit) {
-                validPrices.add(price)
-                logD(TAG, "[Zepto] Valid price candidate: ₹$price (before: '${beforeText.takeLast(15)}', after: '${afterText.take(10)}')")
+            PriceCandidate(price, match.range.first, isSavings, isPerUnit)
+        }
+        
+        // Filter out savings and per-unit prices
+        val validCandidates = candidates.filter { !it.isSavings && !it.isPerUnit }
+        
+        if (validCandidates.isEmpty()) {
+            logW(TAG, "[Zepto] No valid prices found in element")
+            return null
+        }
+        
+        // IMPORTANT: Pick the FIRST price in reading order, not the lowest!
+        // This is the primary/selected variant price
+        val firstPrice = validCandidates.minByOrNull { it.position }
+        
+        // But also check if there's a much higher price that might be the actual one
+        // (in case the first price is from a "quick add" button for a different product)
+        val sortedByPrice = validCandidates.sortedBy { it.price }
+        
+        // If the first price is significantly lower than others (< 50%), 
+        // it might be a variant or wrong extraction
+        val selectedPrice = if (validCandidates.size >= 2) {
+            val first = firstPrice!!.price
+            val median = sortedByPrice[sortedByPrice.size / 2].price
+            
+            // If first price is less than 50% of median, it's suspicious
+            // Use the median as it's more likely to be the main product price
+            if (first < median * 0.5) {
+                logW(TAG, "[Zepto] First price ₹$first seems too low (median ₹$median), using median")
+                median
             } else {
-                logD(TAG, "[Zepto] Skipping price ₹$price (savings=$isSavings, perUnit=$isPerUnit)")
+                first
             }
+        } else {
+            firstPrice!!.price
         }
         
-        // Sort and pick the most likely selling price
-        // Selling price is typically the FIRST valid price shown (reading order)
-        // Or the second lowest if there are 3+ valid prices
-        if (validPrices.isEmpty()) return null
-        
-        val sortedPrices = validPrices.sorted()
-        
-        // If only 1-2 prices, the lowest is likely the selling price
-        // If 3+ prices, sometimes lowest is a weird value, use second lowest
-        val price = when {
-            sortedPrices.size == 1 -> sortedPrices[0]
-            sortedPrices.size == 2 -> sortedPrices[0]  // Lower is selling, higher is MRP
-            else -> {
-                // With 3+ prices, check if lowest is suspiciously low
-                val lowest = sortedPrices[0]
-                val secondLowest = sortedPrices[1]
-                val highest = sortedPrices.last()
-                
-                // If lowest is less than 30% of highest, it's probably a savings amount
-                if (lowest < highest * 0.3 && secondLowest >= highest * 0.3) {
-                    secondLowest
-                } else {
-                    lowest
-                }
-            }
-        }
-        
-        logD(TAG, "[Zepto] Selected selling price: ₹$price (from ${validPrices.size} candidates: $validPrices)")
-        return price
+        logD(TAG, "[Zepto] Selected price: ₹$selectedPrice (candidates: ${validCandidates.map { it.price }})")
+        return selectedPrice
     }
     
     /**

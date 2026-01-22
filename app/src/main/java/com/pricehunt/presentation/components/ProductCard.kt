@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.pricehunt.data.model.Platforms
 import com.pricehunt.data.model.Product
+import com.pricehunt.data.search.SearchIntelligence
 import com.pricehunt.presentation.theme.*
 
 @Composable
@@ -154,6 +155,25 @@ fun ProductCard(
                             disc,
                             style = MaterialTheme.typography.labelSmall,
                             color = Primary
+                        )
+                    }
+                }
+                
+                // Per-unit price for comparison (e.g., ₹4.5/100g) - shown as a badge
+                val perUnitPrice = remember(product) {
+                    SearchIntelligence.calculatePerUnitPrice(product)
+                }
+                perUnitPrice?.let { pup ->
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            "💰 ${pup.toDisplayString()}",
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF4CAF50),
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }

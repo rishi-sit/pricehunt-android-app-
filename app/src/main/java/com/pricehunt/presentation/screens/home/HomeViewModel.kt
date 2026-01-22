@@ -7,6 +7,8 @@ import com.pricehunt.data.model.Product
 import com.pricehunt.data.model.SearchEvent
 import com.pricehunt.data.repository.CacheStats
 import com.pricehunt.data.repository.ProductRepository
+import com.pricehunt.data.search.SearchIntelligence
+import com.pricehunt.data.search.SearchIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -37,6 +39,9 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     
+    // Current search intent for intelligent result ranking
+    private var currentSearchIntent: SearchIntent? = null
+    
     fun updateQuery(query: String) {
         _uiState.update { it.copy(query = query) }
     }
@@ -48,6 +53,10 @@ class HomeViewModel @Inject constructor(
     fun search() {
         val query = _uiState.value.query.trim()
         if (query.isBlank()) return
+        
+        // Analyze search intent for intelligent ranking
+        currentSearchIntent = SearchIntelligence.analyzeQuery(query)
+        println("Search Intelligence: ${currentSearchIntent}")
         
         viewModelScope.launch {
             _uiState.update { 
@@ -78,7 +87,12 @@ class HomeViewModel @Inject constructor(
                             }
                         }
                         is SearchEvent.PlatformResult -> {
-                            allResults[event.platform] = event.products
+                            // Apply intelligent ranking to filter out irrelevant results
+                            val rankedProducts = currentSearchIntent?.let { intent ->
+                                SearchIntelligence.rankResults(event.products, intent)
+                            } ?: event.products
+                            
+                            allResults[event.platform] = rankedProducts
                             
                             _uiState.update { state ->
                                 val newStatus = state.platformStatus.toMutableMap()
@@ -96,10 +110,14 @@ class HomeViewModel @Inject constructor(
                                 // Sort results: Quick Commerce first, then E-Commerce
                                 val sortedResults = sortResultsByPlatformType(allResults)
                                 
+                                // Find best deal with relevance consideration
+                                // e.g., "Strawberry 200g" should win over "Strawberry Essence"
+                                val bestDeal = repository.findBestDealWithRelevance(allResults, query)
+                                
                                 state.copy(
                                     results = sortedResults,
                                     platformStatus = newStatus,
-                                    bestDeal = repository.findBestDeal(allResults),
+                                    bestDeal = bestDeal,
                                     platformsCompleted = completedCount
                                 )
                             }
