@@ -162,11 +162,13 @@ class AmazonFreshScraper @Inject constructor() : BaseScraper() {
                 }
                 
                 println("$platformName: ✓ Found ${results.size} products")
-                results.take(5)
+                val finalResults = results.take(5)
+                println("$platformName: Returning ${finalResults.size} products: ${finalResults.map { it.name.take(20) }}")
+                finalResults
                 
             } catch (e: Exception) {
                 println("$platformName: ✗ Error - ${e.message}")
-                emptyList()
+                return@withContext emptyList()
             }
         }
     

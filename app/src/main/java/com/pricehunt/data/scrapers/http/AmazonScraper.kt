@@ -146,11 +146,11 @@ class AmazonScraper @Inject constructor() : BaseScraper() {
                 }
                 
                 println("$platformName: ✓ Found ${results.size} products")
-                results.take(5)
+                return@withContext results.take(5)
                 
             } catch (e: Exception) {
                 println("$platformName: ✗ Error - ${e.message}")
-                emptyList()
+                return@withContext emptyList()
             }
         }
 }

@@ -71,6 +71,7 @@ private fun PlatformStatusChip(
             PlatformStatus.LOADING -> platformColor.copy(alpha = alpha * 0.3f)
             PlatformStatus.COMPLETED -> platformColor.copy(alpha = 0.15f)
             PlatformStatus.CACHED -> Primary.copy(alpha = 0.15f)
+            PlatformStatus.FAILED -> Color(0xFFFF5252).copy(alpha = 0.15f)
         }
     ) {
         Row(
@@ -110,6 +111,14 @@ private fun PlatformStatusChip(
                         tint = Primary
                     )
                 }
+                PlatformStatus.FAILED -> {
+                    Box(
+                        modifier = Modifier
+                            .size(14.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFFFF5252))
+                    )
+                }
             }
             
             Text(
@@ -120,6 +129,7 @@ private fun PlatformStatusChip(
                     PlatformStatus.LOADING -> platformColor
                     PlatformStatus.COMPLETED -> platformColor
                     PlatformStatus.CACHED -> Primary
+                    PlatformStatus.FAILED -> Color(0xFFFF5252)
                 }
             )
         }

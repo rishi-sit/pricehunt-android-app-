@@ -6,6 +6,8 @@ import com.pricehunt.data.model.SearchEvent
 import com.pricehunt.data.search.PerUnitPrice
 import com.pricehunt.data.search.SearchIntelligence
 import com.pricehunt.data.remote.PriceHuntApi
+import com.pricehunt.data.scrapers.FallbackScraperManager
+import com.pricehunt.data.scrapers.FallbackSearchResult
 import com.pricehunt.data.scrapers.http.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -18,10 +20,10 @@ import javax.inject.Singleton
 /**
  * Repository that coordinates all platform scrapers and provides streaming search results.
  * 
- * Strategy: DIRECT API CALLS TO EACH PLATFORM
- * 1. Each scraper calls its platform's internal search API
- * 2. Results are collected and displayed progressively
- * 3. Cache results for future use
+ * Strategy: MULTI-PHASE SEARCH WITH FALLBACKS
+ * 1. Phase 1: Run all primary scrapers in parallel
+ * 2. Phase 2: For failed platforms, run fallback strategies
+ * 3. Update UI incrementally as results come in
  */
 @Singleton
 class ProductRepository @Inject constructor(
@@ -36,7 +38,8 @@ class ProductRepository @Inject constructor(
     private val bigBasketScraper: BigBasketScraper,
     private val zeptoScraper: ZeptoScraper,
     private val blinkitScraper: BlinkitScraper,
-    private val instamartScraper: InstamartScraper
+    private val instamartScraper: InstamartScraper,
+    private val fallbackManager: FallbackScraperManager
 ) {
     companion object {
         // Time to wait for each platform's API call
@@ -61,6 +64,10 @@ class ProductRepository @Inject constructor(
     /**
      * Search all platforms using their internal APIs.
      * Results are emitted progressively as each platform responds.
+     * 
+     * IMPORTANT: Runs scrapers in batches to avoid WebView resource exhaustion.
+     * - HTTP-based scrapers (Amazon) run in parallel (they don't use WebView)
+     * - WebView-based scrapers run in batches of 3 to avoid resource conflicts
      */
     fun searchStream(query: String, pincode: String): Flow<SearchEvent> = flow {
         emit(SearchEvent.Started(scrapers.map { it.platformName }))
@@ -72,59 +79,94 @@ class ProductRepository @Inject constructor(
         val completedCount = java.util.concurrent.atomic.AtomicInteger(0)
         val totalPlatforms = scrapers.size
         
+        // Separate HTTP-based and WebView-based scrapers
+        val httpScrapers = listOf(amazonScraper, amazonFreshScraper)
+        val webViewScrapers = listOf(
+            zeptoScraper, blinkitScraper, bigBasketScraper, instamartScraper,
+            flipkartScraper, flipkartMinutesScraper, jioMartScraper, jioMartQuickScraper
+        )
+        
         try {
             println("=== STARTING SEARCH: $query (pincode: $pincode) ===")
             
-            // Launch all platform API calls in parallel
-            scrapers.forEach { scraper ->
-                scope.launch {
-                    try {
-                        // Check cache first
-                        val (cached, isStale) = cacheManager.get(query, scraper.platformName, pincode)
-                        
-                        if (cached != null && !isStale && cached.isNotEmpty()) {
-                            println("${scraper.platformName}: Using cached results (${cached.size} products)")
-                            emittedPlatforms[scraper.platformName] = true
-                            resultsChannel.send(SearchEvent.PlatformResult(
-                                platform = scraper.platformName,
-                                products = cached,
-                                cached = true
-                            ))
-                            return@launch
-                        }
-                        
-                        // Call platform's internal API with timeout
-                        println("${scraper.platformName}: Calling API...")
-                        val products = withTimeoutOrNull(PLATFORM_TIMEOUT_MS) {
-                            scraper.search(query, pincode)
-                        } ?: emptyList()
-                        
-                        if (products.isNotEmpty()) {
-                            cacheManager.set(query, scraper.platformName, pincode, products)
-                            println("${scraper.platformName}: ✓ Found ${products.size} products")
-                        } else {
-                            println("${scraper.platformName}: ✗ No products found")
-                        }
-                        
+            // Helper function to run a scraper
+            suspend fun runScraper(scraper: com.pricehunt.data.scrapers.BaseScraper) {
+                try {
+                    // Check cache first
+                    val (cached, isStale) = cacheManager.get(query, scraper.platformName, pincode)
+                    
+                    if (cached != null && !isStale && cached.isNotEmpty()) {
+                        println("${scraper.platformName}: Using cached (${cached.size} products)")
                         emittedPlatforms[scraper.platformName] = true
                         resultsChannel.send(SearchEvent.PlatformResult(
                             platform = scraper.platformName,
-                            products = products,
-                            cached = false
+                            products = cached,
+                            cached = true
                         ))
-                        
-                    } catch (e: Exception) {
-                        println("${scraper.platformName}: ✗ Error - ${e.message}")
-                        emittedPlatforms[scraper.platformName] = true
-                        resultsChannel.send(SearchEvent.PlatformResult(
-                            platform = scraper.platformName,
-                            products = emptyList(),
-                            cached = false
-                        ))
-                    } finally {
-                        completedCount.incrementAndGet()
+                        return
                     }
+                    
+                    // Call platform's API with timeout
+                    println("${scraper.platformName}: Searching...")
+                    val products = withTimeoutOrNull(PLATFORM_TIMEOUT_MS) {
+                        val result = scraper.search(query, pincode)
+                        println("${scraper.platformName}: [DEBUG] search() returned ${result.size} items, class=${result::class.simpleName}")
+                        result
+                    } ?: run {
+                        println("${scraper.platformName}: [DEBUG] withTimeoutOrNull returned null (timeout?)")
+                        emptyList()
+                    }
+                    
+                    println("${scraper.platformName}: [DEBUG] After timeout, products.size = ${products.size}")
+                    
+                    if (products.isNotEmpty()) {
+                        cacheManager.set(query, scraper.platformName, pincode, products)
+                        println("${scraper.platformName}: ✓ Found ${products.size} products")
+                    } else {
+                        println("${scraper.platformName}: ✗ No products found")
+                    }
+                    
+                    emittedPlatforms[scraper.platformName] = true
+                    resultsChannel.send(SearchEvent.PlatformResult(
+                        platform = scraper.platformName,
+                        products = products,
+                        cached = false
+                    ))
+                    
+                } catch (e: Exception) {
+                    println("${scraper.platformName}: ✗ Error - ${e.message}")
+                    emittedPlatforms[scraper.platformName] = true
+                    resultsChannel.send(SearchEvent.PlatformResult(
+                        platform = scraper.platformName,
+                        products = emptyList(),
+                        cached = false
+                    ))
+                } finally {
+                    completedCount.incrementAndGet()
                 }
+            }
+            
+            // Run HTTP scrapers in parallel (they don't use WebView)
+            println("=== Phase 1: HTTP scrapers (Amazon) ===")
+            httpScrapers.forEach { scraper ->
+                scope.launch { runScraper(scraper) }
+            }
+            
+            // Run WebView scrapers in batches of 3 to avoid resource exhaustion
+            println("=== Phase 2: WebView scrapers (batches of 3) ===")
+            val batchSize = 3
+            webViewScrapers.chunked(batchSize).forEachIndexed { batchIndex, batch ->
+                println("Starting batch ${batchIndex + 1}: ${batch.map { it.platformName }}")
+                
+                // Launch batch in parallel
+                val jobs = batch.map { scraper ->
+                    scope.launch { runScraper(scraper) }
+                }
+                
+                // Wait for this batch to complete before starting next
+                jobs.forEach { it.join() }
+                
+                println("Batch ${batchIndex + 1} complete")
             }
             
             // Emit results as they arrive
@@ -174,6 +216,98 @@ class ProductRepository @Inject constructor(
             resultsChannel.close()
             scope.cancel()
         }
+    }
+    
+    /**
+     * Search with robust fallback mechanism.
+     * Phase 1: Use specialized scrapers (they work better)
+     * Phase 2: Run fallbacks ONLY for platforms that failed
+     */
+    fun searchWithFallbacks(query: String, pincode: String): Flow<SearchEvent> = flow {
+        emit(SearchEvent.Started(scrapers.map { it.platformName }))
+        
+        val allResults = mutableMapOf<String, List<Product>>()
+        val failedPlatforms = mutableListOf<String>()
+        
+        // Phase 1: Run specialized scrapers in parallel
+        println("=== PHASE 1: Running specialized scrapers ===")
+        
+        val primaryJobs = coroutineScope {
+            scrapers.map { scraper ->
+                async(Dispatchers.IO) {
+                    try {
+                        // Check cache first
+                        val (cached, isStale) = cacheManager.get(query, scraper.platformName, pincode)
+                        if (cached != null && !isStale && cached.isNotEmpty()) {
+                            return@async Triple(scraper.platformName, cached, true)
+                        }
+                        
+                        val products = withTimeoutOrNull(PLATFORM_TIMEOUT_MS) {
+                            scraper.search(query, pincode)
+                        } ?: emptyList()
+                        
+                        Triple(scraper.platformName, products, false)
+                    } catch (e: Exception) {
+                        println("${scraper.platformName}: Error - ${e.message}")
+                        Triple(scraper.platformName, emptyList<Product>(), false)
+                    }
+                }
+            }
+        }
+        
+        // Collect primary results
+        for (job in primaryJobs) {
+            val (platform, products, cached) = job.await()
+            
+            if (products.isNotEmpty()) {
+                allResults[platform] = products
+                if (!cached) {
+                    cacheManager.set(query, platform, pincode, products)
+                }
+                emit(SearchEvent.PlatformResult(platform, products, cached))
+                println("$platform: ✓ ${products.size} products ${if (cached) "(cached)" else ""}")
+            } else {
+                failedPlatforms.add(platform)
+                println("$platform: ✗ No products (will try fallback)")
+            }
+        }
+        
+        // Phase 2: Run fallbacks for failed platforms
+        if (failedPlatforms.isNotEmpty()) {
+            println("=== PHASE 2: Running fallbacks for ${failedPlatforms.size} platforms ===")
+            emit(SearchEvent.Message("Running fallbacks for ${failedPlatforms.size} platforms..."))
+            
+            // Run fallbacks in batches of 3
+            for (batch in failedPlatforms.chunked(3)) {
+                val fallbackJobs = coroutineScope {
+                    batch.map { platform ->
+                        async(Dispatchers.IO) {
+                            println("Fallback: Trying $platform")
+                            val products = fallbackManager.tryFallbacksForPlatform(platform, query, pincode)
+                            platform to products
+                        }
+                    }
+                }
+                
+                for (job in fallbackJobs) {
+                    val (platform, products) = job.await()
+                    
+                    if (products.isNotEmpty()) {
+                        allResults[platform] = products
+                        cacheManager.set(query, platform, pincode, products)
+                        emit(SearchEvent.PlatformResult(platform, products, false))
+                        println("$platform: ✓ ${products.size} products (fallback)")
+                    } else {
+                        emit(SearchEvent.PlatformResult(platform, emptyList(), false))
+                        println("$platform: ✗ All fallbacks failed")
+                    }
+                }
+            }
+        }
+        
+        val successCount = allResults.count { it.value.isNotEmpty() }
+        println("=== SEARCH COMPLETE: $successCount/${scrapers.size} platforms ===")
+        emit(SearchEvent.Completed)
     }
     
     /**

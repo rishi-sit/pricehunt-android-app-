@@ -7,13 +7,14 @@ import com.pricehunt.data.scrapers.webview.WebViewScraperHelper
 import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Scraper for Flipkart using WebView with resilient extraction
- * Uses mobile site for better compatibility and less aggressive bot detection
+ * Scraper for Flipkart using direct HTTP (faster, more reliable)
+ * Falls back to WebView if HTTP fails
  */
 @Singleton
 class FlipkartScraper @Inject constructor(
@@ -25,89 +26,121 @@ class FlipkartScraper @Inject constructor(
     override val deliveryTime = "1-2 days"
     override val baseUrl = "https://www.flipkart.com"
     
-    // Mobile URL is less aggressive with bot detection
-    private val mobileBaseUrl = "https://www.flipkart.com"
-    
     override suspend fun search(query: String, pincode: String): List<Product> = 
         withContext(Dispatchers.IO) {
+            // Flipkart is an SPA - HTTP only returns JS shell, no products
+            // Use WebView directly (longer timeout for JS to load)
+            println("$platformName: Using WebView (SPA site)...")
+            tryWebViewScraping(query, pincode)
+        }
+    
+    private suspend fun tryHttpScraping(query: String, pincode: String): List<Product> {
+        try {
+            val encodedQuery = URLEncoder.encode(query, "UTF-8")
+            val searchUrl = "$baseUrl/search?q=$encodedQuery&marketplace=GROCERY"
+            
+            println("$platformName: HTTP request to $searchUrl")
+            
+            val request = okhttp3.Request.Builder()
+                .url(searchUrl)
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                .header("Accept-Language", "en-IN,en;q=0.9")
+                .header("Cookie", "pincode=$pincode")
+                .build()
+            
+            val response = client.newCall(request).execute()
+            
+            if (!response.isSuccessful) {
+                println("$platformName: HTTP ${response.code}")
+                return emptyList()
+            }
+            
+            val html = response.body?.string() ?: return emptyList()
+            println("$platformName: Got ${html.length} chars via HTTP")
+            
+            // Use ResilientExtractor which handles dynamic class names
+            val products = ResilientExtractor.extractProducts(
+                html = html,
+                platformName = platformName,
+                platformColor = platformColor,
+                deliveryTime = deliveryTime,
+                baseUrl = baseUrl
+            )
+            
+            if (products.isNotEmpty()) {
+                println("$platformName: ✓ Found ${products.size} products via HTTP")
+                return fixProductUrls(products, pincode)
+            }
+            
+            println("$platformName: No products found in HTTP response")
+            return emptyList()
+            
+        } catch (e: Exception) {
+            println("$platformName: HTTP error - ${e.message}")
+            return emptyList()
+        }
+    }
+    
+    private suspend fun tryWebViewScraping(query: String, pincode: String): List<Product> {
+        val encodedQuery = URLEncoder.encode(query, "UTF-8")
+        
+        // ROBUST: Try multiple URLs in order of reliability
+        val urlsToTry = listOf(
+            "https://m.flipkart.com/search?q=$encodedQuery",                    // Mobile site (most reliable)
+            "https://www.flipkart.com/search?q=$encodedQuery",                  // Desktop fallback
+            "https://m.flipkart.com/search?q=$encodedQuery&otracker=search"     // With tracker
+        )
+        
+        webViewHelper.setLocation(pincode)
+        
+        for ((index, searchUrl) in urlsToTry.withIndex()) {
             try {
-                val encodedQuery = URLEncoder.encode(query, "UTF-8")
+                println("$platformName: Trying URL ${index + 1}/${urlsToTry.size}: $searchUrl")
                 
-                // Try grocery/supermart URL first for better results
-                val searchUrl = "$mobileBaseUrl/search?q=$encodedQuery&otracker=search&otracker1=search&marketplace=GROCERY&as-show=on&as=off"
-                
-                println("$platformName: Loading $searchUrl")
-                
-                webViewHelper.setLocation(pincode)
-                
-                // Use longer timeout and wait for product cards to load
                 val html = webViewHelper.loadAndGetHtml(
                     url = searchUrl,
-                    timeoutMs = 20_000L,  // 20 seconds for Flipkart
-                    waitForSelector = "[data-id], ._1AtVbE, ._4ddWXP, ._2kHMtA",  // Flipkart product selectors
+                    timeoutMs = 25_000L,
                     pincode = pincode
                 )
                 
                 if (html.isNullOrBlank()) {
-                    println("$platformName: ✗ WebView returned empty HTML")
-                    return@withContext emptyList()
+                    println("$platformName: URL ${index + 1} returned empty, trying next...")
+                    continue
                 }
                 
-                println("$platformName: Got ${html.length} chars HTML")
+                println("$platformName: Got ${html.length} chars from URL ${index + 1}")
                 
-                // Check if we got redirected to homepage
-                if (html.contains("<title>Online Shopping India") && html.length < 10000) {
-                    println("$platformName: ⚠️ Detected homepage redirect, retrying with standard URL...")
-                    
-                    // Retry with standard search URL
-                    val retryUrl = "$baseUrl/search?q=$encodedQuery"
-                    val retryHtml = webViewHelper.loadAndGetHtml(
-                        url = retryUrl,
-                        timeoutMs = 20_000L,
-                        pincode = pincode
-                    )
-                    
-                    if (!retryHtml.isNullOrBlank() && retryHtml.length > 10000) {
-                        return@withContext extractAndFixProducts(retryHtml, pincode)
-                    }
-                    
-                    println("$platformName: ✗ Retry also failed")
-                    return@withContext emptyList()
+                val products = ResilientExtractor.extractProducts(
+                    html = html,
+                    platformName = platformName,
+                    platformColor = platformColor,
+                    deliveryTime = deliveryTime,
+                    baseUrl = baseUrl
+                )
+                
+                if (products.isNotEmpty()) {
+                    println("$platformName: ✓ Found ${products.size} products via URL ${index + 1}")
+                    return fixProductUrls(products, pincode)
                 }
                 
-                extractAndFixProducts(html, pincode)
+                println("$platformName: URL ${index + 1} - no products extracted, trying next...")
                 
             } catch (e: Exception) {
-                println("$platformName: ✗ Error - ${e.message}")
-                emptyList()
+                println("$platformName: URL ${index + 1} error: ${e.message}")
             }
         }
+        
+        println("$platformName: ✗ All ${urlsToTry.size} URLs failed")
+        return emptyList()
+    }
     
-    private fun extractAndFixProducts(html: String, pincode: String): List<Product> {
-        val products = ResilientExtractor.extractProducts(
-            html = html,
-            platformName = platformName,
-            platformColor = platformColor,
-            deliveryTime = deliveryTime,
-            baseUrl = baseUrl
-        )
-        
-        if (products.isEmpty()) {
-            println("$platformName: ✗ No products extracted")
-            println("$platformName: HTML preview: ${html.take(300)}")
-            return emptyList()
-        }
-        
-        println("$platformName: ✓ Found ${products.size} products")
-        
-        // Fix URLs - add pincode to all URLs
+    private fun fixProductUrls(products: List<Product>, pincode: String): List<Product> {
         return products.map { product ->
             val finalUrl = if (product.url == baseUrl || product.url.isBlank()) {
-                val productSearchQuery = URLEncoder.encode(product.name, "UTF-8")
-                "$baseUrl/search?q=$productSearchQuery&pincode=$pincode"
+                "$baseUrl/search?q=${URLEncoder.encode(product.name, "UTF-8")}&pincode=$pincode"
             } else {
-                val separator = if (product.url.contains("?")) "&" else "?"
-                "${product.url}${separator}pincode=$pincode"
+                "${product.url}${if (product.url.contains("?")) "&" else "?"}pincode=$pincode"
             }
             product.copy(url = finalUrl)
         }

@@ -340,20 +340,40 @@ class WebViewScraperHelper @Inject constructor(
                 }
             }
             "swiggy.com" in domain -> {
+                // Swiggy/Instamart requires comprehensive location data
+                val sessionId = java.util.UUID.randomUUID().toString()
                 val swiggyCookies = listOf(
+                    // Core location cookies
                     "lat=$currentLat",
                     "lng=$currentLon",
-                    "userLocation={\"lat\":$currentLat,\"lng\":$currentLon,\"address\":\"\",\"area\":\"\",\"city\":\"$DEFAULT_CITY\",\"pincode\":\"$pincode\"}",
-                    "_guest_tid=${java.util.UUID.randomUUID()}",
-                    "swgy_uuid=${java.util.UUID.randomUUID()}",
+                    "pincode=$pincode",
+                    // Swiggy-specific location format
+                    "userLocation={\"lat\":$currentLat,\"lng\":$currentLon,\"address\":\"$DEFAULT_CITY\",\"area\":\"$DEFAULT_CITY\",\"city\":\"$DEFAULT_CITY\",\"pincode\":\"$pincode\"}",
                     "swiggy_lat=$currentLat",
                     "swiggy_lng=$currentLon",
+                    // Session cookies
+                    "_guest_tid=$sessionId",
+                    "swgy_uuid=$sessionId",
+                    "_sid=$sessionId",
+                    // Instamart attribution
+                    "imOrderAttribution=instamart",
                     "address_id=default",
-                    "imOrderAttribution=instamart"
+                    // Location flags
+                    "isLocationSet=true",
+                    "locationPromptShown=true",
+                    "addressSelected=true",
+                    // Prevent location prompts
+                    "showLocationPopup=false",
+                    "locationAccessDenied=false"
                 )
                 swiggyCookies.forEach { cookie ->
-                    cookieManager.setCookie(domain, "$cookie; path=/; SameSite=Lax")
+                    cookieManager.setCookie(domain, "$cookie; path=/; SameSite=Lax; Secure")
+                    cookieManager.setCookie(".$domain", "$cookie; path=/; SameSite=Lax; Secure")
                 }
+                // Also set for www subdomain
+                cookieManager.setCookie("www.swiggy.com", "lat=$currentLat; path=/")
+                cookieManager.setCookie("www.swiggy.com", "lng=$currentLon; path=/")
+                println("WebView: Set comprehensive Swiggy cookies for pincode=$pincode")
             }
             "jiomart.com" in domain -> {
                 val jiomartCookies = listOf(

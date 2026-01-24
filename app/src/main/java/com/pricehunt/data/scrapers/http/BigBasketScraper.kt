@@ -7,12 +7,14 @@ import com.pricehunt.data.scrapers.webview.WebViewScraperHelper
 import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Scraper for BigBasket using WebView with resilient extraction
+ * Scraper for BigBasket using WebView with custom extraction fallback
+ * BigBasket is a Next.js app - products may be in __NEXT_DATA__ or dynamic content
  */
 @Singleton
 class BigBasketScraper @Inject constructor(
@@ -30,23 +32,24 @@ class BigBasketScraper @Inject constructor(
                 val encodedQuery = URLEncoder.encode(query, "UTF-8")
                 val searchUrl = "$baseUrl/ps/?q=$encodedQuery"
                 
-                println("$platformName: Loading $searchUrl")
-                
+                // BigBasket is an SPA - use WebView directly
+                println("$platformName: Loading $searchUrl (WebView)...")
                 webViewHelper.setLocation(pincode)
-                
                 val html = webViewHelper.loadAndGetHtml(
-                    url = searchUrl,
+                    url = searchUrl, 
+                    timeoutMs = 25_000L, // Longer timeout for SPA
                     pincode = pincode
                 )
                 
                 if (html.isNullOrBlank()) {
-                    println("$platformName: ✗ WebView returned empty HTML")
+                    println("$platformName: ✗ WebView returned empty")
                     return@withContext emptyList()
                 }
                 
                 println("$platformName: Got ${html.length} chars HTML")
                 
-                val products = ResilientExtractor.extractProducts(
+                // Try standard extraction first
+                var products = ResilientExtractor.extractProducts(
                     html = html,
                     platformName = platformName,
                     platformColor = platformColor,
@@ -54,30 +57,141 @@ class BigBasketScraper @Inject constructor(
                     baseUrl = baseUrl
                 )
                 
+                // If standard fails, try custom BigBasket extraction
+                if (products.isEmpty()) {
+                    println("$platformName: Standard extraction failed, trying custom...")
+                    products = extractBigBasketCustom(html, pincode)
+                }
+                
                 if (products.isEmpty()) {
                     println("$platformName: ✗ No products extracted")
-                    println("$platformName: HTML preview: ${html.take(500)}")
+                    // Debug: check if there are prices in the HTML
+                    val priceCount = Regex("₹\\s*\\d+").findAll(html).count()
+                    println("$platformName: Found $priceCount price patterns in HTML")
+                    return@withContext emptyList()
                 }
                 
-                // Fix URLs - add pincode to all URLs
-                val fixedProducts = products.map { product ->
+                println("$platformName: ✓ Found ${products.size} products")
+                
+                // Fix URLs
+                products.map { product ->
                     val finalUrl = if (product.url == baseUrl || product.url.isBlank()) {
-                        val productSearchQuery = URLEncoder.encode(product.name, "UTF-8")
-                        "$baseUrl/ps/?q=$productSearchQuery&pincode=$pincode"
+                        "$baseUrl/ps/?q=${URLEncoder.encode(product.name, "UTF-8")}&pincode=$pincode"
                     } else {
-                        // Add pincode to existing URL
-                        val separator = if (product.url.contains("?")) "&" else "?"
-                        "${product.url}${separator}pincode=$pincode"
+                        "${product.url}${if (product.url.contains("?")) "&" else "?"}pincode=$pincode"
                     }
-                    println("$platformName: URL for '${product.name}' -> $finalUrl")
                     product.copy(url = finalUrl)
                 }
-                
-                fixedProducts
                 
             } catch (e: Exception) {
                 println("$platformName: ✗ Error - ${e.message}")
                 emptyList()
             }
         }
+    
+    /**
+     * Custom extraction for BigBasket
+     * BigBasket uses a Next.js app with specific data attributes
+     */
+    private fun extractBigBasketCustom(html: String, pincode: String): List<Product> {
+        val products = mutableListOf<Product>()
+        val doc = Jsoup.parse(html)
+        
+        // Strategy 1: Find __NEXT_DATA__ script
+        val nextDataScript = doc.selectFirst("script#__NEXT_DATA__")?.html()
+        if (nextDataScript != null) {
+            println("$platformName: Found __NEXT_DATA__, parsing...")
+            
+            // Extract products from JSON
+            val productPattern = Regex(""""name"\s*:\s*"([^"]+)"[^}]*"sp"\s*:\s*(\d+(?:\.\d+)?)""")
+            productPattern.findAll(nextDataScript).take(10).forEach { match ->
+                val name = match.groupValues[1]
+                val price = match.groupValues[2].toDoubleOrNull() ?: return@forEach
+                
+                if (name.length > 3 && price in 10.0..5000.0) {
+                    products.add(Product(
+                        name = name.trim(),
+                        price = price,
+                        originalPrice = null,
+                        imageUrl = "",
+                        platform = platformName,
+                        platformColor = platformColor,
+                        deliveryTime = deliveryTime,
+                        url = "$baseUrl/ps/?q=${URLEncoder.encode(name, "UTF-8")}",
+                        rating = null,
+                        discount = null,
+                        available = true
+                    ))
+                }
+            }
+            
+            if (products.isNotEmpty()) {
+                println("$platformName: Found ${products.size} from NEXT_DATA")
+                return products
+            }
+        }
+        
+        // Strategy 2: Find product cards by looking for price+image combinations
+        val priceElements = doc.select("*:contains(₹)").filter { el ->
+            el.text().matches(Regex(".*₹\\s*\\d+.*")) && el.text().length < 100
+        }
+        
+        println("$platformName: Found ${priceElements.size} price elements")
+        
+        val processedParents = mutableSetOf<Int>()
+        
+        for (priceEl in priceElements.take(20)) {
+            // Find container with image
+            val container = priceEl.parents().firstOrNull { parent ->
+                parent.selectFirst("img[src*='bigbasket'], img[src*='bbassets']") != null &&
+                parent.text().length > 10 && parent.text().length < 500 &&
+                !processedParents.contains(parent.hashCode())
+            } ?: continue
+            
+            processedParents.add(container.hashCode())
+            
+            // Extract name from container
+            val name = container.selectFirst("h3, h4, [class*='name'], [class*='title']")?.text()
+                ?: container.selectFirst("a")?.text()
+                ?: container.selectFirst("img")?.attr("alt")
+            
+            if (name.isNullOrBlank() || name.length < 3) continue
+            
+            // Extract price
+            val priceText = Regex("₹\\s*(\\d+)").find(container.text())?.groupValues?.get(1)
+            val price = priceText?.toDoubleOrNull()?.takeIf { it in 10.0..5000.0 } ?: continue
+            
+            // Get image
+            val imageUrl = container.selectFirst("img")?.let { 
+                it.attr("src").ifBlank { it.attr("data-src") }
+            } ?: ""
+            
+            // Get URL
+            var productUrl = container.selectFirst("a[href*='/pd/']")?.attr("href")
+                ?: container.selectFirst("a[href]")?.attr("href")
+                ?: ""
+            
+            if (productUrl.isNotBlank() && !productUrl.startsWith("http")) {
+                productUrl = "$baseUrl$productUrl"
+            }
+            
+            products.add(Product(
+                name = name.trim(),
+                price = price,
+                originalPrice = null,
+                imageUrl = imageUrl,
+                platform = platformName,
+                platformColor = platformColor,
+                deliveryTime = deliveryTime,
+                url = productUrl.ifBlank { "$baseUrl/ps/?q=${URLEncoder.encode(name, "UTF-8")}" },
+                rating = null,
+                discount = null,
+                available = true
+            ))
+            
+            if (products.size >= 10) break
+        }
+        
+        return products
+    }
 }

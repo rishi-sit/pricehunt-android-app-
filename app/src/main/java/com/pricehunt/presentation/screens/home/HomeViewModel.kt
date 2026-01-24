@@ -28,7 +28,7 @@ data class HomeUiState(
 )
 
 enum class PlatformStatus {
-    PENDING, LOADING, COMPLETED, CACHED
+    PENDING, LOADING, COMPLETED, CACHED, FAILED
 }
 
 @HiltViewModel
@@ -73,6 +73,8 @@ class HomeViewModel @Inject constructor(
             
             val allResults = mutableMapOf<String, List<Product>>()
             
+            // Use fallback-enabled search for more robust results
+            // Use original streaming search (simpler, was working before)
             repository.searchStream(query, _uiState.value.pincode)
                 .catch { e ->
                     _uiState.update { it.copy(error = e.message, isSearching = false) }
@@ -86,23 +88,30 @@ class HomeViewModel @Inject constructor(
                                 )
                             }
                         }
+                        is SearchEvent.Message -> {
+                            // Update status message for UI feedback
+                            println("Search progress: ${event.text}")
+                        }
                         is SearchEvent.PlatformResult -> {
                             // Apply intelligent ranking to filter out irrelevant results
                             val rankedProducts = currentSearchIntent?.let { intent ->
                                 SearchIntelligence.rankResults(event.products, intent)
                             } ?: event.products
                             
-                            allResults[event.platform] = rankedProducts
+                            // Update results - merge with existing if fallback succeeded
+                            if (rankedProducts.isNotEmpty() || !allResults.containsKey(event.platform)) {
+                                allResults[event.platform] = rankedProducts
+                            }
                             
                             _uiState.update { state ->
                                 val newStatus = state.platformStatus.toMutableMap()
-                                newStatus[event.platform] = if (event.cached) {
-                                    PlatformStatus.CACHED
-                                } else {
-                                    PlatformStatus.COMPLETED
+                                newStatus[event.platform] = when {
+                                    event.cached -> PlatformStatus.CACHED
+                                    rankedProducts.isNotEmpty() -> PlatformStatus.COMPLETED
+                                    else -> PlatformStatus.FAILED
                                 }
                                 
-                                // Count completed platforms
+                                // Count completed platforms (with results)
                                 val completedCount = newStatus.values.count { 
                                     it == PlatformStatus.COMPLETED || it == PlatformStatus.CACHED 
                                 }

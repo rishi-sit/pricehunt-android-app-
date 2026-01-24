@@ -51,8 +51,14 @@ object ResilientExtractor {
         "search", "filter", "sort", "home", "menu", "cart", "login",
         "sign in", "register", "wishlist", "compare", "share", "notify",
         "out of stock", "sold out", "unavailable", "coming soon",
-        "view all", "load more", "next", "previous", "back"
+        "view all", "load more", "next", "previous", "back",
+        // Delivery time patterns (often extracted by mistake)
+        "mins", "minutes", "min", "hours", "hour", "delivery", "free delivery",
+        "express delivery", "same day", "tomorrow"
     )
+    
+    // Regex to detect delivery time strings like "9 mins", "10-15 mins", etc.
+    private val DELIVERY_TIME_REGEX = Regex("""^\d+(-\d+)?\s*(mins?|minutes?|hours?|hr)$""", RegexOption.IGNORE_CASE)
     
     // Logging wrapper that works in both Android and JVM unit tests
     private fun logD(tag: String, msg: String) {
@@ -2597,6 +2603,11 @@ object ResilientExtractor {
         
         // Check blacklist
         if (INVALID_NAMES.any { normalized == it || normalized.startsWith("$it ") || normalized.endsWith(" $it") }) {
+            return false
+        }
+        
+        // Check if it's a delivery time string (e.g., "9 mins", "10-15 mins")
+        if (DELIVERY_TIME_REGEX.matches(normalized)) {
             return false
         }
         

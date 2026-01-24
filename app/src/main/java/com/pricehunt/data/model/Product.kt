@@ -47,6 +47,7 @@ sealed class SearchEvent {
         val products: List<Product>,
         val cached: Boolean = false
     ) : SearchEvent()
+    data class Message(val text: String) : SearchEvent()  // Progress message
     data object Completed : SearchEvent()
     data class Error(val message: String) : SearchEvent()
 }
