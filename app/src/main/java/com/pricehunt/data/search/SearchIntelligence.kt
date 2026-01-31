@@ -17,29 +17,85 @@ object SearchIntelligence {
     
     // Quantity parsing patterns - handles formats like "500g", "1 L", "1.5kg", "500 ml", "1L", "(500 g)"
     private val QUANTITY_PATTERN = Regex(
-        """(\d+(?:\.\d+)?)\s*(g|gm|gram|grams|kg|kilo|kilos|kilogram|ml|l|ltr|litre|liter|lt|pc|pcs|piece|pieces|pack|nos|unit|units)(?:\s|$|\)|,)""",
+        """(\d+(?:[.,]\d+)?)\s*(g|gm|gram|grams|kg|kilo|kilos|kilogram|ml|l|ltr|litre|liter|lt|pc|pcs|piece|pieces|pack|nos|unit|units)(?:\s|$|\)|,)""",
         RegexOption.IGNORE_CASE
     )
     
-    // Additional patterns for extracting quantity
+    // All supported unit patterns (for regex building)
+    private const val WEIGHT_UNITS = "g|gm|gram|grams|kg|kilo|kilos|kilogram|kilograms|mg|milligram|milligrams|lb|lbs|pound|pounds|oz|ounce|ounces"
+    private const val VOLUME_UNITS = "ml|l|lt|ltr|litre|liter|litres|liters|cl|dl|fl oz|floz|gallon|gallons|pint|pints|cup|cups"
+    private const val COUNT_UNITS = "pc|pcs|piece|pieces|pack|packs|nos|no|unit|units|egg|eggs|dozen|doz|pair|pairs|set|sets|roll|rolls|sheet|sheets|slice|slices|serving|servings|portion|portions|sachet|sachets|pouch|pouches|stick|sticks|bar|bars|cube|cubes|capsule|capsules|cap|caps|tablet|tablets|tab|tabs|strip|strips|bottle|bottles|can|cans|box|boxes|jar|jars|tin|tins|bag|bags|bunch|bunches|pull|pulls|wipe|wipes|ply"
+    private const val LENGTH_UNITS = "m|meter|meters|metre|metres|cm|mm|inch|inches|ft|feet|foot|yard|yards|yd"
+    private const val ALL_UNITS = "$WEIGHT_UNITS|$VOLUME_UNITS|$COUNT_UNITS|$LENGTH_UNITS"
+    
+    // Additional patterns for extracting quantity - ordered by specificity (more specific first)
     private val QUANTITY_PATTERNS = listOf(
-        // "500g", "1kg", "500ml", "1l"
-        Regex("""(\d+(?:\.\d+)?)\s*(g|gm|kg|ml|l|ltr|lt)\b""", RegexOption.IGNORE_CASE),
-        // "500 g", "1 L", "500 ml"
-        Regex("""(\d+(?:\.\d+)?)\s+(g|gm|kg|ml|l|ltr|lt)\b""", RegexOption.IGNORE_CASE),
-        // "(500g)", "(1 L)", "| 500ml"
-        Regex("""[|(]\s*(\d+(?:\.\d+)?)\s*(g|gm|kg|ml|l|ltr|lt)\s*[|)]?""", RegexOption.IGNORE_CASE),
-        // "500gm", "500 gm"
-        Regex("""(\d+(?:\.\d+)?)\s*gm""", RegexOption.IGNORE_CASE),
-        // "1 Litre", "500 Gram"
-        Regex("""(\d+(?:\.\d+)?)\s*(litre|liter|gram|kilogram)s?""", RegexOption.IGNORE_CASE),
-        // "Pack of 6", "6 pcs", "6 pieces"  
-        Regex("""(?:pack\s+of\s+)?(\d+)\s*(pc|pcs|piece|pieces|nos|units?)""", RegexOption.IGNORE_CASE)
+        // Combo/multiplier patterns (MUST be first to capture full quantity like "2x500g" = 1000g)
+        // "2x500g", "2 x 500ml", "3X1kg"
+        Regex("""(\d+)\s*[xX×]\s*(\d+(?:\.\d+)?)\s*($WEIGHT_UNITS|$VOLUME_UNITS)\b""", RegexOption.IGNORE_CASE),
+        // "500g x 2", "1L × 4", "200ml x 6"
+        Regex("""(\d+(?:\.\d+)?)\s*($WEIGHT_UNITS|$VOLUME_UNITS)\s*[xX×]\s*(\d+)\b""", RegexOption.IGNORE_CASE),
+        
+        // Pack patterns with size - "Pack of 6 x 200ml", "6-Pack 330ml"
+        Regex("""(?:pack\s+of\s+)?(\d+)\s*[xX×-]?\s*(?:pack\s+)?(\d+(?:\.\d+)?)\s*($WEIGHT_UNITS|$VOLUME_UNITS)\b""", RegexOption.IGNORE_CASE),
+        
+        // Net weight/volume patterns - "Net Wt. 500g", "Net Weight: 1kg", "Net Content: 1L"
+        Regex("""net\s*(?:wt\.?|weight|content|vol\.?|volume)[\s:]*(\d+(?:\.\d+)?)\s*($ALL_UNITS)\b""", RegexOption.IGNORE_CASE),
+        
+        // Parenthetical at end - "Oil (1L)", "Butter (500g)", "(Pack of 6)", "(100 Tablets)"
+        Regex("""\(\s*(\d+(?:\.\d+)?)\s*($ALL_UNITS)\s*\)""", RegexOption.IGNORE_CASE),
+        Regex("""\(\s*(?:pack\s+of\s+)?(\d+)\s*($COUNT_UNITS)\s*\)""", RegexOption.IGNORE_CASE),
+        
+        // Comma-separated format - "Flour, 1kg", "Oil, 500ml", "Tissue, 100 Pulls"
+        Regex(""",\s*(\d+(?:\.\d+)?)\s*($ALL_UNITS)\b""", RegexOption.IGNORE_CASE),
+        
+        // Pipe-separated format - "| 500g" or "500ml |"
+        Regex("""\|\s*(\d+(?:\.\d+)?)\s*($ALL_UNITS)""", RegexOption.IGNORE_CASE),
+        
+        // Hyphen at end - "Mustard Oil - 1L", "Sugar - 500g", "Tissue Box - 200 Pulls"
+        Regex("""-\s*(\d+(?:\.\d+)?)\s*($ALL_UNITS)\b""", RegexOption.IGNORE_CASE),
+        
+        // Tablets/Capsules specific - "Strip of 10", "10 Tab Strip", "30 Capsules"
+        Regex("""(?:strip\s+of\s+)?(\d+)\s*(tablet|tablets|tab|tabs|capsule|capsules|cap|caps)\b""", RegexOption.IGNORE_CASE),
+        Regex("""(\d+)\s*(tablet|tab|capsule|cap)s?\s*(?:strip|pack)?\b""", RegexOption.IGNORE_CASE),
+        
+        // Wipes/Pulls specific - "72 Wipes", "100 Pulls"
+        Regex("""(\d+)\s*(wipe|wipes|pull|pulls|sheet|sheets)\b""", RegexOption.IGNORE_CASE),
+        
+        // Dozen format - "1 Dozen", "2 Doz"
+        Regex("""(\d+(?:\.\d+)?)\s*(dozen|doz)\b""", RegexOption.IGNORE_CASE),
+        
+        // Standard weight/volume formats - "500g", "1kg", "500ml", "1l", "1.5L"
+        Regex("""(\d+(?:\.\d+)?)\s*($WEIGHT_UNITS|$VOLUME_UNITS)\b""", RegexOption.IGNORE_CASE),
+        // With space - "500 g", "1 L", "500 ml"
+        Regex("""(\d+(?:\.\d+)?)\s+($WEIGHT_UNITS|$VOLUME_UNITS)\b""", RegexOption.IGNORE_CASE),
+        
+        // Full word units - "1 Litre", "500 Gram", "2 Litres", "100 Grams"
+        Regex("""(\d+(?:\.\d+)?)\s*(litres?|liters?|grams?|kilograms?|milligrams?|ounces?|pounds?|gallons?|pints?|cups?|inches?|meters?|metres?|feet|foot)\b""", RegexOption.IGNORE_CASE),
+        
+        // "500gm", "500 gm" (common Indian format)
+        Regex("""(\d+(?:\.\d+)?)\s*gm\b""", RegexOption.IGNORE_CASE),
+        
+        // Pouch/Bottle/Jar with size - "1L Pouch", "500ml Bottle"
+        Regex("""(\d+(?:\.\d+)?)\s*($WEIGHT_UNITS|$VOLUME_UNITS)\s*(?:pouch|bottle|jar|can|pack|box|bag|sachet|tin|tube|container)\b""", RegexOption.IGNORE_CASE),
+        
+        // Pieces/count formats - "Pack of 6", "6 pcs", "6 pieces", "6 Nos", "Set of 4"
+        Regex("""(?:pack|set|box|bundle)\s+of\s+(\d+)\b""", RegexOption.IGNORE_CASE),
+        Regex("""(\d+)\s*($COUNT_UNITS)\b""", RegexOption.IGNORE_CASE),
+        
+        // Eggs special - "6 Eggs", "12 eggs", "30 Eggs Pack"
+        Regex("""(\d+)\s*eggs?\b""", RegexOption.IGNORE_CASE),
+        
+        // Length formats - "5m", "100cm", "12 inches"
+        Regex("""(\d+(?:\.\d+)?)\s*($LENGTH_UNITS)\b""", RegexOption.IGNORE_CASE),
+        
+        // Large numbers with comma - "1,000g", "1,500ml" 
+        Regex("""(\d{1,3}(?:,\d{3})+)\s*($ALL_UNITS)\b""", RegexOption.IGNORE_CASE)
     )
     
-    // Unit conversion to base units (grams for weight, ml for volume)
+    // Unit conversion to base units (grams for weight, ml for volume, pieces for count, etc.)
     private val UNIT_TO_BASE = mapOf(
-        // Weight -> grams
+        // Weight -> grams (base)
         "g" to 1.0,
         "gm" to 1.0,
         "gram" to 1.0,
@@ -48,30 +104,202 @@ object SearchIntelligence {
         "kilo" to 1000.0,
         "kilos" to 1000.0,
         "kilogram" to 1000.0,
-        // Volume -> ml
+        "kilograms" to 1000.0,
+        "mg" to 0.001,
+        "milligram" to 0.001,
+        "milligrams" to 0.001,
+        "quintal" to 100000.0,
+        "ton" to 1000000.0,
+        "tonne" to 1000000.0,
+        "lb" to 453.592,
+        "lbs" to 453.592,
+        "pound" to 453.592,
+        "pounds" to 453.592,
+        "oz" to 28.3495,
+        "ounce" to 28.3495,
+        "ounces" to 28.3495,
+        
+        // Volume -> ml (base)
         "ml" to 1.0,
         "l" to 1000.0,
+        "lt" to 1000.0,
         "ltr" to 1000.0,
         "litre" to 1000.0,
         "liter" to 1000.0,
-        // Count -> pieces
+        "litres" to 1000.0,
+        "liters" to 1000.0,
+        "cl" to 10.0,
+        "dl" to 100.0,
+        "fl oz" to 29.5735,
+        "floz" to 29.5735,
+        "gallon" to 3785.41,
+        "gallons" to 3785.41,
+        "pint" to 473.176,
+        "pints" to 473.176,
+        "cup" to 236.588,
+        "cups" to 236.588,
+        
+        // Count -> pieces (base)
         "pc" to 1.0,
         "pcs" to 1.0,
         "piece" to 1.0,
         "pieces" to 1.0,
         "pack" to 1.0,
+        "packs" to 1.0,
         "nos" to 1.0,
+        "no" to 1.0,
         "unit" to 1.0,
-        "units" to 1.0
+        "units" to 1.0,
+        "egg" to 1.0,
+        "eggs" to 1.0,
+        "dozen" to 12.0,
+        "doz" to 12.0,
+        "pair" to 2.0,
+        "pairs" to 2.0,
+        "set" to 1.0,
+        "sets" to 1.0,
+        "roll" to 1.0,
+        "rolls" to 1.0,
+        "sheet" to 1.0,
+        "sheets" to 1.0,
+        "slice" to 1.0,
+        "slices" to 1.0,
+        "serving" to 1.0,
+        "servings" to 1.0,
+        "portion" to 1.0,
+        "portions" to 1.0,
+        "sachet" to 1.0,
+        "sachets" to 1.0,
+        "pouch" to 1.0,
+        "pouches" to 1.0,
+        "stick" to 1.0,
+        "sticks" to 1.0,
+        "bar" to 1.0,
+        "bars" to 1.0,
+        "cube" to 1.0,
+        "cubes" to 1.0,
+        "capsule" to 1.0,
+        "capsules" to 1.0,
+        "cap" to 1.0,
+        "caps" to 1.0,
+        "tablet" to 1.0,
+        "tablets" to 1.0,
+        "tab" to 1.0,
+        "tabs" to 1.0,
+        "strip" to 1.0,
+        "strips" to 1.0,
+        "bottle" to 1.0,
+        "bottles" to 1.0,
+        "can" to 1.0,
+        "cans" to 1.0,
+        "box" to 1.0,
+        "boxes" to 1.0,
+        "jar" to 1.0,
+        "jars" to 1.0,
+        "tin" to 1.0,
+        "tins" to 1.0,
+        "bag" to 1.0,
+        "bags" to 1.0,
+        "bunch" to 1.0,
+        "bunches" to 1.0,
+        
+        // Length -> cm (base)
+        "m" to 100.0,
+        "meter" to 100.0,
+        "meters" to 100.0,
+        "metre" to 100.0,
+        "metres" to 100.0,
+        "cm" to 1.0,
+        "mm" to 0.1,
+        "inch" to 2.54,
+        "inches" to 2.54,
+        "in" to 2.54,
+        "ft" to 30.48,
+        "feet" to 30.48,
+        "foot" to 30.48,
+        "yard" to 91.44,
+        "yards" to 91.44,
+        "yd" to 91.44,
+        
+        // Area -> sq cm (base)
+        "sqm" to 10000.0,
+        "sqft" to 929.03,
+        "sqin" to 6.4516,
+        "sqcm" to 1.0,
+        "acre" to 40468564.224,
+        
+        // Pulls/Wipes (tissues, wipes, etc.)
+        "pull" to 1.0,
+        "pulls" to 1.0,
+        "wipe" to 1.0,
+        "wipes" to 1.0,
+        "ply" to 1.0
     )
     
     // Unit type classification
     private val UNIT_TYPE = mapOf(
+        // Weight
         "g" to "weight", "gm" to "weight", "gram" to "weight", "grams" to "weight",
-        "kg" to "weight", "kilo" to "weight", "kilos" to "weight", "kilogram" to "weight",
-        "ml" to "volume", "l" to "volume", "ltr" to "volume", "litre" to "volume", "liter" to "volume",
+        "kg" to "weight", "kilo" to "weight", "kilos" to "weight", 
+        "kilogram" to "weight", "kilograms" to "weight",
+        "mg" to "weight", "milligram" to "weight", "milligrams" to "weight",
+        "quintal" to "weight", "ton" to "weight", "tonne" to "weight",
+        "lb" to "weight", "lbs" to "weight", "pound" to "weight", "pounds" to "weight",
+        "oz" to "weight", "ounce" to "weight", "ounces" to "weight",
+        
+        // Volume
+        "ml" to "volume", "l" to "volume", "lt" to "volume", "ltr" to "volume", 
+        "litre" to "volume", "liter" to "volume", "litres" to "volume", "liters" to "volume",
+        "cl" to "volume", "dl" to "volume",
+        "fl oz" to "volume", "floz" to "volume",
+        "gallon" to "volume", "gallons" to "volume",
+        "pint" to "volume", "pints" to "volume",
+        "cup" to "volume", "cups" to "volume",
+        
+        // Count (general items)
         "pc" to "count", "pcs" to "count", "piece" to "count", "pieces" to "count",
-        "pack" to "count", "nos" to "count", "unit" to "count", "units" to "count"
+        "pack" to "count", "packs" to "count", "nos" to "count", "no" to "count",
+        "unit" to "count", "units" to "count",
+        "egg" to "count", "eggs" to "count",
+        "dozen" to "count", "doz" to "count",
+        "pair" to "count", "pairs" to "count",
+        "set" to "count", "sets" to "count",
+        "roll" to "count", "rolls" to "count",
+        "sheet" to "count", "sheets" to "count",
+        "slice" to "count", "slices" to "count",
+        "serving" to "count", "servings" to "count",
+        "portion" to "count", "portions" to "count",
+        "sachet" to "count", "sachets" to "count",
+        "pouch" to "count", "pouches" to "count",
+        "stick" to "count", "sticks" to "count",
+        "bar" to "count", "bars" to "count",
+        "cube" to "count", "cubes" to "count",
+        "capsule" to "count", "capsules" to "count",
+        "cap" to "count", "caps" to "count",
+        "tablet" to "count", "tablets" to "count",
+        "tab" to "count", "tabs" to "count",
+        "strip" to "count", "strips" to "count",
+        "bottle" to "count", "bottles" to "count",
+        "can" to "count", "cans" to "count",
+        "box" to "count", "boxes" to "count",
+        "jar" to "count", "jars" to "count",
+        "tin" to "count", "tins" to "count",
+        "bag" to "count", "bags" to "count",
+        "bunch" to "count", "bunches" to "count",
+        "pull" to "count", "pulls" to "count",
+        "wipe" to "count", "wipes" to "count",
+        "ply" to "count",
+        
+        // Length
+        "m" to "length", "meter" to "length", "meters" to "length",
+        "metre" to "length", "metres" to "length",
+        "cm" to "length", "mm" to "length",
+        "inch" to "length", "inches" to "length", "in" to "length",
+        "ft" to "length", "feet" to "length", "foot" to "length",
+        "yard" to "length", "yards" to "length", "yd" to "length",
+        
+        // Area
+        "sqm" to "area", "sqft" to "area", "sqin" to "area", "sqcm" to "area", "acre" to "area"
     )
 
     // Common grocery categories with their typical items
@@ -103,13 +331,80 @@ object SearchIntelligence {
     )
 
     // Words that indicate a derived/processed product (not the primary item)
+    // GENERIC: Works for ANY product - if these words appear alongside the search term,
+    // it's likely a processed/derivative product, not the primary item
     private val DERIVATIVE_INDICATORS = listOf(
-        "juice", "jam", "jelly", "sauce", "syrup", "flavour", "flavor", "flavored", 
-        "flavoured", "essence", "extract", "candy", "chocolate", "ice cream", "icecream",
-        "shake", "smoothie", "squash", "drink", "beverage", "powder", "mix", "bar",
-        "cake", "pastry", "muffin", "cookie", "biscuit", "wafer", "toffee", "gummy",
-        "preserve", "marmalade", "spread", "topping", "filling", "yogurt", "yoghurt",
-        "milkshake", "lassi", "sharbat", "sherbet"
+        // Beverages
+        "juice", "squash", "drink", "beverage", "shake", "smoothie", "cocktail", "mocktail",
+        "wine", "beer", "ale", "cider", "vinegar", "cordial", "nectar", "punch",
+        // Preserved/processed
+        "jam", "jelly", "preserve", "marmalade", "compote", "conserve",
+        "sauce", "ketchup", "puree", "paste", "chutney", "pickle", "achar", "relish",
+        "syrup", "honey", "molasses", "concentrate", "extract", "essence",
+        // Dried/powdered
+        "powder", "dried", "dehydrated", "flakes", "granules", "crystals",
+        "flour", "starch", "bran", "husk", "fiber", "fibre",
+        // Snacks/processed foods
+        "chips", "crisps", "wafers", "fries", "fritters", "bhujia", "namkeen",
+        "candy", "toffee", "gummy", "lollipop", "chew", "mint",
+        "chocolate", "fudge", "caramel", "brittle",
+        "cake", "pastry", "muffin", "cookie", "biscuit", "cracker", "rusk",
+        "bar", "bite", "ball", "roll", "stick",
+        // Dairy derivatives
+        "ice cream", "icecream", "kulfi", "gelato", "sorbet", "frozen",
+        "milkshake", "lassi", "sharbat", "sherbet", "buttermilk", "whey",
+        "yogurt", "yoghurt", "curd rice", "raita",
+        // Flavored/modified
+        "flavour", "flavor", "flavored", "flavoured", "infused", "scented",
+        "spread", "butter", "cream", "topping", "filling", "glaze", "icing",
+        // Oils and extracts
+        "oil", "seed oil", "essential oil", "seeds", "seed",
+        // Other processed forms
+        "pulp", "peel", "zest", "rind", "skin",
+        "capsule", "tablet", "supplement", "vitamin",
+        "soap", "shampoo", "lotion", "cream", "moisturizer", "cleanser"
+    )
+
+    // Extra strict filtering for "milk" queries when AI is unavailable
+    private val MILK_DERIVATIVE_INDICATORS = listOf(
+        "milkshake", "shake", "powder", "condensed", "evaporated",
+        "ice cream", "icecream", "flavoured", "flavored", "chocolate",
+        "drink", "beverage", "coffee", "tea", "syrup", "whitener", "formula"
+    )
+    
+    // GENERIC: Compound word suffixes that create different products
+    // e.g., "grape" vs "grapefruit", "pine" vs "pineapple", "straw" vs "strawberry"
+    private val COMPOUND_SUFFIXES = listOf(
+        "fruit", "berry", "apple", "melon", "nut", "seed", "leaf", "root", "grass",
+        "flower", "blossom", "peel", "skin", "stem", "stalk"
+    )
+    
+    // GENERIC: Words that indicate the search term is used as a FLAVOR/TYPE, not the main product
+    // e.g., "mango ice cream" - mango is the flavor, ice cream is the product
+    private val FLAVOR_CONTEXT_WORDS = listOf(
+        "flavour", "flavor", "flavored", "flavoured", "taste", "tasting",
+        "scented", "fragrance", "aroma", "infused", "based", "style", "type"
+    )
+    
+    // GENERIC: Product type words - when search term appears BEFORE these, 
+    // search term is likely a modifier, not the main product
+    private val PRODUCT_TYPE_WORDS = listOf(
+        // Beverages
+        "juice", "drink", "shake", "smoothie", "tea", "coffee", "water", "soda", "pop",
+        "wine", "beer", "vodka", "rum", "whiskey", "liqueur",
+        // Foods
+        "cake", "pie", "tart", "pudding", "custard", "mousse", "parfait",
+        "ice cream", "icecream", "gelato", "sorbet", "kulfi", "popsicle",
+        "jam", "jelly", "preserve", "marmalade", "compote",
+        "sauce", "chutney", "pickle", "relish", "dip", "spread",
+        "chips", "crisps", "wafers", "fries", "snack",
+        "candy", "chocolate", "fudge", "toffee", "gummy", "lollipop",
+        "cookie", "biscuit", "cracker", "wafer",
+        "yogurt", "yoghurt", "lassi", "milkshake", "smoothie",
+        "bread", "loaf", "roll", "bun", "muffin", "cupcake", "donut",
+        // Non-food
+        "soap", "shampoo", "lotion", "cream", "oil", "perfume", "fragrance",
+        "candle", "air freshener", "room spray"
     )
 
     // Words that indicate fresh/raw produce
@@ -159,77 +454,178 @@ object SearchIntelligence {
     
     /**
      * Parse quantity from text (query or product name)
-     * Tries multiple patterns to handle various formats
+     * Tries multiple patterns to handle various formats including combo packs
      */
     fun parseQuantity(text: String): ParsedQuantity? {
         val lowerText = text.lowercase()
         
+        // Handle comma-formatted numbers first (e.g., "1,000g" -> "1000g")
+        val cleanedText = lowerText.replace(Regex("""(\d),(\d{3})"""), "$1$2")
+        
         // Try each pattern until we find a match
-        for (pattern in QUANTITY_PATTERNS) {
-            val match = pattern.find(lowerText)
-            if (match != null && match.groupValues.size >= 3) {
-                val value = match.groupValues[1].toDoubleOrNull() ?: continue
-                val rawUnit = match.groupValues[2].lowercase()
-                
-                // Normalize unit names
-                val unit = when (rawUnit) {
-                    "lt" -> "l"
-                    "litre", "liter" -> "l"
-                    "gram" -> "g"
-                    "kilogram" -> "kg"
-                    else -> rawUnit
+        for ((index, pattern) in QUANTITY_PATTERNS.withIndex()) {
+            val match = pattern.find(cleanedText)
+            if (match == null) continue
+            
+            // Handle combo/multiplier patterns specially (first 3 patterns)
+            when (index) {
+                0 -> {
+                    // "2x500g" pattern: group1=count, group2=size, group3=unit
+                    if (match.groupValues.size >= 4) {
+                        val count = match.groupValues[1].toDoubleOrNull() ?: continue
+                        val size = match.groupValues[2].toDoubleOrNull() ?: continue
+                        val rawUnit = normalizeUnit(match.groupValues[3])
+                        
+                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
+                        val unitType = UNIT_TYPE[rawUnit] ?: continue
+                        val totalValue = count * size
+                        val normalizedValue = totalValue * baseMultiplier
+                        
+                        return ParsedQuantity(
+                            originalValue = totalValue,
+                            originalUnit = rawUnit,
+                            normalizedValue = normalizedValue,
+                            baseUnit = getBaseUnit(unitType),
+                            unitType = unitType
+                        )
+                    }
                 }
-                
-                val baseMultiplier = UNIT_TO_BASE[unit] ?: continue
-                val unitType = UNIT_TYPE[unit] ?: continue
-                val normalizedValue = value * baseMultiplier
-                
-                return ParsedQuantity(
-                    originalValue = value,
-                    originalUnit = unit,
-                    normalizedValue = normalizedValue,
-                    baseUnit = when (unitType) {
-                        "weight" -> "g"
-                        "volume" -> "ml"
-                        "count" -> "pc"
-                        else -> unit
-                    },
-                    unitType = unitType
-                )
+                1 -> {
+                    // "500g x 2" pattern: group1=size, group2=unit, group3=count
+                    if (match.groupValues.size >= 4) {
+                        val size = match.groupValues[1].toDoubleOrNull() ?: continue
+                        val rawUnit = normalizeUnit(match.groupValues[2])
+                        val count = match.groupValues[3].toDoubleOrNull() ?: continue
+                        
+                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
+                        val unitType = UNIT_TYPE[rawUnit] ?: continue
+                        val totalValue = count * size
+                        val normalizedValue = totalValue * baseMultiplier
+                        
+                        return ParsedQuantity(
+                            originalValue = totalValue,
+                            originalUnit = rawUnit,
+                            normalizedValue = normalizedValue,
+                            baseUnit = getBaseUnit(unitType),
+                            unitType = unitType
+                        )
+                    }
+                }
+                2 -> {
+                    // "Pack of 6 x 200ml" pattern: group1=count, group2=size, group3=unit
+                    if (match.groupValues.size >= 4) {
+                        val count = match.groupValues[1].toDoubleOrNull() ?: continue
+                        val size = match.groupValues[2].toDoubleOrNull() ?: continue
+                        val rawUnit = normalizeUnit(match.groupValues[3])
+                        
+                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
+                        val unitType = UNIT_TYPE[rawUnit] ?: continue
+                        val totalValue = count * size
+                        val normalizedValue = totalValue * baseMultiplier
+                        
+                        return ParsedQuantity(
+                            originalValue = totalValue,
+                            originalUnit = rawUnit,
+                            normalizedValue = normalizedValue,
+                            baseUnit = getBaseUnit(unitType),
+                            unitType = unitType
+                        )
+                    }
+                }
+                else -> {
+                    // Standard pattern: group1=value, group2=unit
+                    if (match.groupValues.size >= 3) {
+                        val value = match.groupValues[1].toDoubleOrNull() ?: continue
+                        val rawUnit = normalizeUnit(match.groupValues[2])
+                        
+                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
+                        val unitType = UNIT_TYPE[rawUnit] ?: continue
+                        val normalizedValue = value * baseMultiplier
+                        
+                        return ParsedQuantity(
+                            originalValue = value,
+                            originalUnit = rawUnit,
+                            normalizedValue = normalizedValue,
+                            baseUnit = getBaseUnit(unitType),
+                            unitType = unitType
+                        )
+                    }
+                }
             }
         }
         
         // Fallback: try the main pattern
-        val match = QUANTITY_PATTERN.find(lowerText) ?: return null
+        val match = QUANTITY_PATTERN.find(cleanedText) ?: return null
         
-        val value = match.groupValues[1].toDoubleOrNull() ?: return null
-        val rawUnit = match.groupValues[2].lowercase()
+        val value = match.groupValues[1].replace(",", ".").toDoubleOrNull() ?: return null
+        val rawUnit = normalizeUnit(match.groupValues[2])
         
-        // Normalize unit names  
-        val unit = when (rawUnit) {
-            "lt" -> "l"
-            "litre", "liter" -> "l"
-            "gram" -> "g"
-            "kilogram" -> "kg"
-            else -> rawUnit
-        }
-        
-        val baseMultiplier = UNIT_TO_BASE[unit] ?: return null
-        val unitType = UNIT_TYPE[unit] ?: return null
+        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: return null
+        val unitType = UNIT_TYPE[rawUnit] ?: return null
         val normalizedValue = value * baseMultiplier
         
         return ParsedQuantity(
             originalValue = value,
-            originalUnit = unit,
+            originalUnit = rawUnit,
             normalizedValue = normalizedValue,
-            baseUnit = when (unitType) {
-                "weight" -> "g"
-                "volume" -> "ml"
-                "count" -> "pc"
-                else -> unit
-            },
+            baseUnit = getBaseUnit(unitType),
             unitType = unitType
         )
+    }
+    
+    /**
+     * Normalize unit names to standard form
+     */
+    private fun normalizeUnit(rawUnit: String): String {
+        return when (rawUnit.lowercase()) {
+            // Volume
+            "lt", "ltr", "litre", "liter", "litres", "liters" -> "l"
+            "floz", "fl oz" -> "floz"
+            // Weight  
+            "gram", "grams" -> "g"
+            "kilogram", "kilograms" -> "kg"
+            "milligram", "milligrams" -> "mg"
+            "ounce", "ounces" -> "oz"
+            "pound", "pounds" -> "lb"
+            // Count
+            "piece", "pieces" -> "pc"
+            "nos", "no" -> "pc"
+            "unit", "units" -> "pc"
+            "egg", "eggs" -> "egg"
+            "tablet", "tablets" -> "tab"
+            "capsule", "capsules" -> "capsule"
+            "wipe", "wipes" -> "wipe"
+            "pull", "pulls" -> "pull"
+            "sheet", "sheets" -> "sheet"
+            "roll", "rolls" -> "roll"
+            "sachet", "sachets" -> "sachet"
+            "slice", "slices" -> "slice"
+            "serving", "servings" -> "serving"
+            "stick", "sticks" -> "stick"
+            "pair", "pairs" -> "pair"
+            "dozen", "doz" -> "dozen"
+            "bunch", "bunches" -> "bunch"
+            // Length
+            "meter", "meters", "metre", "metres" -> "m"
+            "inch", "inches" -> "inch"
+            "feet", "foot" -> "ft"
+            "yard", "yards" -> "yd"
+            else -> rawUnit.lowercase()
+        }
+    }
+    
+    /**
+     * Get base unit for unit type
+     */
+    private fun getBaseUnit(unitType: String): String {
+        return when (unitType) {
+            "weight" -> "g"
+            "volume" -> "ml"
+            "count" -> "pc"
+            "length" -> "cm"
+            "area" -> "sqcm"
+            else -> "g"
+        }
     }
 
     /**
@@ -243,9 +639,206 @@ object SearchIntelligence {
         }
         return null
     }
+    
+    /**
+     * GENERIC: Check if keyword appears as a standalone word in text
+     * "grape" matches "fresh grape 500g" but NOT "grapefruit" or "grapeseed"
+     * 
+     * This is the core of generic relevance - it ensures we match the EXACT word,
+     * not compound words or partial matches.
+     */
+    fun isExactWordMatch(text: String, keyword: String): Boolean {
+        // Match keyword as a complete word, optionally with 's' for plurals
+        // \b = word boundary, ensures "grape" doesn't match "grapefruit"
+        val pattern = Regex("\\b${Regex.escape(keyword)}s?\\b", RegexOption.IGNORE_CASE)
+        return pattern.containsMatchIn(text)
+    }
+    
+    /**
+     * GENERIC: Check if the search keyword is part of a compound word in the product name
+     * e.g., "grape" in "grapefruit" or "grapeseed" - these are DIFFERENT products
+     * 
+     * Returns true if keyword appears as part of a compound word (should be penalized)
+     */
+    private fun isCompoundWordMatch(productName: String, keyword: String): Boolean {
+        val nameLower = productName.lowercase()
+        val keywordLower = keyword.lowercase()
+        
+        // If keyword doesn't appear at all, not a compound match
+        if (!nameLower.contains(keywordLower)) return false
+        
+        // If it's an exact word match, it's NOT a compound
+        if (isExactWordMatch(nameLower, keywordLower)) return false
+        
+        // Check if keyword is followed by compound suffixes (e.g., grape+fruit)
+        for (suffix in COMPOUND_SUFFIXES) {
+            if (nameLower.contains(keywordLower + suffix)) return true
+        }
+        
+        // Check if keyword is preceded by another word without space (e.g., pineapple)
+        val keywordIndex = nameLower.indexOf(keywordLower)
+        if (keywordIndex > 0) {
+            val charBefore = nameLower[keywordIndex - 1]
+            // If character before is a letter, it's part of a compound word
+            if (charBefore.isLetter()) return true
+        }
+        
+        // Check if keyword is followed by letters without space
+        val endIndex = keywordIndex + keywordLower.length
+        if (endIndex < nameLower.length) {
+            val charAfter = nameLower[endIndex]
+            // If character after is a letter (not 's' for plural), it's a compound
+            if (charAfter.isLetter() && charAfter != 's') return true
+            // Check for 's' followed by more letters
+            if (charAfter == 's' && endIndex + 1 < nameLower.length && nameLower[endIndex + 1].isLetter()) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    /**
+     * GENERIC: Check if the search term is used as a FLAVOR/MODIFIER rather than the main product
+     * e.g., "mango ice cream" - mango is the flavor, not the product
+     * e.g., "strawberry shake" - strawberry is the flavor, shake is the product
+     * 
+     * IMPORTANT: If the search term ITSELF is a product type (e.g., "oil", "juice", "bread"),
+     * we should NOT penalize products - user is looking for that specific product type.
+     * 
+     * Returns true if the keyword is a modifier (should be heavily penalized)
+     */
+    private fun isKeywordUsedAsModifier(productName: String, keyword: String): Boolean {
+        val nameLower = productName.lowercase()
+        val keywordLower = keyword.lowercase()
+        
+        // IMPORTANT: If the search term is itself a product type, DON'T penalize
+        // e.g., searching for "oil" should show oil products, not penalize them
+        // e.g., searching for "juice" should show juice products
+        if (PRODUCT_TYPE_WORDS.any { it.equals(keywordLower, ignoreCase = true) }) {
+            return false
+        }
+        
+        // If keyword doesn't appear as exact word, can't be a modifier
+        if (!isExactWordMatch(nameLower, keywordLower)) return false
+        
+        // Check if any product type word appears AFTER the keyword
+        // e.g., "mango [juice]", "strawberry [ice cream]", "orange [marmalade]"
+        val keywordIndex = nameLower.indexOf(keywordLower)
+        val afterKeyword = nameLower.substring(keywordIndex + keywordLower.length)
+        
+        for (productType in PRODUCT_TYPE_WORDS) {
+            if (afterKeyword.contains(productType)) {
+                return true
+            }
+        }
+        
+        // Check if flavor context words appear in the name
+        for (flavorWord in FLAVOR_CONTEXT_WORDS) {
+            if (nameLower.contains(flavorWord)) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    /**
+     * GENERIC: Check if product is a derivative/processed form
+     * Works for ANY product by checking against derivative indicators
+     * 
+     * IMPORTANT: This should only be used when the search term is NOT itself
+     * a derivative type. The calling function should handle this check.
+     */
+    private fun isDerivativeProduct(productName: String): Boolean {
+        val nameLower = productName.lowercase()
+        return DERIVATIVE_INDICATORS.any { indicator ->
+            // Check as whole word to avoid false positives
+            // e.g., "powder" should match but not "powerful"
+            Regex("\\b${Regex.escape(indicator)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(nameLower)
+        }
+    }
+
+    private fun isMilkDerivative(productName: String): Boolean {
+        val nameLower = productName.lowercase()
+        return MILK_DERIVATIVE_INDICATORS.any { indicator ->
+            Regex("\\b${Regex.escape(indicator)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(nameLower)
+        }
+    }
+    
+    /**
+     * Check if the search keyword itself is a derivative/product type
+     * e.g., "juice", "oil", "jam", "chips" are all valid product types
+     */
+    private fun isKeywordAProductType(keyword: String): Boolean {
+        val keywordLower = keyword.lowercase()
+        return DERIVATIVE_INDICATORS.any { it.equals(keywordLower, ignoreCase = true) } ||
+               PRODUCT_TYPE_WORDS.any { it.equals(keywordLower, ignoreCase = true) }
+    }
+    
+    /**
+     * GENERIC: Calculate how relevant a product is to the search keyword
+     * Returns a score adjustment:
+     *   Positive = more relevant
+     *   Negative = less relevant (penalize)
+     *   Very negative (-100) = should be filtered out
+     * 
+     * SMART: Handles cases where the search term itself is a product type
+     * (e.g., "oil", "juice", "chips") - doesn't penalize these cases
+     */
+    private fun calculateGenericRelevance(productName: String, keyword: String): Int {
+        val nameLower = productName.lowercase()
+        val keywordLower = keyword.lowercase()
+        
+        // Check if keyword is itself a product type (oil, juice, chips, etc.)
+        val keywordIsProductType = isKeywordAProductType(keyword)
+        
+        // 1. Compound word check - completely different product
+        // BUT: be careful with product type keywords
+        if (!keywordIsProductType && isCompoundWordMatch(productName, keyword)) {
+            // "grapefruit" when searching "grape" = different product
+            return -100
+        }
+        
+        // 2. Check if keyword is used as modifier/flavor
+        // SKIP if keyword is a product type (user searching for that type specifically)
+        if (!keywordIsProductType && isKeywordUsedAsModifier(productName, keyword)) {
+            // "mango ice cream" when searching "mango" = mango is just flavor
+            return -60
+        }
+        
+        // 3. Check if it's a derivative product
+        // SKIP if keyword is itself a derivative/product type
+        if (!keywordIsProductType && isDerivativeProduct(productName)) {
+            // "mango juice" when searching "mango" = processed form
+            return -40
+        }
+        
+        // 4. Exact word match bonus
+        if (isExactWordMatch(nameLower, keywordLower)) {
+            return 30  // Good match
+        }
+        
+        // 5. Contains keyword but not as exact word
+        if (nameLower.contains(keywordLower)) {
+            // For product type keywords, substring match is okay
+            // e.g., "sunflower oil" contains "oil"
+            if (keywordIsProductType) {
+                return 20  // Still a valid match
+            }
+            return -20  // Suspicious for non-product-type keywords
+        }
+        
+        return 0
+    }
 
     /**
      * Rank and filter products based on search intent
+     * 
+     * Enhanced filtering with:
+     * - Stricter minimum scores for fruits/vegetables (to filter out juices, sauces, etc.)
+     * - Category-aware thresholds
+     * - Logging for debugging
      */
     fun rankResults(products: List<Product>, intent: SearchIntent): List<Product> {
         if (products.isEmpty()) return products
@@ -257,13 +850,44 @@ object SearchIntelligence {
             Pair(product, ScoredProduct(score, productQuantity))
         }
         
-        // Sort by score (higher is better) and filter out very low scores
-        val minScore = if (intent.wantsPrimaryItem) 30 else 10
+        // Determine minimum score based on search intent and category
+        // Balance between filtering irrelevant items and not being too strict
+        val minScore = when {
+            // Fruits and vegetables need filtering (exclude juices, pickles, etc.)
+            intent.wantsPrimaryItem && intent.category in listOf("fruit", "vegetable") -> 35
+            // Dairy - moderate filtering (exclude milkshakes but allow milk products)
+            intent.wantsPrimaryItem && intent.category == "dairy" -> 25
+            // Other primary item searches
+            intent.wantsPrimaryItem -> 20
+            // Explicit derivative search (e.g., "mango juice") - lenient
+            intent.isExplicitDerivative -> 10
+            // Default - lenient to avoid over-filtering
+            else -> 15
+        }
         
-        return scoredProducts
-            .filter { it.second.score >= minScore }
-            .sortedByDescending { it.second.score }
-            .map { it.first }
+        val filtered = scoredProducts.filter { it.second.score >= minScore }
+        val sorted = filtered.sortedByDescending { it.second.score }
+        
+        // Log filtering results for debugging
+        val filteredCount = products.size - filtered.size
+        if (filteredCount > 0) {
+            println("SearchIntelligence: 🔍 Filtered out $filteredCount/${products.size} products (minScore: $minScore)")
+            // Log top filtered out items for debugging
+            scoredProducts
+                .filter { it.second.score < minScore && it.second.score > -100 }
+                .sortedByDescending { it.second.score }
+                .take(3)
+                .forEach { (product, scored) ->
+                    println("  ↳ Filtered: '${product.name.take(40)}' (score: ${scored.score})")
+                }
+        }
+        
+        // Log top results
+        sorted.take(3).forEach { (product, scored) ->
+            println("SearchIntelligence: ✅ Top: '${product.name.take(40)}' (score: ${scored.score})")
+        }
+        
+        return sorted.map { it.first }
     }
     
     /**
@@ -338,6 +962,7 @@ object SearchIntelligence {
     
     /**
      * Calculate per-unit price for a product
+     * Intelligently formats based on unit type and quantity for meaningful comparison
      */
     fun calculatePerUnitPrice(product: Product): PerUnitPrice? {
         val quantity = parseQuantity(product.name)
@@ -354,13 +979,8 @@ object SearchIntelligence {
         
         val perUnit = product.price / quantity.normalizedValue
         
-        // Format nicely (per 100g, per 100ml, or per piece)
-        val (displayValue, displayUnit) = when (quantity.unitType) {
-            "weight" -> Pair(perUnit * 100, "100g")
-            "volume" -> Pair(perUnit * 100, "100ml")
-            "count" -> Pair(perUnit, "pc")
-            else -> Pair(perUnit, quantity.baseUnit)
-        }
+        // Smart formatting based on unit type and quantity size
+        val (displayValue, displayUnit) = getSmartDisplayFormat(quantity, perUnit, product.price)
         
         println("SearchIntelligence: ✓ ${product.name.take(30)} → ₹${String.format("%.1f", displayValue)}/$displayUnit")
         
@@ -368,40 +988,153 @@ object SearchIntelligence {
             pricePerBaseUnit = perUnit,
             displayPrice = displayValue,
             displayUnit = displayUnit,
-            productQuantity = quantity
+            productQuantity = quantity,
+            unitType = quantity.unitType
         )
+    }
+    
+    /**
+     * Smart formatting logic for per-unit price display
+     * Chooses the most meaningful display format based on quantity type and size
+     */
+    private fun getSmartDisplayFormat(quantity: ParsedQuantity, perUnit: Double, totalPrice: Double): Pair<Double, String> {
+        return when (quantity.unitType) {
+            "weight" -> {
+                // For weight: display per kg if large qty, per 100g otherwise
+                when {
+                    quantity.normalizedValue >= 1000 -> Pair(perUnit * 1000, "kg")
+                    quantity.normalizedValue >= 100 -> Pair(perUnit * 100, "100g")
+                    else -> Pair(perUnit * 100, "100g")
+                }
+            }
+            "volume" -> {
+                // For volume: display per L if large qty, per 100ml otherwise
+                when {
+                    quantity.normalizedValue >= 1000 -> Pair(perUnit * 1000, "L")
+                    quantity.normalizedValue >= 100 -> Pair(perUnit * 100, "100ml")
+                    else -> Pair(perUnit * 100, "100ml")
+                }
+            }
+            "count" -> {
+                // For count items: display per piece or per unit based on context
+                val displayUnit = getCountDisplayUnit(quantity.originalUnit)
+                Pair(perUnit, displayUnit)
+            }
+            "length" -> {
+                // For length: display per meter if large, per cm otherwise
+                when {
+                    quantity.normalizedValue >= 100 -> Pair(perUnit * 100, "m")
+                    else -> Pair(perUnit, "cm")
+                }
+            }
+            "area" -> {
+                // For area: display per sq ft or sq m
+                when {
+                    quantity.normalizedValue >= 10000 -> Pair(perUnit * 10000, "sq m")
+                    else -> Pair(perUnit * 929.03, "sq ft")
+                }
+            }
+            else -> Pair(perUnit, quantity.baseUnit)
+        }
+    }
+    
+    /**
+     * Get appropriate display unit for count-based items
+     */
+    private fun getCountDisplayUnit(originalUnit: String): String {
+        return when (originalUnit.lowercase()) {
+            "egg", "eggs" -> "egg"
+            "tablet", "tablets", "tab", "tabs" -> "tab"
+            "capsule", "capsules", "cap", "caps" -> "cap"
+            "wipe", "wipes" -> "wipe"
+            "pull", "pulls" -> "pull"
+            "sheet", "sheets" -> "sheet"
+            "roll", "rolls" -> "roll"
+            "sachet", "sachets" -> "sachet"
+            "slice", "slices" -> "slice"
+            "serving", "servings" -> "serving"
+            "stick", "sticks" -> "stick"
+            "bar", "bars" -> "bar"
+            "pair", "pairs" -> "pair"
+            "dozen", "doz" -> "pc"  // Already multiplied to pieces
+            "bunch", "bunches" -> "bunch"
+            else -> "pc"
+        }
     }
 
     /**
      * Calculate relevance score for a product (0-100)
+     * 
+     * GENERIC SCORING that works for ANY product:
+     * - Compound word detection (grape vs grapefruit)
+     * - Modifier/flavor detection (mango vs mango ice cream)
+     * - Derivative product detection (apple vs apple juice)
+     * - Position-based scoring
+     * - Quantity matching
      */
     private fun calculateRelevanceScore(product: Product, intent: SearchIntent): Int {
         val name = product.name.lowercase()
         val primaryKeyword = intent.primaryKeyword
+
+        // Special-case "milk" to avoid obvious derivatives when AI is offline
+        if (primaryKeyword == "milk" && intent.wantsPrimaryItem && !intent.isExplicitDerivative) {
+            if (isMilkDerivative(name)) {
+                println("SearchIntelligence: ❌ Filtered milk-derivative: '${product.name.take(40)}'")
+                return -100
+            }
+        }
+        
+        // GENERIC RELEVANCE CHECK - works for ANY product
+        val genericRelevance = calculateGenericRelevance(product.name, primaryKeyword)
+        
+        // Early exit for clearly irrelevant products
+        if (genericRelevance <= -100) {
+            println("SearchIntelligence: ❌ Filtered (compound/different product): '${product.name.take(40)}'")
+            return -100
+        }
         
         var score = 0
         
-        // 1. Exact keyword match bonus (40 points)
-        if (name.contains(primaryKeyword)) {
+        // 1. Apply generic relevance adjustment
+        score += genericRelevance
+        
+        // 2. Exact WORD match bonus
+        val hasExactWordMatch = isExactWordMatch(name, primaryKeyword)
+        if (hasExactWordMatch) {
             score += 40
+        } else if (name.contains(primaryKeyword)) {
+            // Partial match - be cautious
+            score += 10
+        } else {
+            // No keyword match at all
+            return 5
         }
         
-        // 2. Primary item bonus (30 points) - name starts with or is primarily the search term
-        val nameWords = name.split(" ", ",", "-", "(", ")").filter { it.isNotBlank() }
-        if (nameWords.firstOrNull()?.contains(primaryKeyword) == true) {
+        // 3. Position bonus - where does the keyword appear?
+        val nameWords = name.split(Regex("[\\s,\\-()]+")).filter { it.isNotBlank() }
+        val firstWord = nameWords.firstOrNull()?.lowercase() ?: ""
+        
+        if (firstWord == primaryKeyword || (hasExactWordMatch && nameWords.indexOf(primaryKeyword) == 0)) {
+            // Name STARTS with keyword - highest relevance
             score += 30
-        } else if (nameWords.take(3).any { it.contains(primaryKeyword) }) {
+        } else if (nameWords.take(3).any { it == primaryKeyword || it == "${primaryKeyword}s" }) {
+            // Keyword in first 3 words as exact word
             score += 20
+        } else if (hasExactWordMatch) {
+            // Keyword appears somewhere as exact word
+            score += 10
         }
         
-        // 3. Fresh/organic indicator bonus (15 points)
+        // 4. Fresh/organic indicator bonus (when user wants primary item)
         if (intent.wantsPrimaryItem || intent.wantsFresh) {
-            if (FRESH_INDICATORS.any { name.contains(it) }) {
+            if (FRESH_INDICATORS.any { indicator ->
+                Regex("\\b${Regex.escape(indicator)}\\b", RegexOption.IGNORE_CASE).containsMatchIn(name)
+            }) {
                 score += 15
             }
         }
         
-        // 4. Category match bonus (10 points)
+        // 5. Category match bonus
         if (intent.category != null) {
             val categoryKeywords = CATEGORY_KEYWORDS[intent.category] ?: emptyList()
             if (categoryKeywords.any { name.contains(it) }) {
@@ -409,15 +1142,17 @@ object SearchIntelligence {
             }
         }
         
-        // 5. Derivative penalty (-30 points if user wants primary item)
-        if (intent.wantsPrimaryItem && !intent.isExplicitDerivative) {
-            val isDerivative = DERIVATIVE_INDICATORS.any { name.contains(it) }
-            if (isDerivative) {
-                score -= 30
+        // 6. Additional derivative penalty when user wants primary item
+        // BUT: Skip if the search term itself is a product type (e.g., "juice", "oil", "chips")
+        if (intent.wantsPrimaryItem && !intent.isExplicitDerivative && !isKeywordAProductType(primaryKeyword)) {
+            if (isDerivativeProduct(product.name)) {
+                // Extra penalty on top of generic relevance
+                score -= 20
+                println("SearchIntelligence: ⚠️ Derivative: '${product.name.take(40)}'")
             }
         }
         
-        // 6. Quantity match bonus (20 points if matches requested quantity)
+        // 7. Quantity match bonus
         val requestedQty = intent.requestedQuantity
         if (requestedQty != null) {
             val productQty = parseQuantity(name)
@@ -428,21 +1163,28 @@ object SearchIntelligence {
             }
         }
         
-        // 7. Name length penalty (prefer shorter, more specific names)
-        if (name.length > 50) {
-            score -= 5
-        }
-        if (name.length > 80) {
-            score -= 5
+        // 8. Name length penalty (prefer shorter, more specific names)
+        when {
+            name.length > 100 -> score -= 15
+            name.length > 80 -> score -= 10
+            name.length > 60 -> score -= 5
         }
         
-        // 8. Bonus for having quantity indicator (likely actual product)
+        // 9. Bonus for having quantity indicator (likely actual product listing)
         val hasQuantity = QUANTITY_PATTERN.containsMatchIn(name)
         if (hasQuantity) {
             score += 10
         }
         
-        return score.coerceIn(0, 100)
+        // 10. Penalty for "combo" or "pack of" when not explicitly requested
+        if (!intent.originalQuery.contains("combo", ignoreCase = true) &&
+            !intent.originalQuery.contains("pack of", ignoreCase = true)) {
+            if (name.contains("combo") || Regex("\\bpack\\s+of\\b", RegexOption.IGNORE_CASE).containsMatchIn(name)) {
+                score -= 10
+            }
+        }
+        
+        return score.coerceIn(-100, 100)
     }
 
     /**
@@ -482,22 +1224,129 @@ object SearchIntelligence {
     /**
      * Modify query for better platform search results
      * Returns the original query if no modification needed
+     * 
+     * Platform-specific optimizations:
+     * - BigBasket: Add "fresh" for produce
+     * - Amazon: Add product type qualifier
+     * - Flipkart: Works well with direct queries
      */
     fun getOptimizedQuery(query: String, platform: String): String {
         val intent = analyzeQuery(query)
+        val platformLower = platform.lowercase()
         
-        // For fruits/vegetables single word searches, some platforms work better with "fresh" prefix
+        // For fruits/vegetables single word searches
         if (intent.isSingleWordSearch && intent.category in listOf("fruit", "vegetable")) {
             return when {
-                platform.contains("BigBasket", ignoreCase = true) -> "fresh $query"
-                platform.contains("Zepto", ignoreCase = true) -> query // Zepto handles single words well
-                platform.contains("Blinkit", ignoreCase = true) -> query
-                platform.contains("Instamart", ignoreCase = true) -> query
+                platformLower.contains("bigbasket") -> "fresh $query"
+                platformLower.contains("amazon") && !platformLower.contains("fresh") -> "$query fresh fruit vegetable"
+                platformLower.contains("jiomart") -> "fresh $query"
+                else -> query
+            }
+        }
+        
+        // For dairy single word searches
+        if (intent.isSingleWordSearch && intent.category == "dairy") {
+            return when {
+                platformLower.contains("bigbasket") -> "$query dairy"
+                platformLower.contains("amazon") && !platformLower.contains("fresh") -> "$query dairy fresh"
+                else -> query
+            }
+        }
+        
+        // For common ambiguous searches, add qualifiers
+        val ambiguousTerms = mapOf(
+            "oil" to "cooking oil",
+            "salt" to "cooking salt",
+            "sugar" to "sugar white"
+        )
+        
+        if (intent.isSingleWordSearch && ambiguousTerms.containsKey(query.lowercase())) {
+            return when {
+                platformLower.contains("amazon") -> ambiguousTerms[query.lowercase()] ?: query
                 else -> query
             }
         }
         
         return query
+    }
+    
+    /**
+     * Check if a product is likely a duplicate of another product
+     * Used for deduplication across platforms
+     */
+    fun areSimilarProducts(product1: Product, product2: Product): Boolean {
+        val name1 = product1.name.lowercase()
+            .replace(Regex("""[^\w\s]"""), "")
+            .replace(Regex("""\s+"""), " ")
+            .trim()
+        val name2 = product2.name.lowercase()
+            .replace(Regex("""[^\w\s]"""), "")
+            .replace(Regex("""\s+"""), " ")
+            .trim()
+        
+        // Extract key terms (brand, product name, quantity)
+        val words1 = name1.split(" ").filter { it.length > 2 }.take(5).toSet()
+        val words2 = name2.split(" ").filter { it.length > 2 }.take(5).toSet()
+        
+        // Check overlap
+        val intersection = words1.intersect(words2)
+        val union = words1.union(words2)
+        
+        if (union.isEmpty()) return false
+        
+        val similarity = intersection.size.toDouble() / union.size.toDouble()
+        
+        // Also check if quantities match
+        val qty1 = parseQuantity(product1.name)
+        val qty2 = parseQuantity(product2.name)
+        
+        val quantityMatch = if (qty1 != null && qty2 != null) {
+            qty1.unitType == qty2.unitType && 
+            isQuantitySimilar(qty1.normalizedValue, qty2.normalizedValue)
+        } else {
+            true // If we can't parse quantities, don't factor it
+        }
+        
+        // Consider similar if >60% word overlap AND quantities match
+        return similarity > 0.6 && quantityMatch
+    }
+    
+    /**
+     * Group similar products across platforms for comparison view
+     * Returns a map of "canonical name" to list of products from different platforms
+     */
+    fun groupSimilarProducts(products: List<Product>): Map<String, List<Product>> {
+        if (products.isEmpty()) return emptyMap()
+        
+        val groups = mutableListOf<MutableList<Product>>()
+        
+        for (product in products) {
+            // Find existing group this product belongs to
+            var addedToGroup = false
+            for (group in groups) {
+                if (group.any { areSimilarProducts(it, product) }) {
+                    // Don't add duplicates from the same platform
+                    if (group.none { it.platform == product.platform }) {
+                        group.add(product)
+                    }
+                    addedToGroup = true
+                    break
+                }
+            }
+            
+            if (!addedToGroup) {
+                groups.add(mutableListOf(product))
+            }
+        }
+        
+        // Convert to map with canonical name
+        return groups
+            .filter { it.isNotEmpty() }
+            .associate { group ->
+                // Use the shortest name as canonical (usually most specific)
+                val canonicalName = group.minByOrNull { it.name.length }?.name ?: group.first().name
+                canonicalName to group.sortedBy { it.price }
+            }
     }
 }
 
@@ -518,34 +1367,90 @@ data class SearchIntent(
 
 /**
  * Parsed quantity from product name or search query
+ * Supports all measurement types: weight, volume, count, length, area
  */
 data class ParsedQuantity(
     val originalValue: Double,      // e.g., 500
     val originalUnit: String,       // e.g., "ml"
-    val normalizedValue: Double,    // e.g., 500.0 (in base units - g or ml)
+    val normalizedValue: Double,    // e.g., 500.0 (in base units - g, ml, pc, cm, sqcm)
     val baseUnit: String,           // e.g., "ml"
-    val unitType: String            // "weight", "volume", or "count"
+    val unitType: String            // "weight", "volume", "count", "length", "area"
 ) {
+    /**
+     * Smart display string for the quantity
+     * Automatically converts to larger units when appropriate
+     */
     fun toDisplayString(): String {
-        return when {
-            originalValue >= 1000 && baseUnit == "g" -> "${(originalValue / 1000).toInt()}kg"
-            originalValue >= 1000 && baseUnit == "ml" -> "${(originalValue / 1000).toInt()}L"
-            else -> "${originalValue.toInt()}$originalUnit"
+        return when (unitType) {
+            "weight" -> when {
+                normalizedValue >= 1000 -> "${formatNumber(normalizedValue / 1000)}kg"
+                normalizedValue < 1 -> "${formatNumber(normalizedValue * 1000)}mg"
+                else -> "${formatNumber(originalValue)}$originalUnit"
+            }
+            "volume" -> when {
+                normalizedValue >= 1000 -> "${formatNumber(normalizedValue / 1000)}L"
+                else -> "${formatNumber(originalValue)}$originalUnit"
+            }
+            "length" -> when {
+                normalizedValue >= 100 -> "${formatNumber(normalizedValue / 100)}m"
+                else -> "${formatNumber(originalValue)}$originalUnit"
+            }
+            "count" -> {
+                val unit = when (originalUnit.lowercase()) {
+                    "dozen", "doz" -> if (originalValue == 1.0) "dozen" else "dozen"
+                    else -> originalUnit
+                }
+                "${originalValue.toInt()} $unit"
+            }
+            else -> "${formatNumber(originalValue)}$originalUnit"
+        }
+    }
+    
+    private fun formatNumber(value: Double): String {
+        return if (value == value.toLong().toDouble()) {
+            value.toLong().toString()
+        } else {
+            String.format("%.1f", value)
         }
     }
 }
 
 /**
  * Per-unit price calculation result
+ * Supports all measurement types: weight, volume, count, length, area
  */
 data class PerUnitPrice(
-    val pricePerBaseUnit: Double,   // Price per gram or ml
-    val displayPrice: Double,       // Price per 100g/100ml for display
-    val displayUnit: String,        // "100g", "100ml", or "pc"
-    val productQuantity: ParsedQuantity
+    val pricePerBaseUnit: Double,   // Price per base unit (gram, ml, piece, cm, sqcm)
+    val displayPrice: Double,       // Price formatted for display (per 100g, per L, per pc, etc.)
+    val displayUnit: String,        // Display unit string ("100g", "L", "pc", "tab", "wipe", etc.)
+    val productQuantity: ParsedQuantity,
+    val unitType: String = "weight" // "weight", "volume", "count", "length", "area"
 ) {
+    /**
+     * Smart display string that formats price appropriately
+     * - Shows decimal for small amounts (< ₹10)
+     * - Shows whole number for larger amounts
+     */
     fun toDisplayString(): String {
-        return "₹${String.format("%.1f", displayPrice)}/$displayUnit"
+        val priceStr = when {
+            displayPrice < 1 -> String.format("%.2f", displayPrice)
+            displayPrice < 10 -> String.format("%.1f", displayPrice)
+            else -> displayPrice.toInt().toString()
+        }
+        return "₹$priceStr/$displayUnit"
+    }
+    
+    /**
+     * Get a comparison-friendly string for sorting/display
+     * e.g., "₹45.5 per 100g" or "₹12 per tablet"
+     */
+    fun toComparisonString(): String {
+        val priceStr = when {
+            displayPrice < 1 -> String.format("%.2f", displayPrice)
+            displayPrice < 10 -> String.format("%.1f", displayPrice)
+            else -> displayPrice.toInt().toString()
+        }
+        return "₹$priceStr per $displayUnit"
     }
 }
 

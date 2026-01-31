@@ -7,6 +7,7 @@ import com.pricehunt.data.scrapers.webview.WebViewScraperHelper
 import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,6 +28,13 @@ class JioMartScraper @Inject constructor(
     
     override suspend fun search(query: String, pincode: String): List<Product> = 
         withContext(Dispatchers.IO) {
+            val httpProducts = withTimeoutOrNull(4_000L) {
+                tryHttpScraping(query, pincode)
+            }
+            if (!httpProducts.isNullOrEmpty()) {
+                return@withContext httpProducts
+            }
+
             // JioMart is an SPA - use WebView directly
             println("$platformName: Using WebView (SPA site)...")
             tryWebViewScraping(query, pincode)
@@ -194,7 +202,7 @@ class JioMartScraper @Inject constructor(
             
             val html = webViewHelper.loadAndGetHtml(
                 url = searchUrl,
-                timeoutMs = 25_000L, // Longer timeout for SPA
+                timeoutMs = 9_000L, // 9 seconds
                 pincode = pincode
             )
             

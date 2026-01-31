@@ -8,6 +8,8 @@ import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import okhttp3.Request
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -62,14 +64,17 @@ class BlinkitScraper @Inject constructor(
             val searchUrl = "$baseUrl/s/?q=$encodedQuery"
             
             webViewHelper.setLocation(pincode)
+
+            val httpProducts = withTimeoutOrNull(3_500L) {
+                tryHttpScraping(query, pincode)
+            }
+            if (!httpProducts.isNullOrEmpty()) {
+                return@withContext httpProducts
+            }
             
-            // RETRY LOGIC: Try up to 3 times with increasing wait
-            for (attempt in 1..3) {
-                val waitTime = when (attempt) {
-                    1 -> 20_000L   // First attempt: 20s
-                    2 -> 30_000L   // Second attempt: 30s (more time for React)
-                    else -> 40_000L // Third attempt: 40s (slow network)
-                }
+            // Fast timeouts - single attempt for speed
+            for (attempt in 1..1) {  // Single attempt only
+                val waitTime = 9_000L  // 9 seconds
                 
                 println("$platformName: Attempt $attempt/3 with ${waitTime/1000}s timeout")
                 
@@ -129,6 +134,52 @@ class BlinkitScraper @Inject constructor(
             println("$platformName: ✗ All 3 attempts failed")
             emptyList()
         }
+
+    private fun tryHttpScraping(query: String, pincode: String): List<Product> {
+        return try {
+            val encodedQuery = URLEncoder.encode(query, "UTF-8")
+            val searchUrl = "$baseUrl/s/?q=$encodedQuery"
+
+            val request = Request.Builder()
+                .url(searchUrl)
+                .header("User-Agent", BaseScraper.getRandomUserAgent())
+                .header("Accept", "text/html")
+                .header("Accept-Language", "en-IN,en;q=0.9")
+                .header("Cookie", "pincode=$pincode; lat=12.9716; lng=77.5946; city=Bangalore")
+                .build()
+
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) {
+                println("$platformName: HTTP ${response.code}")
+                return emptyList()
+            }
+
+            val html = response.body?.string().orEmpty()
+            if (html.length < 5000) return emptyList()
+
+            var products = extractBlinkitProducts(html, pincode)
+            if (products.isEmpty()) {
+                products = ResilientExtractor.extractProducts(
+                    html = html,
+                    platformName = platformName,
+                    platformColor = platformColor,
+                    deliveryTime = deliveryTime,
+                    baseUrl = baseUrl
+                )
+            }
+
+            val validProducts = products.filter { isValidProduct(it) }
+            if (validProducts.isNotEmpty()) {
+                println("$platformName: ✓ Found ${validProducts.size} products via HTTP")
+                return fixProductUrls(validProducts, pincode)
+            }
+
+            emptyList()
+        } catch (e: Exception) {
+            println("$platformName: HTTP error - ${e.message}")
+            emptyList()
+        }
+    }
     
     /**
      * Blinkit-specific extraction using stable patterns

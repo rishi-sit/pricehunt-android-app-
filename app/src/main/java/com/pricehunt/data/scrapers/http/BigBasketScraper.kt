@@ -37,7 +37,7 @@ class BigBasketScraper @Inject constructor(
                 webViewHelper.setLocation(pincode)
                 val html = webViewHelper.loadAndGetHtml(
                     url = searchUrl, 
-                    timeoutMs = 25_000L, // Longer timeout for SPA
+                    timeoutMs = 12_000L, // 12 seconds
                     pincode = pincode
                 )
                 
@@ -68,6 +68,14 @@ class BigBasketScraper @Inject constructor(
                     // Debug: check if there are prices in the HTML
                     val priceCount = Regex("₹\\s*\\d+").findAll(html).count()
                     println("$platformName: Found $priceCount price patterns in HTML")
+                    // Debug: Check for location/error indicators
+                    val hasLocationPrompt = html.contains("delivery location", ignoreCase = true) ||
+                                           html.contains("enter your", ignoreCase = true) ||
+                                           html.contains("select location", ignoreCase = true)
+                    val hasError = html.contains("something went wrong", ignoreCase = true) ||
+                                  html.contains("no results", ignoreCase = true)
+                    println("$platformName: Location prompt: $hasLocationPrompt, Error page: $hasError")
+                    println("$platformName: HTML preview: ${html.take(500)}")
                     return@withContext emptyList()
                 }
                 

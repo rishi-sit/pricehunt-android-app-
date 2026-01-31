@@ -100,7 +100,7 @@ class FlipkartScraper @Inject constructor(
                 
                 val html = webViewHelper.loadAndGetHtml(
                     url = searchUrl,
-                    timeoutMs = 25_000L,
+                    timeoutMs = 10_000L,
                     pincode = pincode
                 )
                 

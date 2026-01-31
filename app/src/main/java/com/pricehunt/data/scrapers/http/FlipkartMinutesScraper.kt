@@ -7,6 +7,7 @@ import com.pricehunt.data.scrapers.webview.WebViewScraperHelper
 import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,6 +28,13 @@ class FlipkartMinutesScraper @Inject constructor(
     
     override suspend fun search(query: String, pincode: String): List<Product> = 
         withContext(Dispatchers.IO) {
+            val httpProducts = withTimeoutOrNull(3_500L) {
+                tryHttpScraping(query, pincode)
+            }
+            if (!httpProducts.isNullOrEmpty()) {
+                return@withContext httpProducts
+            }
+
             // Flipkart is an SPA - use WebView directly
             println("$platformName: Using WebView (SPA site)...")
             tryWebViewScraping(query, pincode)
@@ -148,15 +156,17 @@ class FlipkartMinutesScraper @Inject constructor(
     private suspend fun tryWebViewScraping(query: String, pincode: String): List<Product> {
         val encodedQuery = URLEncoder.encode(query, "UTF-8")
         
-        // ROBUST: Try multiple URLs for grocery/quick commerce
+        // FLIPKART MINUTES: Focus on grocery/quick commerce URLs
+        // Mobile site is most reliable and faster to load
         val urlsToTry = listOf(
-            "https://m.flipkart.com/search?q=$encodedQuery",                              // Mobile site (most reliable)
-            "https://m.flipkart.com/search?q=$encodedQuery%20grocery",                    // Add grocery keyword
-            "https://www.flipkart.com/search?q=$encodedQuery&marketplace=GROCERY",        // Desktop grocery
-            "https://www.flipkart.com/grocery-supermart-store?query=$encodedQuery"        // Grocery store
+            // Primary: Mobile search with grocery filter (fastest & most reliable)
+            "https://m.flipkart.com/search?q=$encodedQuery&marketplace=GROCERY"
         )
         
         webViewHelper.setLocation(pincode)
+        
+        // OPTIMIZED: Shorter timeout - dynamic content detection means we don't need long waits
+        val perUrlTimeout = 9_000L
         
         for ((index, searchUrl) in urlsToTry.withIndex()) {
             try {
@@ -164,12 +174,18 @@ class FlipkartMinutesScraper @Inject constructor(
                 
                 val html = webViewHelper.loadAndGetHtml(
                     url = searchUrl,
-                    timeoutMs = 25_000L,
+                    timeoutMs = perUrlTimeout,
                     pincode = pincode
                 )
                 
                 if (html.isNullOrBlank()) {
                     println("$platformName: URL ${index + 1} returned empty, trying next...")
+                    continue
+                }
+                
+                // Check if we got a valid search results page (not homepage redirect)
+                if (html.length < 5000 || !html.contains("search", ignoreCase = true)) {
+                    println("$platformName: URL ${index + 1} seems like redirect/empty, trying next...")
                     continue
                 }
                 
@@ -192,10 +208,15 @@ class FlipkartMinutesScraper @Inject constructor(
                 
             } catch (e: Exception) {
                 println("$platformName: URL ${index + 1} error: ${e.message}")
+                // Don't continue if timeout - likely all URLs will timeout too
+                if (e.message?.contains("Timed out") == true) {
+                    println("$platformName: Timeout reached, stopping URL attempts")
+                    break
+                }
             }
         }
         
-        println("$platformName: ✗ All ${urlsToTry.size} URLs failed")
+        println("$platformName: ✗ All URLs failed")
         return emptyList()
     }
     

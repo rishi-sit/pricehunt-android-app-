@@ -5,7 +5,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,11 +20,9 @@ object NetworkModule {
     
     /**
      * Base URL for the PriceHunt API.
-     * For development: Use local server (http://YOUR_MAC_IP:8000/)
-     * For production: Use Render deployment (https://pricehunt-hklm.onrender.com/)
+     * Production: Render deployment with AI-powered smart search
      */
-    // TODO: Switch to Render URL for production
-    private const val BASE_URL = "http://192.168.0.102:8000/"
+    private const val BASE_URL = "https://pricehunt-hklm.onrender.com/"
     
     @Provides
     @Singleton
@@ -33,9 +33,16 @@ object NetworkModule {
         
         return OkHttpClient.Builder()
             .addInterceptor(logging)
-            .connectTimeout(60, TimeUnit.SECONDS)
+            // Connection pooling for faster subsequent requests
+            .connectionPool(ConnectionPool(10, 5, TimeUnit.MINUTES))
+            // Enable HTTP/2 for faster multiplexing
+            .protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
+            // Optimized timeouts
+            .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
+            // Keep connections alive
+            .retryOnConnectionFailure(true)
             .build()
     }
     

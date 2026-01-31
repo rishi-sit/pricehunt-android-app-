@@ -40,8 +40,10 @@ class WebViewScraperHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     companion object {
-        private const val DEFAULT_TIMEOUT_MS = 60_000L  // Increased for slow networks
-        private const val PAGE_LOAD_DELAY_MS = 15000L   // Increased for heavy client-side rendering
+        private const val DEFAULT_TIMEOUT_MS = 15_000L  // 15 seconds max per request
+        private const val PAGE_LOAD_DELAY_MS = 2500L    // 2.5 seconds initial wait for JS to render
+        private const val CONTENT_CHECK_INTERVAL_MS = 300L  // Check for content every 300ms
+        private const val MAX_CONTENT_WAIT_MS = 5000L   // Max 5 seconds waiting for content after page load
         
         // Default location: Bangalore (560081)
         private const val DEFAULT_PINCODE = "560081"
@@ -324,19 +326,19 @@ class WebViewScraperHelper @Inject constructor(
                 }
             }
             "bigbasket.com" in domain -> {
+                // Simpler cookie setup for BigBasket - they use their own location detection
                 val bbCookies = listOf(
-                    "ts=pincode~$pincode",
-                    "_bb_locSrc=default",
-                    "_bb_loid=default_loc",
                     "bb_pincode=$pincode",
                     "bb_lat=$currentLat",
                     "bb_lon=$currentLon",
-                    "ufi=eyJhcyI6eyJsYXQiOiIkcurrentLat\",\"lon\":\"$currentLon\"}}",
+                    "_bb_locSrc=default",
                     "x-entry-context-id=100",
-                    "x-entry-context=bb-b2c"
+                    "x-entry-context=bb-b2c",
+                    "bb2_enabled=true"
                 )
                 bbCookies.forEach { cookie ->
                     cookieManager.setCookie(domain, "$cookie; path=/; SameSite=Lax")
+                    cookieManager.setCookie(".$domain", "$cookie; path=/; SameSite=Lax")
                 }
             }
             "swiggy.com" in domain -> {
@@ -461,22 +463,22 @@ class WebViewScraperHelper @Inject constructor(
                     // Re-inject anti-detection in case page cleared it
                     view?.evaluateJavascript(ANTI_DETECTION_SCRIPT, null)
                     
-                    // Wait a bit for JavaScript to execute, then extract HTML
+                    // SIMPLIFIED: Wait a fixed delay then extract HTML
+                    // This is more reliable than complex content detection
                     mainHandler.postDelayed({
-                        if (waitForSelector != null) {
-                            // Wait for specific element to appear
-                            waitForElement(webView, waitForSelector) { found ->
-                                if (found) {
-                                    extractHtml(webView, result)
-                                } else {
-                                    // Try extracting anyway after timeout
-                                    extractHtml(webView, result)
-                                }
-                            }
-                        } else {
-                            extractHtml(webView, result)
+                        if (!result.isCompleted) {
+                            // First extraction attempt after initial delay
+                            checkForContentAndExtract(webView, result, 0)
                         }
                     }, PAGE_LOAD_DELAY_MS)
+                    
+                    // Backup extraction - ensure we always get HTML even if content check hangs
+                    mainHandler.postDelayed({
+                        if (!result.isCompleted) {
+                            println("WebView: Backup extraction triggered")
+                            extractHtml(webView, result)
+                        }
+                    }, PAGE_LOAD_DELAY_MS + MAX_CONTENT_WAIT_MS + 500)
                 }
                 
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -764,6 +766,81 @@ class WebViewScraperHelper @Inject constructor(
         }
     }
     
+    /**
+     * OPTIMIZED: Dynamic content detection - checks for product indicators and extracts when ready.
+     * This replaces fixed delays with smart detection for faster results.
+     */
+    private fun checkForContentAndExtract(
+        webView: WebView, 
+        result: CompletableDeferred<String?>, 
+        attempts: Int
+    ) {
+        // JavaScript to check for product-related content indicators
+        val contentCheckScript = """
+            (function() {
+                // Check for common product indicators
+                var indicators = [
+                    // Price indicators
+                    document.querySelectorAll('[class*="price"], [class*="Price"], [data-price]').length,
+                    // Product cards/items
+                    document.querySelectorAll('[class*="product"], [class*="Product"], [data-product]').length,
+                    // Images (products usually have images)
+                    document.querySelectorAll('img[alt]:not([alt=""])').length,
+                    // Links that look like product links
+                    document.querySelectorAll('a[href*="/p/"], a[href*="/product/"], a[href*="pid="]').length,
+                    // JSON-LD structured data
+                    document.querySelectorAll('script[type="application/ld+json"]').length
+                ];
+                
+                var priceCount = indicators[0];
+                var productCount = indicators[1];
+                var imageCount = indicators[2];
+                var linkCount = indicators[3];
+                var jsonLdCount = indicators[4];
+                
+                // Consider content "ready" if we have good indicators
+                var hasContent = (priceCount >= 3) || 
+                                 (productCount >= 2) || 
+                                 (linkCount >= 3) ||
+                                 (jsonLdCount > 0 && imageCount >= 3);
+                
+                return JSON.stringify({
+                    ready: hasContent,
+                    prices: priceCount,
+                    products: productCount,
+                    images: imageCount,
+                    links: linkCount,
+                    jsonLd: jsonLdCount
+                });
+            })();
+        """.trimIndent()
+        
+        webView.evaluateJavascript(contentCheckScript) { resultJson ->
+            try {
+                val json = resultJson?.trim()?.removeSurrounding("\"")?.replace("\\\"", "\"")
+                val isReady = json?.contains("\"ready\":true") == true
+                
+                if (isReady) {
+                    println("WebView: Content ready! Extracting immediately (attempt $attempts)")
+                    extractHtml(webView, result)
+                } else if (attempts < (MAX_CONTENT_WAIT_MS / CONTENT_CHECK_INTERVAL_MS).toInt()) {
+                    // Not ready yet, check again after interval
+                    mainHandler.postDelayed({
+                        checkForContentAndExtract(webView, result, attempts + 1)
+                    }, CONTENT_CHECK_INTERVAL_MS)
+                } else {
+                    // Max attempts reached, extract anyway
+                    println("WebView: Max wait reached, extracting (indicators: $json)")
+                    extractHtml(webView, result)
+                }
+            } catch (e: Exception) {
+                // On error, just extract
+                println("WebView: Content check error, extracting anyway: ${e.message}")
+                extractHtml(webView, result)
+            }
+        }
+    }
+    
     private fun extractHtml(webView: WebView, result: CompletableDeferred<String?>) {
         webView.evaluateJavascript(
             "(function() { return document.documentElement.outerHTML; })();"
@@ -788,20 +865,28 @@ class WebViewScraperHelper @Inject constructor(
     private fun waitForElement(
         webView: WebView,
         selector: String,
-        maxAttempts: Int = 10,
+        maxAttempts: Int = 15, // 15 attempts x 250ms = 3.75 seconds max
         callback: (Boolean) -> Unit
     ) {
         var attempts = 0
+        // Escape the selector for safe use in JavaScript - use double quotes and escape internal quotes
+        val escapedSelector = selector.replace("\\", "\\\\").replace("\"", "\\\"")
         
         fun check() {
             webView.evaluateJavascript(
-                "(function() { return document.querySelector('$selector') !== null; })();"
+                """(function() { 
+                    try { 
+                        return document.querySelector("$escapedSelector") !== null; 
+                    } catch(e) { 
+                        return false; 
+                    } 
+                })();"""
             ) { result ->
                 attempts++
                 if (result == "true") {
                     callback(true)
                 } else if (attempts < maxAttempts) {
-                    mainHandler.postDelayed({ check() }, 500)
+                    mainHandler.postDelayed({ check() }, 250) // Check every 250ms
                 } else {
                     callback(false)
                 }

@@ -36,6 +36,7 @@ class ZeptoScraper @Inject constructor(
                 
                 val html = webViewHelper.loadAndGetHtml(
                     url = searchUrl,
+                    timeoutMs = 12_000L,  // 12 seconds
                     pincode = pincode
                 )
                 

@@ -5,6 +5,10 @@ import com.pricehunt.data.model.Platforms
 import com.pricehunt.data.model.Product
 import com.pricehunt.data.remote.PriceHuntApi
 import com.pricehunt.data.remote.SearchResponse
+import com.pricehunt.data.scrapers.FallbackScraperManager
+import com.pricehunt.data.scrapers.SelfHealingScraper
+import com.pricehunt.data.scrapers.api.DirectApiScraper
+import com.pricehunt.data.scrapers.health.PlatformHealthMonitor
 import com.pricehunt.data.scrapers.http.*
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -49,6 +53,18 @@ class ProductRepositoryTest {
     
     @MockK
     private lateinit var instamartScraper: InstamartScraper
+
+    @MockK
+    private lateinit var fallbackManager: FallbackScraperManager
+
+    @MockK
+    private lateinit var selfHealingScraper: SelfHealingScraper
+
+    @MockK
+    private lateinit var healthMonitor: PlatformHealthMonitor
+
+    @MockK
+    private lateinit var directApiScraper: DirectApiScraper
     
     private lateinit var repository: ProductRepository
     
@@ -80,7 +96,11 @@ class ProductRepositoryTest {
             bigBasketScraper = bigBasketScraper,
             zeptoScraper = zeptoScraper,
             blinkitScraper = blinkitScraper,
-            instamartScraper = instamartScraper
+            instamartScraper = instamartScraper,
+            fallbackManager = fallbackManager,
+            selfHealingScraper = selfHealingScraper,
+            healthMonitor = healthMonitor,
+            directApiScraper = directApiScraper
         )
     }
     

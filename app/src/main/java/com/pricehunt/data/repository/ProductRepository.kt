@@ -3,16 +3,20 @@ package com.pricehunt.data.repository
 import com.pricehunt.data.model.Platforms
 import com.pricehunt.data.model.Product
 import com.pricehunt.data.model.SearchEvent
-import com.pricehunt.data.search.PerUnitPrice
-import com.pricehunt.data.search.SearchIntelligence
 import com.pricehunt.data.remote.PriceHuntApi
 import com.pricehunt.data.scrapers.FallbackScraperManager
-import com.pricehunt.data.scrapers.FallbackSearchResult
+import com.pricehunt.data.scrapers.SelfHealingScraper
+import com.pricehunt.data.scrapers.api.ApiScrapeResult
+import com.pricehunt.data.scrapers.api.DirectApiScraper
+import com.pricehunt.data.scrapers.health.PlatformHealthMonitor
 import com.pricehunt.data.scrapers.http.*
+import com.pricehunt.data.search.PerUnitPrice
+import com.pricehunt.data.search.SearchIntelligence
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.sync.Semaphore
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,14 +24,24 @@ import javax.inject.Singleton
 /**
  * Repository that coordinates all platform scrapers and provides streaming search results.
  * 
- * Strategy: MULTI-PHASE SEARCH WITH FALLBACKS
- * 1. Phase 1: Run all primary scrapers in parallel
- * 2. Phase 2: For failed platforms, run fallback strategies
- * 3. Update UI incrementally as results come in
+ * UPDATED: Now uses SELF-HEALING SCRAPER for maximum reliability.
+ * 
+ * Self-Healing Features:
+ * 1. Platform health monitoring with circuit breaker pattern
+ * 2. Adaptive selector engine that learns and adapts
+ * 3. Multi-strategy fallbacks for each platform
+ * 4. Smart caching with staleness indicators
+ * 5. Graceful degradation when platforms fail
+ * 
+ * Strategy:
+ * 1. Return cached results INSTANTLY
+ * 2. Scrape platforms in parallel with health checks
+ * 3. Automatically skip failing platforms (with exponential backoff)
+ * 4. Return raw results to backend for AI processing
  */
 @Singleton
 class ProductRepository @Inject constructor(
-    private val api: PriceHuntApi,  // Kept for potential future use
+    private val api: PriceHuntApi,
     private val cacheManager: CacheManager,
     private val amazonScraper: AmazonScraper,
     private val amazonFreshScraper: AmazonFreshScraper,
@@ -39,13 +53,18 @@ class ProductRepository @Inject constructor(
     private val zeptoScraper: ZeptoScraper,
     private val blinkitScraper: BlinkitScraper,
     private val instamartScraper: InstamartScraper,
-    private val fallbackManager: FallbackScraperManager
+    private val fallbackManager: FallbackScraperManager,
+    private val selfHealingScraper: SelfHealingScraper,
+    private val healthMonitor: PlatformHealthMonitor,
+    private val directApiScraper: DirectApiScraper
 ) {
     companion object {
-        // Time to wait for each platform's API call
-        private const val PLATFORM_TIMEOUT_MS = 30_000L  // 30 seconds per platform
+        // Time to wait for each platform's API call - balanced for speed vs reliability
+        private const val PLATFORM_TIMEOUT_MS = 10_000L  // 10 seconds max per platform
         // Maximum time to wait for entire search
-        private const val MAX_SEARCH_TIME_MS = 60_000L  // 60 seconds max
+        private const val MAX_SEARCH_TIME_MS = 15_000L  // 15 seconds max for all platforms
+        // Direct API timeout (faster than WebView)
+        private const val DIRECT_API_TIMEOUT_MS = 4_000L
     }
     
     private val scrapers = listOf(
@@ -62,18 +81,18 @@ class ProductRepository @Inject constructor(
     )
     
     /**
-     * Search all platforms using their internal APIs.
-     * Results are emitted progressively as each platform responds.
+     * Search all platforms and return RAW results (no filtering).
      * 
-     * IMPORTANT: Runs scrapers in batches to avoid WebView resource exhaustion.
-     * - HTTP-based scrapers (Amazon) run in parallel (they don't use WebView)
-     * - WebView-based scrapers run in batches of 3 to avoid resource conflicts
+     * IMPORTANT: This method does NOT filter or rank results.
+     * All intelligence is handled by the backend Gemini AI.
+     * 
+     * Results are emitted progressively as each platform responds.
      */
     fun searchStream(query: String, pincode: String): Flow<SearchEvent> = flow {
         emit(SearchEvent.Started(scrapers.map { it.platformName }))
         
         val resultsChannel = Channel<SearchEvent.PlatformResult>(Channel.UNLIMITED)
-        val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        val scraperScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         
         val emittedPlatforms = ConcurrentHashMap<String, Boolean>()
         val completedCount = java.util.concurrent.atomic.AtomicInteger(0)
@@ -82,18 +101,37 @@ class ProductRepository @Inject constructor(
         // Separate HTTP-based and WebView-based scrapers
         val httpScrapers = listOf(amazonScraper, amazonFreshScraper)
         val webViewScrapers = listOf(
-            zeptoScraper, blinkitScraper, bigBasketScraper, instamartScraper,
-            flipkartScraper, flipkartMinutesScraper, jioMartScraper, jioMartQuickScraper
+            blinkitScraper,
+            instamartScraper,
+            zeptoScraper,
+            flipkartMinutesScraper,
+            jioMartQuickScraper,
+            bigBasketScraper,
+            flipkartScraper,
+            jioMartScraper
+        )
+
+        val directApiPlatforms = setOf(
+            Platforms.ZEPTO,
+            Platforms.BIGBASKET,
+            Platforms.INSTAMART,
+            Platforms.JIOMART,
+            Platforms.JIOMART_QUICK
         )
         
         try {
-            println("=== STARTING SEARCH: $query (pincode: $pincode) ===")
+            println("=== STARTING RAW SCRAPE: $query (pincode: $pincode) ===")
+            println("=== NO LOCAL FILTERING - All intelligence handled by backend AI ===")
             
-            // Helper function to run a scraper
+            // Helper function to run a scraper and send result to channel
             suspend fun runScraper(scraper: com.pricehunt.data.scrapers.BaseScraper) {
                 try {
                     // Check cache first
                     val (cached, isStale) = cacheManager.get(query, scraper.platformName, pincode)
+                    val staleCached = if (cached != null && isStale && cached.isNotEmpty()) {
+                        cached
+                    } else null
+                    var usedStaleCache = false
                     
                     if (cached != null && !isStale && cached.isNotEmpty()) {
                         println("${scraper.platformName}: Using cached (${cached.size} products)")
@@ -106,31 +144,64 @@ class ProductRepository @Inject constructor(
                         return
                     }
                     
-                    // Call platform's API with timeout
-                    println("${scraper.platformName}: Searching...")
-                    val products = withTimeoutOrNull(PLATFORM_TIMEOUT_MS) {
-                        val result = scraper.search(query, pincode)
-                        println("${scraper.platformName}: [DEBUG] search() returned ${result.size} items, class=${result::class.simpleName}")
-                        result
-                    } ?: run {
-                        println("${scraper.platformName}: [DEBUG] withTimeoutOrNull returned null (timeout?)")
-                        emptyList()
+                    // NO QUERY OPTIMIZATION - send raw query to platform
+                    // Let the platform return whatever it thinks is relevant
+                    println("${scraper.platformName}: Searching for '$query'...")
+                    
+                    var products: List<Product> = emptyList()
+
+                    // Fast path: Direct API (bypasses WebView) for unstable platforms
+                    if (directApiPlatforms.contains(scraper.platformName)) {
+                        val apiResult = withTimeoutOrNull(DIRECT_API_TIMEOUT_MS) {
+                            directApiScraper.scrape(scraper.platformName, query, pincode)
+                        }
+                        when (apiResult) {
+                            is ApiScrapeResult.Success -> {
+                                products = apiResult.products
+                                println("${scraper.platformName}: ✓ Direct API ${products.size} products")
+                            }
+                            is ApiScrapeResult.Failure -> {
+                                println("${scraper.platformName}: Direct API failed (${apiResult.reason})")
+                            }
+                            ApiScrapeResult.NoProducts -> {
+                                println("${scraper.platformName}: Direct API returned no products")
+                            }
+                            is ApiScrapeResult.NotSupported, null -> {
+                                // Fall back to WebView
+                            }
+                        }
+                    }
+
+                    // Fallback: WebView/HTTP scraper
+                    if (products.isEmpty()) {
+                        products = withTimeoutOrNull(PLATFORM_TIMEOUT_MS) {
+                            val result = scraper.search(query, pincode)
+                            println("${scraper.platformName}: [RAW] Got ${result.size} products")
+                            result
+                        } ?: run {
+                            println("${scraper.platformName}: [TIMEOUT]")
+                            emptyList()
+                        }
                     }
                     
-                    println("${scraper.platformName}: [DEBUG] After timeout, products.size = ${products.size}")
-                    
+                    if (products.isEmpty() && staleCached != null) {
+                        println("${scraper.platformName}: Using stale cache (${staleCached.size} products)")
+                        products = staleCached
+                        usedStaleCache = true
+                    }
+
                     if (products.isNotEmpty()) {
                         cacheManager.set(query, scraper.platformName, pincode, products)
-                        println("${scraper.platformName}: ✓ Found ${products.size} products")
+                        println("${scraper.platformName}: ✓ ${products.size} products (raw, unfiltered)")
                     } else {
-                        println("${scraper.platformName}: ✗ No products found")
+                        println("${scraper.platformName}: ✗ No products")
                     }
                     
                     emittedPlatforms[scraper.platformName] = true
                     resultsChannel.send(SearchEvent.PlatformResult(
                         platform = scraper.platformName,
                         products = products,
-                        cached = false
+                        cached = usedStaleCache
                     ))
                     
                 } catch (e: Exception) {
@@ -143,49 +214,54 @@ class ProductRepository @Inject constructor(
                     ))
                 } finally {
                     completedCount.incrementAndGet()
+                    println("${scraper.platformName}: Completed (${completedCount.get()}/$totalPlatforms)")
                 }
             }
             
-            // Run HTTP scrapers in parallel (they don't use WebView)
-            println("=== Phase 1: HTTP scrapers (Amazon) ===")
-            httpScrapers.forEach { scraper ->
-                scope.launch { runScraper(scraper) }
-            }
+            // Use semaphore-based concurrency for maximum parallelism
+            val webViewSemaphore = Semaphore(4)  // Balance speed vs WebView stability
             
-            // Run WebView scrapers in batches of 3 to avoid resource exhaustion
-            println("=== Phase 2: WebView scrapers (batches of 3) ===")
-            val batchSize = 3
-            webViewScrapers.chunked(batchSize).forEachIndexed { batchIndex, batch ->
-                println("Starting batch ${batchIndex + 1}: ${batch.map { it.platformName }}")
+            val scraperJob = scraperScope.launch {
+                println("=== Launching all scrapers ===")
                 
-                // Launch batch in parallel
-                val jobs = batch.map { scraper ->
-                    scope.launch { runScraper(scraper) }
+                // HTTP scrapers run immediately
+                httpScrapers.forEach { scraper ->
+                    launch { 
+                        println("${scraper.platformName}: Starting (HTTP)")
+                        runScraper(scraper) 
+                    }
                 }
                 
-                // Wait for this batch to complete before starting next
-                jobs.forEach { it.join() }
-                
-                println("Batch ${batchIndex + 1} complete")
+                // WebView scrapers acquire semaphore before running
+                webViewScrapers.forEach { scraper ->
+                    launch {
+                        webViewSemaphore.acquire()
+                        try {
+                            println("${scraper.platformName}: Starting (WebView)")
+                            runScraper(scraper)
+                        } finally {
+                            webViewSemaphore.release()
+                        }
+                    }
+                }
             }
             
             // Emit results as they arrive
             val startTime = System.currentTimeMillis()
             
             while (System.currentTimeMillis() - startTime < MAX_SEARCH_TIME_MS) {
-                // Try to receive a result
-                val result = withTimeoutOrNull(500) { 
+                val result = withTimeoutOrNull(50) { 
                     resultsChannel.receiveCatching().getOrNull() 
                 }
                 
                 if (result != null) {
+                    val elapsed = System.currentTimeMillis() - startTime
+                    println("[STREAM] ${result.platform}: ${result.products.size} products at ${elapsed}ms")
                     emit(result)
                 }
                 
-                // Check if all platforms have completed
                 if (completedCount.get() >= totalPlatforms) {
-                    // Drain any remaining results
-                    delay(200)
+                    // Drain remaining
                     while (true) {
                         val remaining = resultsChannel.tryReceive().getOrNull() ?: break
                         emit(remaining)
@@ -194,10 +270,10 @@ class ProductRepository @Inject constructor(
                 }
             }
             
-            // Emit empty results for any platforms that didn't respond
+            // Emit empty results for timed-out platforms
             scrapers.forEach { scraper ->
                 if (emittedPlatforms.putIfAbsent(scraper.platformName, true) == null) {
-                    println("${scraper.platformName}: Timeout - no response")
+                    println("${scraper.platformName}: Timeout")
                     emit(SearchEvent.PlatformResult(
                         platform = scraper.platformName,
                         products = emptyList(),
@@ -206,7 +282,7 @@ class ProductRepository @Inject constructor(
                 }
             }
             
-            println("=== SEARCH COMPLETED ===")
+            println("=== RAW SCRAPE COMPLETED ===")
             emit(SearchEvent.Completed)
             
         } catch (e: Exception) {
@@ -214,7 +290,7 @@ class ProductRepository @Inject constructor(
             emit(SearchEvent.Error(e.message ?: "Unknown error"))
         } finally {
             resultsChannel.close()
-            scope.cancel()
+            scraperScope.cancel()
         }
     }
     
@@ -550,4 +626,73 @@ class ProductRepository @Inject constructor(
      * Get cache stats.
      */
     suspend fun getCacheStats() = cacheManager.getStats()
+    
+    /**
+     * HYBRID STRATEGY: Get all cached results instantly.
+     * Returns cached data for all platforms (even if slightly stale).
+     * This enables instant display while fresh data loads in background.
+     */
+    suspend fun getCachedResults(query: String, pincode: String): Map<String, List<Product>> {
+        val results = mutableMapOf<String, List<Product>>()
+        
+        for (scraper in scrapers) {
+            val (cached, _) = cacheManager.get(query, scraper.platformName, pincode)
+            if (cached != null && cached.isNotEmpty()) {
+                results[scraper.platformName] = cached
+            }
+        }
+        
+        println("💾 CACHE: Found cached results for ${results.size} platforms (${results.values.flatten().size} products)")
+        return results
+    }
+    
+    // ==================== SELF-HEALING SCRAPER API ====================
+    
+    /**
+     * Search using the self-healing scraper with all resilience features.
+     * 
+     * This is the RECOMMENDED method for production use.
+     * It handles:
+     * - Platform health monitoring
+     * - Automatic circuit breaker (skips failing platforms)
+     * - Adaptive extraction (learns and adapts to changes)
+     * - Multi-strategy fallbacks
+     * - Smart caching with staleness indicators
+     */
+    fun searchWithSelfHealing(query: String, pincode: String) = 
+        selfHealingScraper.search(query, pincode)
+    
+    /**
+     * Get platform health status for UI display
+     */
+    fun getPlatformHealth() = healthMonitor.platformStates
+    
+    /**
+     * Get list of currently disabled platforms (circuit breaker open)
+     */
+    fun getDisabledPlatforms() = healthMonitor.getDisabledPlatforms()
+    
+    /**
+     * Get list of healthy platforms
+     */
+    fun getHealthyPlatforms() = healthMonitor.getHealthyPlatforms()
+    
+    /**
+     * Manually reset a platform's health (force retry)
+     */
+    fun resetPlatformHealth(platform: String) {
+        healthMonitor.resetPlatform(platform)
+    }
+    
+    /**
+     * Reset all platform health data
+     */
+    fun resetAllPlatformHealth() {
+        healthMonitor.resetAll()
+    }
+    
+    /**
+     * Get detailed health info for a platform
+     */
+    fun getPlatformHealthInfo(platform: String) = healthMonitor.getHealth(platform)
 }

@@ -8,6 +8,8 @@ import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import okhttp3.Request
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -54,38 +56,21 @@ class InstamartScraper @Inject constructor(
             val (lat, lng) = getPincodeCoordinates(pincode)
             
             webViewHelper.setLocation(pincode, lat, lng)
-            
-            // STEP 1: Establish session by visiting homepage first
-            println("$platformName: Establishing session on homepage...")
-            try {
-                val homepageHtml = webViewHelper.loadAndGetHtml(
-                    url = "https://www.swiggy.com/instamart",
-                    timeoutMs = 15_000L,
-                    pincode = pincode
-                )
-                if (homepageHtml != null) {
-                    println("$platformName: Homepage loaded (${homepageHtml.length} chars)")
-                    // Check if location prompt is shown
-                    if (homepageHtml.contains("detect my location", ignoreCase = true) ||
-                        homepageHtml.contains("enter your delivery location", ignoreCase = true)) {
-                        println("$platformName: Location prompt detected, injecting location...")
-                    }
-                }
-                delay(2000) // Wait for session cookies to be set
-            } catch (e: Exception) {
-                println("$platformName: Homepage load error: ${e.message}")
+
+            val httpProducts = withTimeoutOrNull(3_500L) {
+                tryHttpScraping(encodedQuery, pincode, lat, lng)
+            }
+            if (!httpProducts.isNullOrEmpty()) {
+                return@withContext fixProductUrls(httpProducts)
             }
             
-            // STEP 2: Now search with established session
+            // OPTIMIZED: Skip homepage, go directly to search with location cookies
+            // WebViewScraperHelper already sets comprehensive Swiggy cookies
             val searchUrl = "$baseUrl/search?custom_back=true&query=$encodedQuery"
             
-            // RETRY LOGIC: Try up to 3 times with increasing wait
-            for (attempt in 1..3) {
-                val waitTime = when (attempt) {
-                    1 -> 30_000L   // First attempt: 30s
-                    2 -> 40_000L   // Second attempt: 40s
-                    else -> 50_000L // Third attempt: 50s
-                }
+            // WebView needs adequate time for SPA to load
+            for (attempt in 1..1) {  // Single attempt for speed
+                val waitTime = 9_000L // 9 seconds
                 
                 println("$platformName: Attempt $attempt/3 with ${waitTime/1000}s timeout")
                 
@@ -100,17 +85,15 @@ class InstamartScraper @Inject constructor(
                     
                     if (html.isNullOrBlank()) {
                         println("$platformName: Attempt $attempt - empty HTML")
-                        delay(2000)
                         continue
                     }
                     
                     println("$platformName: Got ${html.length} chars")
                     
-                    // Check if we're on the right page
+                    // Check if we're on the right page (skip if location prompt)
                     if (html.contains("detect my location", ignoreCase = true) ||
                         html.contains("enter your delivery location", ignoreCase = true)) {
-                        println("$platformName: Still on location prompt, retrying...")
-                        delay(3000)
+                        println("$platformName: Location prompt detected, trying next attempt...")
                         continue
                     }
                     
@@ -130,19 +113,62 @@ class InstamartScraper @Inject constructor(
                     
                     println("$platformName: Attempt $attempt - no valid products")
                     
-                    // Wait before retry
-                    if (attempt < 3) {
-                        delay(3000)
-                    }
-                    
                 } catch (e: Exception) {
                     println("$platformName: Attempt $attempt error: ${e.message}")
                 }
             }
             
-            println("$platformName: ✗ All 3 attempts failed")
+            println("$platformName: ✗ All attempts failed")
             emptyList()
         }
+
+    private fun tryHttpScraping(
+        encodedQuery: String,
+        pincode: String,
+        lat: String,
+        lng: String
+    ): List<Product> {
+        val urls = listOf(
+            "$baseUrl/search?custom_back=true&query=$encodedQuery",
+            "$baseUrl/search?query=$encodedQuery"
+        )
+
+        for (searchUrl in urls) {
+            try {
+                val request = Request.Builder()
+                    .url(searchUrl)
+                    .header("User-Agent", BaseScraper.getRandomUserAgent())
+                    .header("Accept", "text/html")
+                    .header("Referer", "https://www.swiggy.com/instamart")
+                    .header("Cookie", "lat=$lat; lng=$lng; pincode=$pincode")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    println("$platformName: HTTP ${response.code}")
+                    continue
+                }
+
+                val html = response.body?.string().orEmpty()
+                if (html.length < 5000) continue
+
+                if (html.contains("detect my location", ignoreCase = true) ||
+                    html.contains("enter your delivery location", ignoreCase = true)) {
+                    continue
+                }
+
+                val products = tryAllExtractions(html, pincode).filter { isValidProduct(it) }
+                if (products.isNotEmpty()) {
+                    println("$platformName: ✓ Found ${products.size} products via HTTP")
+                    return products
+                }
+            } catch (e: Exception) {
+                println("$platformName: HTTP error - ${e.message}")
+            }
+        }
+
+        return emptyList()
+    }
     
     /**
      * Get coordinates for a pincode (basic mapping for major cities)
@@ -364,6 +390,7 @@ class InstamartScraper @Inject constructor(
     private fun extractFromCloudinaryImages(html: String): List<Product> {
         val products = mutableListOf<Product>()
         val doc = Jsoup.parse(html)
+        val seenNames = mutableSetOf<String>()
         
         // Swiggy uses cloudinary for images
         val cloudinaryImages = doc.select("img[src*='cloudinary'], img[src*='swiggy'], img[data-src*='cloudinary'], img[data-src*='swiggy']")
@@ -372,16 +399,28 @@ class InstamartScraper @Inject constructor(
         for (img in cloudinaryImages) {
             val alt = img.attr("alt").trim()
             if (alt.length < 5 || !isValidProductName(alt)) continue
+            if (seenNames.contains(alt.lowercase())) continue
             
-            // Find price in parent elements
+            // Find price in parent elements - look for ANY price indicator
             val container = img.parents().firstOrNull { parent ->
-                parent.text().contains("₹") && parent.text().length < 500
-            } ?: continue
+                val text = parent.text()
+                text.length < 800 && (
+                    text.contains("₹") || 
+                    text.contains("Rs") ||
+                    Regex("""\d{2,4}""").containsMatchIn(text) // Any 2-4 digit number
+                )
+            }
             
-            val price = extractPrice(container.text()) ?: continue
-            val originalPrice = extractOriginalPrice(container.text(), price)
+            // If no container with price, try closest parent anyway
+            val priceContainer = container ?: img.parents().firstOrNull { it.text().length in 10..500 }
+            
+            val price = priceContainer?.let { extractPrice(it.text()) }
+            if (price == null || price < 5.0) continue
+            
+            val originalPrice = priceContainer?.let { extractOriginalPrice(it.text(), price) }
             val imageUrl = img.attr("src").ifBlank { img.attr("data-src") }
             
+            seenNames.add(alt.lowercase())
             products.add(createProduct(alt, price, originalPrice, imageUrl))
             
             if (products.size >= 15) break
@@ -483,25 +522,37 @@ class InstamartScraper @Inject constructor(
     }
     
     /**
-     * Extract price from text
+     * Extract price from text - handles multiple formats
      */
     private fun extractPrice(text: String): Double? {
-        val pricePattern = Regex("""₹\s*(\d+(?:,\d{3})*(?:\.\d{1,2})?)""")
-        val prices = pricePattern.findAll(text)
-            .map { it.groupValues[1].replace(",", "").toDoubleOrNull() }
-            .filterNotNull()
-            .filter { it in 10.0..5000.0 }
-            .toList()
+        // Try multiple price patterns
+        val pricePatterns = listOf(
+            Regex("""₹\s*(\d+(?:,\d{3})*(?:\.\d{1,2})?)"""),      // ₹123 or ₹1,234
+            Regex("""Rs\.?\s*(\d+(?:,\d{3})*(?:\.\d{1,2})?)"""),  // Rs 123 or Rs. 123
+            Regex("""(\d+(?:,\d{3})*(?:\.\d{1,2})?)\s*₹"""),      // 123₹
+            Regex("""(?:price|mrp|cost)[^\d]*(\d+(?:\.\d{1,2})?)""", RegexOption.IGNORE_CASE), // price: 123
+            Regex("""(\d{2,4}(?:\.\d{1,2})?)\s*(?:only|off|\/-|\/-)""", RegexOption.IGNORE_CASE) // 123 only
+        )
         
-        if (prices.isEmpty()) return null
+        val allPrices = mutableListOf<Double>()
+        for (pattern in pricePatterns) {
+            pattern.findAll(text).forEach { match ->
+                val price = match.groupValues[1].replace(",", "").toDoubleOrNull()
+                if (price != null && price in 5.0..10000.0) {
+                    allPrices.add(price)
+                }
+            }
+        }
+        
+        if (allPrices.isEmpty()) return null
         
         // If text contains "save" or "off", the lowest might be a discount
         val lowerText = text.lowercase()
         if (lowerText.contains("save") || lowerText.contains("off")) {
-            return prices.getOrNull(1) ?: prices.firstOrNull()
+            return allPrices.getOrNull(1) ?: allPrices.firstOrNull()
         }
         
-        return prices.minOrNull()
+        return allPrices.minOrNull()
     }
     
     /**

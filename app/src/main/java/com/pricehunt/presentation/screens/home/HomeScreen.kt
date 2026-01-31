@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import com.pricehunt.presentation.theme.TextSecondary
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -111,7 +112,7 @@ fun HomeScreen(
                 }
             }
             
-            // Search Bar
+            // Search Bar with Suggestions
             item {
                 SearchBar(
                     query = uiState.query,
@@ -119,8 +120,61 @@ fun HomeScreen(
                     isSearching = uiState.isSearching,
                     onQueryChange = viewModel::updateQuery,
                     onPincodeChange = viewModel::updatePincode,
-                    onSearch = viewModel::search
+                    onSearch = viewModel::search,
+                    suggestions = uiState.suggestions,
+                    showSuggestions = uiState.showSuggestions,
+                    onSuggestionClick = viewModel::selectSuggestion,
+                    onDismissSuggestions = viewModel::hideSuggestions
                 )
+            }
+
+            // Status message (scraping / AI refinement)
+            item {
+                val showStatus = uiState.statusMessage != null || uiState.isSendingToAI
+                AnimatedVisibility(
+                    visible = showStatus,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Surface(
+                            tonalElevation = 1.dp,
+                            shape = MaterialTheme.shapes.medium,
+                            color = Primary.copy(alpha = 0.08f)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            ) {
+                                uiState.statusMessage?.let { message ->
+                                    Text(
+                                        text = message,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = OnSurface
+                                    )
+                                }
+                                if (uiState.isSendingToAI) {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = "🤖 Refining with AI for better relevance...",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = TextSecondary
+                                    )
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    LinearProgressIndicator(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        color = Primary
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
             
             // Platform Status Bar
@@ -178,19 +232,33 @@ fun HomeScreen(
                 }
             }
             
-            // Results Header with Price Disclaimer
+            // Results Header with Price Disclaimer and View Toggle
             if (uiState.results.isNotEmpty()) {
                 item {
                     Column(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
-                        Text(
-                            "All Results",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = OnSurface
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "All Results",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = OnSurface
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        // View mode toggle
+                        ViewModeToggle(
+                            isComparisonView = uiState.isComparisonView,
+                            onToggle = viewModel::setComparisonView
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             "📍 Showing prices for pincode: ${uiState.pincode}",
                             style = MaterialTheme.typography.labelSmall,
@@ -205,32 +273,113 @@ fun HomeScreen(
                 }
             }
             
-            // Product Results grouped by platform
-            uiState.results.forEach { (platform, products) ->
-                if (products.isNotEmpty()) {
-                    item(key = "header_$platform") {
+            // Product Results - either by platform or comparison view
+            if (uiState.isComparisonView && uiState.groupedProducts.isNotEmpty()) {
+                // COMPARISON VIEW: Show products grouped by similarity
+                item(key = "comparison_header") {
+                    Text(
+                        "🔄 Similar Products Compared",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Primary
+                    )
+                }
+                
+                // Only show groups with 2+ platforms for meaningful comparison
+                val meaningfulGroups = uiState.groupedProducts
+                    .toList()
+                    .filter { it.second.size >= 2 }
+                    .sortedByDescending { it.second.size }
+                
+                if (meaningfulGroups.isNotEmpty()) {
+                    items(
+                        items = meaningfulGroups,
+                        key = { (name, _) -> "comparison_$name" }
+                    ) { (productName, products) ->
+                        ComparisonCard(
+                            productName = productName,
+                            products = products,
+                            onProductClick = { product -> openUrl(product.url) },
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                                .animateItemPlacement()
+                        )
+                    }
+                } else {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "No similar products found across platforms.\nSwitch to 'By Platform' view to see all results.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = TextSecondary,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+                
+                // Also show single-platform products at the bottom
+                val singlePlatformProducts = uiState.groupedProducts
+                    .filter { it.value.size == 1 }
+                    .flatMap { it.value }
+                
+                if (singlePlatformProducts.isNotEmpty()) {
+                    item(key = "unique_header") {
                         Text(
-                            platform,
+                            "📦 Unique Products (Single Platform)",
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             style = MaterialTheme.typography.labelLarge,
-                            color = Color(
-                                com.pricehunt.data.model.Platforms.getColor(platform)
-                            )
+                            color = TextSecondary
                         )
                     }
                     
                     itemsIndexed(
-                        items = products,
-                        key = { index, product -> "${platform}_${index}_${product.name.hashCode()}_${product.price}" }
+                        items = singlePlatformProducts,
+                        key = { index, product -> "unique_${index}_${product.name.hashCode()}" }
                     ) { _, product ->
                         ProductCard(
                             product = product,
-                            isCached = uiState.platformStatus[platform] == PlatformStatus.CACHED,
+                            isCached = uiState.platformStatus[product.platform] == PlatformStatus.CACHED,
                             onClick = { openUrl(product.url) },
                             modifier = Modifier
                                 .padding(horizontal = 16.dp, vertical = 4.dp)
                                 .animateItemPlacement()
                         )
+                    }
+                }
+            } else {
+                // REGULAR VIEW: Products grouped by platform
+                uiState.results.forEach { (platform, products) ->
+                    if (products.isNotEmpty()) {
+                        item(key = "header_$platform") {
+                            Text(
+                                platform,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = Color(
+                                    com.pricehunt.data.model.Platforms.getColor(platform)
+                                )
+                            )
+                        }
+                        
+                        itemsIndexed(
+                            items = products,
+                            key = { index, product -> "${platform}_${index}_${product.name.hashCode()}_${product.price}" }
+                        ) { _, product ->
+                            ProductCard(
+                                product = product,
+                                isCached = uiState.platformStatus[platform] == PlatformStatus.CACHED,
+                                onClick = { openUrl(product.url) },
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                                    .animateItemPlacement()
+                            )
+                        }
                     }
                 }
             }

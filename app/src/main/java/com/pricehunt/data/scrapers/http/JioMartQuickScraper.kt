@@ -7,6 +7,7 @@ import com.pricehunt.data.scrapers.webview.WebViewScraperHelper
 import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,6 +28,13 @@ class JioMartQuickScraper @Inject constructor(
     
     override suspend fun search(query: String, pincode: String): List<Product> = 
         withContext(Dispatchers.IO) {
+            val httpProducts = withTimeoutOrNull(4_000L) {
+                tryHttpScraping(query, pincode)
+            }
+            if (!httpProducts.isNullOrEmpty()) {
+                return@withContext httpProducts
+            }
+
             // JioMart Quick is an SPA - use WebView directly
             println("$platformName: Using WebView (SPA site)...")
             tryWebViewScraping(query, pincode)
@@ -39,85 +47,87 @@ class JioMartQuickScraper @Inject constructor(
             
             println("$platformName: HTTP request to $searchUrl")
             
-            val request = okhttp3.Request.Builder()
-                .url(searchUrl)
-                .header("User-Agent", "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile")
-                .header("Accept", "text/html")
-                .header("Cookie", "pincode=$pincode")
-                .build()
-            
-            val response = client.newCall(request).execute()
-            
-            if (!response.isSuccessful) {
-                println("$platformName: HTTP ${response.code}")
-                return emptyList()
-            }
-            
-            val html = response.body?.string() ?: return emptyList()
-            println("$platformName: Got ${html.length} chars via HTTP")
-            
-            if (html.length < 5000) {
-                println("$platformName: Too short, likely error page")
-                return emptyList()
-            }
-            
-            // Parse with Jsoup
-            val doc = org.jsoup.Jsoup.parse(html)
-            val productCards = doc.select("div.plp-card-container, li[data-sku], a[href*='/p/']").take(10)
-            
-            if (productCards.isEmpty()) {
-                println("$platformName: No product cards found")
-                return emptyList()
-            }
-            
-            val products = mutableListOf<Product>()
-            
-            for (card in productCards) {
-                try {
-                    val name = card.selectFirst("[class*='name'], [class*='title'], h3, h4")?.text()
-                        ?: card.text().take(60)
-                    
-                    if (name.isBlank() || name.length < 3) continue
-                    
-                    val priceText = card.selectFirst("[class*='price'], span:contains(₹)")?.text()
-                        ?: Regex("""₹\s*(\d+)""").find(card.text())?.value
-                    
-                    if (priceText.isNullOrBlank()) continue
-                    
-                    val price = parsePrice(priceText)
-                    if (price <= 0) continue
-                    
-                    var productUrl = card.selectFirst("a[href]")?.attr("href") ?: ""
-                    if (productUrl.isNotBlank() && !productUrl.startsWith("http")) {
-                        productUrl = "$baseUrl$productUrl"
-                    }
-                    if (productUrl.isBlank()) {
-                        productUrl = "$baseUrl/search/${URLEncoder.encode(name, "UTF-8")}?deliveryType=express&pincode=$pincode"
-                    }
-                    
-                    products.add(Product(
-                        name = name.trim(),
-                        price = price,
-                        originalPrice = null,
-                        imageUrl = card.selectFirst("img")?.attr("src") ?: "",
-                        platform = platformName,
-                        platformColor = platformColor,
-                        deliveryTime = deliveryTime,
-                        url = productUrl,
-                        rating = null,
-                        discount = null,
-                        available = true
-                    ))
-                } catch (e: Exception) {
+            val urls = listOf(
+                "$baseUrl/search/$encodedQuery?deliveryType=express",
+                "$baseUrl/catalogsearch/result/?q=$encodedQuery&deliveryType=express"
+            )
+
+            for (url in urls) {
+                val request = okhttp3.Request.Builder()
+                    .url(url)
+                    .header("User-Agent", "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile")
+                    .header("Accept", "text/html")
+                    .header("Cookie", "pincode=$pincode")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    println("$platformName: HTTP ${response.code}")
                     continue
                 }
+
+                val html = response.body?.string() ?: continue
+                println("$platformName: Got ${html.length} chars via HTTP")
+
+                if (html.length < 5000) {
+                    println("$platformName: Too short, likely error page")
+                    continue
+                }
+
+                val doc = org.jsoup.Jsoup.parse(html)
+                val productCards = doc.select("div.plp-card-container, li[data-sku], a[href*='/p/']").take(10)
+                if (productCards.isEmpty()) {
+                    println("$platformName: No product cards found")
+                    continue
+                }
+
+                val products = mutableListOf<Product>()
+                for (card in productCards) {
+                    try {
+                        val name = card.selectFirst("[class*='name'], [class*='title'], h3, h4")?.text()
+                            ?: card.text().take(60)
+                        if (name.isBlank() || name.length < 3) continue
+
+                        val priceText = card.selectFirst("[class*='price'], span:contains(₹)")?.text()
+                            ?: Regex("""₹\s*(\d+)""").find(card.text())?.value
+                        if (priceText.isNullOrBlank()) continue
+
+                        val price = parsePrice(priceText)
+                        if (price <= 0) continue
+
+                        var productUrl = card.selectFirst("a[href]")?.attr("href") ?: ""
+                        if (productUrl.isNotBlank() && !productUrl.startsWith("http")) {
+                            productUrl = "$baseUrl$productUrl"
+                        }
+                        if (productUrl.isBlank()) {
+                            productUrl = "$baseUrl/search/${URLEncoder.encode(name, "UTF-8")}?deliveryType=express&pincode=$pincode"
+                        }
+
+                        products.add(Product(
+                            name = name.trim(),
+                            price = price,
+                            originalPrice = null,
+                            imageUrl = card.selectFirst("img")?.attr("src") ?: "",
+                            platform = platformName,
+                            platformColor = platformColor,
+                            deliveryTime = deliveryTime,
+                            url = productUrl,
+                            rating = null,
+                            discount = null,
+                            available = true
+                        ))
+                    } catch (e: Exception) {
+                        continue
+                    }
+                }
+
+                if (products.isNotEmpty()) {
+                    println("$platformName: ✓ Found ${products.size} products via HTTP")
+                    return products
+                }
             }
-            
-            if (products.isNotEmpty()) {
-                println("$platformName: ✓ Found ${products.size} products via HTTP")
-            }
-            
-            return products
+
+            return emptyList()
             
         } catch (e: Exception) {
             println("$platformName: HTTP error - ${e.message}")
@@ -135,7 +145,7 @@ class JioMartQuickScraper @Inject constructor(
             
             val html = webViewHelper.loadAndGetHtml(
                 url = searchUrl,
-                timeoutMs = 25_000L, // Longer timeout for SPA
+                timeoutMs = 9_000L, // 9 seconds
                 pincode = pincode
             )
             

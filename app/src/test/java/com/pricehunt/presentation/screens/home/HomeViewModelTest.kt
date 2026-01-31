@@ -8,6 +8,11 @@ import com.pricehunt.data.model.Product
 import com.pricehunt.data.model.SearchEvent
 import com.pricehunt.data.repository.CacheStats
 import com.pricehunt.data.repository.ProductRepository
+import com.pricehunt.data.repository.SmartSearchRepository
+import com.pricehunt.data.repository.SmartSearchResult
+import com.pricehunt.data.repository.FilterResult
+import com.pricehunt.data.repository.LocalProductGroup
+import com.pricehunt.data.remote.CombinedStats
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +32,9 @@ class HomeViewModelTest {
     
     @MockK
     private lateinit var repository: ProductRepository
+
+    @MockK
+    private lateinit var smartSearchRepository: SmartSearchRepository
     
     private lateinit var viewModel: HomeViewModel
     private val testDispatcher = StandardTestDispatcher()
@@ -35,6 +43,44 @@ class HomeViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(testDispatcher)
+
+        coEvery { repository.getCachedResults(any(), any()) } returns emptyMap()
+        coEvery { repository.getCacheStats() } returns CacheStats(0, 0)
+        every { repository.findBestDeal(any()) } returns null
+
+        coEvery { smartSearchRepository.filterProducts(any(), any(), any(), any(), any()) } answers {
+            val products = secondArg<List<Product>>()
+            FilterResult.Success(
+                aiPowered = false,
+                relevantProducts = products,
+                filteredOut = emptyList(),
+                bestDeal = null
+            )
+        }
+
+        coEvery { smartSearchRepository.smartSearch(any(), any(), any(), any(), any()) } answers {
+            val query = firstArg<String>()
+            val products = secondArg<List<Product>>()
+            val grouped = products.groupBy { it.platform }
+            val bestDeal = repository.findBestDeal(grouped)
+
+            SmartSearchResult.Success(
+                query = query,
+                aiPowered = false,
+                queryUnderstanding = null,
+                relevantProducts = products,
+                productGroups = emptyList(),
+                bestDeal = bestDeal,
+                filteredOut = emptyList(),
+                stats = CombinedStats(
+                    inputProducts = products.size,
+                    relevantProducts = products.size,
+                    filteredProducts = 0,
+                    productGroups = 0,
+                    matchedProducts = products.size
+                )
+            )
+        }
     }
     
     @After
@@ -47,7 +93,7 @@ class HomeViewModelTest {
     @Test
     fun `initial state has correct default values`() = runTest {
         // Given & When
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         
         // Then
         val state = viewModel.uiState.value
@@ -66,7 +112,7 @@ class HomeViewModelTest {
     @Test
     fun `updateQuery updates query in state`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         
         // When
         viewModel.updateQuery("milk")
@@ -78,7 +124,7 @@ class HomeViewModelTest {
     @Test
     fun `updateQuery handles various product searches`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         
         // Test various product queries
         val products = listOf("milk", "bread", "eggs", "rice", "atta", "oil", "sugar", "dal", "butter", "cheese")
@@ -97,7 +143,7 @@ class HomeViewModelTest {
     @Test
     fun `updatePincode updates pincode in state`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         
         // When
         viewModel.updatePincode("400001")
@@ -109,7 +155,7 @@ class HomeViewModelTest {
     @Test
     fun `updatePincode handles various Indian pincodes`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         
         // Test various pincodes
         val pincodes = listOf("560001", "400001", "110001", "500001", "600001", "700001")
@@ -128,7 +174,7 @@ class HomeViewModelTest {
     @Test
     fun `search does nothing when query is blank`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("   ")
         
         // When
@@ -143,7 +189,7 @@ class HomeViewModelTest {
     @Test
     fun `search does nothing when query is empty`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("")
         
         // When
@@ -158,7 +204,7 @@ class HomeViewModelTest {
     @Test
     fun `search uses trimmed query`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("  milk  ")
         
         coEvery { repository.searchStream("milk", any()) } returns flowOf(
@@ -180,7 +226,7 @@ class HomeViewModelTest {
     @Test
     fun `search sets isSearching to true initially`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         coEvery { repository.searchStream(any(), any()) } returns flowOf(
@@ -207,7 +253,7 @@ class HomeViewModelTest {
     @Test
     fun `search clears previous results`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         coEvery { repository.searchStream(any(), any()) } returns flowOf(
@@ -227,7 +273,7 @@ class HomeViewModelTest {
     @Test
     fun `search sets isSearching to false on Completed`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         coEvery { repository.searchStream("milk", "560001") } returns flowOf(
@@ -249,7 +295,7 @@ class HomeViewModelTest {
     @Test
     fun `search updates platform status on PlatformResult`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         val products = listOf(createTestProduct("Milk", 50.0, Platforms.AMAZON))
@@ -274,7 +320,7 @@ class HomeViewModelTest {
     @Test
     fun `search sets CACHED status for cached results`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         val products = listOf(createTestProduct("Milk", 50.0, Platforms.AMAZON))
@@ -299,7 +345,7 @@ class HomeViewModelTest {
     @Test
     fun `search updates platform status for all 10 platforms`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("bread")
         
         val allPlatforms = listOf(
@@ -338,7 +384,7 @@ class HomeViewModelTest {
     @Test
     fun `search updates bestDeal from repository`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         val bestProduct = createTestProduct("Best Deal", 25.0, Platforms.ZEPTO)
@@ -368,7 +414,7 @@ class HomeViewModelTest {
     @Test
     fun `search finds best deal across quick commerce platforms`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("eggs")
         
         val zeptoProduct = createTestProduct("Zepto Eggs", 48.0, Platforms.ZEPTO)
@@ -400,7 +446,7 @@ class HomeViewModelTest {
     @Test
     fun `search results are sorted with quick commerce first`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         // Simulate results coming in random order
@@ -439,7 +485,7 @@ class HomeViewModelTest {
     @Test
     fun `search results maintain quick commerce order by delivery speed`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("bread")
         
         val allQuickCommerce = listOf(
@@ -486,7 +532,7 @@ class HomeViewModelTest {
     @Test
     fun `search sets error on Error event`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         coEvery { repository.searchStream("milk", "560001") } returns flowOf(
@@ -507,7 +553,7 @@ class HomeViewModelTest {
     @Test
     fun `search handles API timeout error`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("rice")
         
         coEvery { repository.searchStream("rice", "560001") } returns flowOf(
@@ -530,7 +576,7 @@ class HomeViewModelTest {
     @Test
     fun `clearCache calls repository and refreshes stats`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         coEvery { repository.clearCache() } just Runs
         coEvery { repository.getCacheStats() } returns CacheStats(0, 0)
         
@@ -546,7 +592,7 @@ class HomeViewModelTest {
     @Test
     fun `cacheStats is updated after search completes`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         coEvery { repository.searchStream("milk", "560001") } returns flowOf(
@@ -572,7 +618,7 @@ class HomeViewModelTest {
     @Test
     fun `search accumulates results from multiple platforms`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("rice")
         
         val amazonProducts = listOf(createTestProduct("Amazon Rice", 100.0, Platforms.AMAZON))
@@ -601,7 +647,7 @@ class HomeViewModelTest {
     @Test
     fun `search handles all 10 platforms with products`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("oil")
         
         val allPlatforms = listOf(
@@ -641,7 +687,7 @@ class HomeViewModelTest {
     @Test
     fun `search milk returns results from quick commerce`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("milk")
         
         val quickCommercePlatforms = listOf(Platforms.ZEPTO, Platforms.BLINKIT, Platforms.INSTAMART)
@@ -669,7 +715,7 @@ class HomeViewModelTest {
     @Test
     fun `search atta returns results with discounts`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("atta")
         
         val amazonProduct = Product(
@@ -707,7 +753,7 @@ class HomeViewModelTest {
     @Test
     fun `search sugar handles multiple products per platform`() = runTest {
         // Given
-        viewModel = HomeViewModel(repository)
+        viewModel = HomeViewModel(repository, smartSearchRepository)
         viewModel.updateQuery("sugar")
         
         val bigBasketProducts = listOf(
