@@ -84,13 +84,19 @@ object SearchIntelligence {
         Regex("""(\d+)\s*($COUNT_UNITS)\b""", RegexOption.IGNORE_CASE),
         
         // Eggs special - "6 Eggs", "12 eggs", "30 Eggs Pack"
-        Regex("""(\d+)\s*eggs?\b""", RegexOption.IGNORE_CASE),
+        Regex("""(\d+)\s*(eggs?)\b""", RegexOption.IGNORE_CASE),
         
         // Length formats - "5m", "100cm", "12 inches"
         Regex("""(\d+(?:\.\d+)?)\s*($LENGTH_UNITS)\b""", RegexOption.IGNORE_CASE),
         
         // Large numbers with comma - "1,000g", "1,500ml" 
         Regex("""(\d{1,3}(?:,\d{3})+)\s*($ALL_UNITS)\b""", RegexOption.IGNORE_CASE)
+    )
+
+    private val COUNT_ONLY_PATTERNS = listOf(
+        Regex("""(?:pack|set|box|bundle)\s+of\s+(\d+)\b""", RegexOption.IGNORE_CASE),
+        Regex("""\b(\d+)\s*(pc|pcs|piece|pieces|pack|packs|nos|no|unit|units|egg|eggs)\b""", RegexOption.IGNORE_CASE),
+        Regex("""\b(\d+)\s*(dozen|doz)\b""", RegexOption.IGNORE_CASE)
     )
     
     // Unit conversion to base units (grams for weight, ml for volume, pieces for count, etc.)
@@ -464,91 +470,128 @@ object SearchIntelligence {
         
         // Try each pattern until we find a match
         for ((index, pattern) in QUANTITY_PATTERNS.withIndex()) {
-            val match = pattern.find(cleanedText)
-            if (match == null) continue
-            
-            // Handle combo/multiplier patterns specially (first 3 patterns)
-            when (index) {
-                0 -> {
-                    // "2x500g" pattern: group1=count, group2=size, group3=unit
-                    if (match.groupValues.size >= 4) {
-                        val count = match.groupValues[1].toDoubleOrNull() ?: continue
-                        val size = match.groupValues[2].toDoubleOrNull() ?: continue
-                        val rawUnit = normalizeUnit(match.groupValues[3])
-                        
-                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
-                        val unitType = UNIT_TYPE[rawUnit] ?: continue
-                        val totalValue = count * size
-                        val normalizedValue = totalValue * baseMultiplier
-                        
-                        return ParsedQuantity(
-                            originalValue = totalValue,
-                            originalUnit = rawUnit,
-                            normalizedValue = normalizedValue,
-                            baseUnit = getBaseUnit(unitType),
-                            unitType = unitType
-                        )
+            matchLoop@ for (match in pattern.findAll(cleanedText)) {
+                val groupCount = match.groupValues.size - 1
+
+                // Handle combo/multiplier patterns specially (first 3 patterns)
+                when (index) {
+                    0 -> {
+                        // "2x500g" pattern: group1=count, group2=size, group3=unit
+                        if (match.groupValues.size >= 4) {
+                            val count = match.groupValues[1].toDoubleOrNull() ?: continue@matchLoop
+                            val size = match.groupValues[2].toDoubleOrNull() ?: continue@matchLoop
+                            if (count <= 0 || size <= 0) continue@matchLoop
+                            val rawUnit = normalizeUnit(match.groupValues[3])
+                            
+                            val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue@matchLoop
+                            val unitType = UNIT_TYPE[rawUnit] ?: continue@matchLoop
+                            val totalValue = count * size
+                            val normalizedValue = totalValue * baseMultiplier
+                            if (totalValue <= 0 || normalizedValue <= 0) continue@matchLoop
+                            
+                            return ParsedQuantity(
+                                originalValue = totalValue,
+                                originalUnit = rawUnit,
+                                normalizedValue = normalizedValue,
+                                baseUnit = getBaseUnit(unitType),
+                                unitType = unitType
+                            )
+                        }
                     }
-                }
-                1 -> {
-                    // "500g x 2" pattern: group1=size, group2=unit, group3=count
-                    if (match.groupValues.size >= 4) {
-                        val size = match.groupValues[1].toDoubleOrNull() ?: continue
-                        val rawUnit = normalizeUnit(match.groupValues[2])
-                        val count = match.groupValues[3].toDoubleOrNull() ?: continue
-                        
-                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
-                        val unitType = UNIT_TYPE[rawUnit] ?: continue
-                        val totalValue = count * size
-                        val normalizedValue = totalValue * baseMultiplier
-                        
-                        return ParsedQuantity(
-                            originalValue = totalValue,
-                            originalUnit = rawUnit,
-                            normalizedValue = normalizedValue,
-                            baseUnit = getBaseUnit(unitType),
-                            unitType = unitType
-                        )
+                    1 -> {
+                        // "500g x 2" pattern: group1=size, group2=unit, group3=count
+                        if (match.groupValues.size >= 4) {
+                            val size = match.groupValues[1].toDoubleOrNull() ?: continue@matchLoop
+                            val rawUnit = normalizeUnit(match.groupValues[2])
+                            val count = match.groupValues[3].toDoubleOrNull() ?: continue@matchLoop
+                            if (count <= 0 || size <= 0) continue@matchLoop
+                            
+                            val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue@matchLoop
+                            val unitType = UNIT_TYPE[rawUnit] ?: continue@matchLoop
+                            val totalValue = count * size
+                            val normalizedValue = totalValue * baseMultiplier
+                            if (totalValue <= 0 || normalizedValue <= 0) continue@matchLoop
+                            
+                            return ParsedQuantity(
+                                originalValue = totalValue,
+                                originalUnit = rawUnit,
+                                normalizedValue = normalizedValue,
+                                baseUnit = getBaseUnit(unitType),
+                                unitType = unitType
+                            )
+                        }
                     }
-                }
-                2 -> {
-                    // "Pack of 6 x 200ml" pattern: group1=count, group2=size, group3=unit
-                    if (match.groupValues.size >= 4) {
-                        val count = match.groupValues[1].toDoubleOrNull() ?: continue
-                        val size = match.groupValues[2].toDoubleOrNull() ?: continue
-                        val rawUnit = normalizeUnit(match.groupValues[3])
-                        
-                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
-                        val unitType = UNIT_TYPE[rawUnit] ?: continue
-                        val totalValue = count * size
-                        val normalizedValue = totalValue * baseMultiplier
-                        
-                        return ParsedQuantity(
-                            originalValue = totalValue,
-                            originalUnit = rawUnit,
-                            normalizedValue = normalizedValue,
-                            baseUnit = getBaseUnit(unitType),
-                            unitType = unitType
-                        )
+                    2 -> {
+                        // "Pack of 6 x 200ml" pattern: group1=count, group2=size, group3=unit
+                        if (match.groupValues.size >= 4) {
+                            val count = match.groupValues[1].toDoubleOrNull() ?: continue@matchLoop
+                            val size = match.groupValues[2].toDoubleOrNull() ?: continue@matchLoop
+                            if (count <= 0 || size <= 0) continue@matchLoop
+                            val rawUnit = normalizeUnit(match.groupValues[3])
+                            
+                            val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue@matchLoop
+                            val unitType = UNIT_TYPE[rawUnit] ?: continue@matchLoop
+                            val totalValue = count * size
+                            val normalizedValue = totalValue * baseMultiplier
+                            if (totalValue <= 0 || normalizedValue <= 0) continue@matchLoop
+                            
+                            return ParsedQuantity(
+                                originalValue = totalValue,
+                                originalUnit = rawUnit,
+                                normalizedValue = normalizedValue,
+                                baseUnit = getBaseUnit(unitType),
+                                unitType = unitType
+                            )
+                        }
                     }
-                }
-                else -> {
-                    // Standard pattern: group1=value, group2=unit
-                    if (match.groupValues.size >= 3) {
-                        val value = match.groupValues[1].toDoubleOrNull() ?: continue
-                        val rawUnit = normalizeUnit(match.groupValues[2])
-                        
-                        val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue
-                        val unitType = UNIT_TYPE[rawUnit] ?: continue
-                        val normalizedValue = value * baseMultiplier
-                        
-                        return ParsedQuantity(
-                            originalValue = value,
-                            originalUnit = rawUnit,
-                            normalizedValue = normalizedValue,
-                            baseUnit = getBaseUnit(unitType),
-                            unitType = unitType
-                        )
+                    else -> {
+                        if (groupCount == 1) {
+                            val count = match.groupValues[1].toDoubleOrNull() ?: continue@matchLoop
+                            if (count <= 0) continue@matchLoop
+                            val matchText = match.value.lowercase()
+                            val rawUnit = normalizeUnit(
+                                when {
+                                    matchText.contains("pack") -> "pack"
+                                    matchText.contains("set") -> "set"
+                                    matchText.contains("box") -> "box"
+                                    matchText.contains("bundle") -> "bundle"
+                                    else -> "pc"
+                                }
+                            )
+
+                            val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue@matchLoop
+                            val unitType = UNIT_TYPE[rawUnit] ?: continue@matchLoop
+                            val normalizedValue = count * baseMultiplier
+                            if (normalizedValue <= 0) continue@matchLoop
+
+                            return ParsedQuantity(
+                                originalValue = count,
+                                originalUnit = rawUnit,
+                                normalizedValue = normalizedValue,
+                                baseUnit = getBaseUnit(unitType),
+                                unitType = unitType
+                            )
+                        }
+
+                        // Standard pattern: group1=value, group2=unit
+                        if (match.groupValues.size >= 3) {
+                            val value = match.groupValues[1].toDoubleOrNull() ?: continue@matchLoop
+                            if (value <= 0) continue@matchLoop
+                            val rawUnit = normalizeUnit(match.groupValues[2])
+                            
+                            val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: continue@matchLoop
+                            val unitType = UNIT_TYPE[rawUnit] ?: continue@matchLoop
+                            val normalizedValue = value * baseMultiplier
+                            if (normalizedValue <= 0) continue@matchLoop
+                            
+                            return ParsedQuantity(
+                                originalValue = value,
+                                originalUnit = rawUnit,
+                                normalizedValue = normalizedValue,
+                                baseUnit = getBaseUnit(unitType),
+                                unitType = unitType
+                            )
+                        }
                     }
                 }
             }
@@ -563,6 +606,7 @@ object SearchIntelligence {
         val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: return null
         val unitType = UNIT_TYPE[rawUnit] ?: return null
         val normalizedValue = value * baseMultiplier
+        if (value <= 0 || normalizedValue <= 0) return null
         
         return ParsedQuantity(
             originalValue = value,
@@ -571,6 +615,34 @@ object SearchIntelligence {
             baseUnit = getBaseUnit(unitType),
             unitType = unitType
         )
+    }
+
+    fun parseCountQuantity(text: String): ParsedQuantity? {
+        val lowerText = text.lowercase()
+        val cleanedText = lowerText.replace(Regex("""(\d),(\d{3})"""), "$1$2")
+
+        for (pattern in COUNT_ONLY_PATTERNS) {
+            for (match in pattern.findAll(cleanedText)) {
+                val count = match.groupValues.getOrNull(1)?.toDoubleOrNull() ?: continue
+                if (count <= 0) continue
+                val rawUnit = match.groupValues.getOrNull(2)?.let { normalizeUnit(it) } ?: "pc"
+
+                val baseMultiplier = UNIT_TO_BASE[rawUnit] ?: (UNIT_TO_BASE["pc"] ?: 1.0)
+                val unitType = UNIT_TYPE[rawUnit] ?: "count"
+                val normalizedValue = count * baseMultiplier
+                if (normalizedValue <= 0) continue
+
+                return ParsedQuantity(
+                    originalValue = count,
+                    originalUnit = rawUnit,
+                    normalizedValue = normalizedValue,
+                    baseUnit = getBaseUnit(unitType),
+                    unitType = unitType
+                )
+            }
+        }
+
+        return null
     }
     
     /**
@@ -980,7 +1052,7 @@ object SearchIntelligence {
         val perUnit = product.price / quantity.normalizedValue
         
         // Smart formatting based on unit type and quantity size
-        val (displayValue, displayUnit) = getSmartDisplayFormat(quantity, perUnit, product.price)
+        val (displayValue, displayUnit) = getSmartDisplayFormat(quantity, perUnit)
         
         println("SearchIntelligence: ✓ ${product.name.take(30)} → ₹${String.format("%.1f", displayValue)}/$displayUnit")
         
@@ -992,27 +1064,43 @@ object SearchIntelligence {
             unitType = quantity.unitType
         )
     }
+
+    fun calculatePerPiecePrice(product: Product): PerUnitPrice? {
+        val countQuantity = parseCountQuantity(product.name) ?: return null
+        if (countQuantity.normalizedValue <= 0) return null
+
+        val perPiece = product.price / countQuantity.normalizedValue
+        val displayUnit = getCountDisplayUnit(countQuantity.originalUnit)
+
+        return PerUnitPrice(
+            pricePerBaseUnit = perPiece,
+            displayPrice = perPiece,
+            displayUnit = displayUnit,
+            productQuantity = countQuantity,
+            unitType = "count"
+        )
+    }
     
     /**
      * Smart formatting logic for per-unit price display
      * Chooses the most meaningful display format based on quantity type and size
      */
-    private fun getSmartDisplayFormat(quantity: ParsedQuantity, perUnit: Double, totalPrice: Double): Pair<Double, String> {
+    private fun getSmartDisplayFormat(quantity: ParsedQuantity, perUnit: Double): Pair<Double, String> {
         return when (quantity.unitType) {
             "weight" -> {
-                // For weight: display per kg if large qty, per 100g otherwise
-                when {
-                    quantity.normalizedValue >= 1000 -> Pair(perUnit * 1000, "kg")
-                    quantity.normalizedValue >= 100 -> Pair(perUnit * 100, "100g")
-                    else -> Pair(perUnit * 100, "100g")
+                // Use per kg when large or expressed in kg, otherwise per 100gm
+                if (quantity.normalizedValue >= 1000 || quantity.originalUnit == "kg") {
+                    Pair(perUnit * 1000, "kg")
+                } else {
+                    Pair(perUnit * 100, "100gm")
                 }
             }
             "volume" -> {
-                // For volume: display per L if large qty, per 100ml otherwise
-                when {
-                    quantity.normalizedValue >= 1000 -> Pair(perUnit * 1000, "L")
-                    quantity.normalizedValue >= 100 -> Pair(perUnit * 100, "100ml")
-                    else -> Pair(perUnit * 100, "100ml")
+                // Use per ltr when large or expressed in liters, otherwise per 100ml
+                if (quantity.normalizedValue >= 1000 || quantity.originalUnit == "l") {
+                    Pair(perUnit * 1000, "ltr")
+                } else {
+                    Pair(perUnit * 100, "100ml")
                 }
             }
             "count" -> {
@@ -1056,9 +1144,10 @@ object SearchIntelligence {
             "stick", "sticks" -> "stick"
             "bar", "bars" -> "bar"
             "pair", "pairs" -> "pair"
-            "dozen", "doz" -> "pc"  // Already multiplied to pieces
+            "dozen", "doz" -> "piece"
             "bunch", "bunches" -> "bunch"
-            else -> "pc"
+            "pack", "packs", "box", "boxes", "bundle" -> "pack"
+            else -> "piece"
         }
     }
 
@@ -1383,29 +1472,33 @@ data class ParsedQuantity(
     fun toDisplayString(): String {
         return when (unitType) {
             "weight" -> when {
-                normalizedValue >= 1000 -> "${formatNumber(normalizedValue / 1000)}kg"
-                normalizedValue < 1 -> "${formatNumber(normalizedValue * 1000)}mg"
-                else -> "${formatNumber(originalValue)}$originalUnit"
+                normalizedValue >= 1000 -> "${formatNumber(normalizedValue / 1000)} kg"
+                normalizedValue < 1 -> "${formatNumber(normalizedValue * 1000)} mg"
+                else -> formatQuantity(originalValue, originalUnit)
             }
             "volume" -> when {
-                normalizedValue >= 1000 -> "${formatNumber(normalizedValue / 1000)}L"
-                else -> "${formatNumber(originalValue)}$originalUnit"
+                normalizedValue >= 1000 -> "${formatNumber(normalizedValue / 1000)} L"
+                else -> formatQuantity(originalValue, originalUnit)
             }
             "length" -> when {
-                normalizedValue >= 100 -> "${formatNumber(normalizedValue / 100)}m"
-                else -> "${formatNumber(originalValue)}$originalUnit"
+                normalizedValue >= 100 -> "${formatNumber(normalizedValue / 100)} m"
+                else -> formatQuantity(originalValue, originalUnit)
             }
             "count" -> {
                 val unit = when (originalUnit.lowercase()) {
-                    "dozen", "doz" -> if (originalValue == 1.0) "dozen" else "dozen"
+                    "dozen", "doz" -> "dozen"
                     else -> originalUnit
                 }
                 "${originalValue.toInt()} $unit"
             }
-            else -> "${formatNumber(originalValue)}$originalUnit"
+            else -> formatQuantity(originalValue, originalUnit)
         }
     }
     
+    private fun formatQuantity(value: Double, unit: String): String {
+        return "${formatNumber(value)} $unit"
+    }
+
     private fun formatNumber(value: Double): String {
         return if (value == value.toLong().toDouble()) {
             value.toLong().toString()

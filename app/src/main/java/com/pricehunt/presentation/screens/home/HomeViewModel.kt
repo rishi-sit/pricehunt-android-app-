@@ -14,6 +14,7 @@ import com.pricehunt.data.repository.LocalProductGroup
 import com.pricehunt.data.search.SearchIntelligence  // Suggestions + per-unit helpers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.sync.Semaphore
@@ -61,7 +62,7 @@ enum class PlatformStatus {
  * Primary Flow (Backend AI):
  * 1. Scrape ALL products from all platforms (no local filtering)
  * 2. Send raw scraped data to backend
- * 3. Backend uses Gemini AI to filter + match products
+ * 3. Backend uses AI (Mistral) to filter + match products
  * 4. Display AI-filtered results
  * 
  * Fallback Flow:
@@ -74,8 +75,11 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private companion object {
-        const val FINAL_AI_MAX_WAIT_MS = 60_000L
+        const val FINAL_AI_MAX_WAIT_MS = 120_000L
         const val FINAL_AI_MIN_WAIT_MS = 3_000L
+        const val FINAL_AI_SOFT_STATUS_MS = 15_000L
+        const val FINAL_AI_RETRY_DELAY_MS = 5_000L
+        const val FINAL_AI_RETRY_MAX_WAIT_MS = 60_000L
     }
     
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -131,7 +135,7 @@ class HomeViewModel @Inject constructor(
      * Phase 1 (INSTANT): Show cached results immediately (even if slightly stale)
      * Phase 2 (BACKGROUND): Scrape fresh data from all platforms  
      * Phase 3 (UPDATE): Replace/merge fresh results as they arrive
-     * Phase 4 (AI): Apply Gemini AI filtering to fresh results
+     * Phase 4 (AI): Apply AI filtering to fresh results
      * 
      * User sees results in <1 second, then sees updates as fresh data arrives.
      */
@@ -152,7 +156,28 @@ class HomeViewModel @Inject constructor(
             val platformFilteredCounts = mutableMapOf<String, Int>()
             val aiPoweredPlatforms = mutableSetOf<String>()
             val aiSemaphore = Semaphore(4)
-            val searchStartTime = System.currentTimeMillis()
+
+            fun productKey(product: Product): String {
+                val normalizedName = product.name.trim().lowercase()
+                val normalizedUrl = product.url.trim().lowercase()
+                val normalizedPlatform = product.platform.trim().lowercase()
+                return if (normalizedUrl.isNotBlank()) {
+                    "$normalizedPlatform|$normalizedUrl"
+                } else {
+                    "$normalizedPlatform|$normalizedName|${product.price}"
+                }
+            }
+
+            fun applyAiFilterToExisting(
+                existing: Map<String, List<Product>>,
+                aiProducts: List<Product>
+            ): Map<String, List<Product>> {
+                val relevantKeys = aiProducts.map { productKey(it) }.toSet()
+                val filtered = existing.mapValues { (_, products) ->
+                    products.filter { relevantKeys.contains(productKey(it)) }
+                }
+                return sortResultsByPlatformType(filtered)
+            }
 
             fun mergedResults(): Map<String, List<Product>> {
                 val merged = allResults.toMutableMap()
@@ -165,7 +190,7 @@ class HomeViewModel @Inject constructor(
             fun updateMergedResults() {
                 _uiState.update { state ->
                     val merged = mergedResults()
-                    val fallbackBestDeal = repository.findBestDeal(merged)
+                    val fallbackBestDeal = repository.findBestDealWithRelevance(merged, query)
                     val bestDeal = if (state.aiPowered && state.bestDeal != null) {
                         state.bestDeal
                     } else {
@@ -180,6 +205,53 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
+            fun isRetryableAiError(message: String?): Boolean {
+                if (message.isNullOrBlank()) return true
+                val normalized = message.lowercase()
+                return listOf(
+                    "timeout",
+                    "timed out",
+                    "failed to connect",
+                    "connection",
+                    "unable to resolve host",
+                    "host is unreachable",
+                    "http 5",
+                    "502",
+                    "503",
+                    "504"
+                ).any { normalized.contains(it) }
+            }
+
+            suspend fun runFinalAi(timeoutMs: Long): SmartSearchResult? {
+                val aiStart = System.currentTimeMillis()
+                println("🤖 Final AI request started (timeout=${timeoutMs}ms, products=${rawScrapedProducts.size})")
+                val result = withTimeoutOrNull(timeoutMs) {
+                    smartSearchRepository.smartSearch(
+                        query = query,
+                        scrapedProducts = rawScrapedProducts.toList(),
+                        pincode = _uiState.value.pincode,
+                        strictMode = true,
+                        platformResults = allResults.toMap()
+                    )
+                }
+                val aiElapsed = System.currentTimeMillis() - aiStart
+                when (result) {
+                    is SmartSearchResult.Success -> {
+                        println(
+                            "✅ Final AI success in ${aiElapsed}ms " +
+                                "(aiPowered=${result.aiPowered}, products=${result.relevantProducts.size})"
+                        )
+                    }
+                    is SmartSearchResult.Error -> {
+                        println("❌ Final AI error in ${aiElapsed}ms: ${result.message}")
+                    }
+                    null -> {
+                        println("⏱️ Final AI timeout after ${aiElapsed}ms")
+                    }
+                }
+                return result
+            }
+
             fun enqueuePlatformAi(
                 platform: String,
                 products: List<Product>,
@@ -187,6 +259,7 @@ class HomeViewModel @Inject constructor(
                 reason: String
             ) {
                 if (products.isEmpty()) {
+                    println("🔍 Per-platform AI: $platform - skipped (0 products)")
                     aiResultsByPlatform.remove(platform)
                     platformFilteredCounts.remove(platform)
                     updateMergedResults()
@@ -195,11 +268,14 @@ class HomeViewModel @Inject constructor(
 
                 val requestId = (platformRequestVersion[platform] ?: 0) + 1
                 platformRequestVersion[platform] = requestId
+                println("🔍 Per-platform AI: $platform - queued (${products.size} products, timeout=${timeoutMs}ms, reason=$reason)")
 
                 launch {
                     aiSemaphore.acquire()
+                    println("🔍 Per-platform AI: $platform - started")
                     startAiCall()
                     try {
+                        val aiStart = System.currentTimeMillis()
                         val result = withTimeoutOrNull(timeoutMs) {
                             smartSearchRepository.filterProducts(
                                 query = query,
@@ -209,17 +285,36 @@ class HomeViewModel @Inject constructor(
                                 platformResults = mapOf(platform to products)
                             )
                         }
+                        val aiElapsed = System.currentTimeMillis() - aiStart
 
-                        if (platformRequestVersion[platform] != requestId) return@launch
+                        if (platformRequestVersion[platform] != requestId) {
+                            println("🔍 Per-platform AI: $platform - cancelled (stale request)")
+                            return@launch
+                        }
 
                         when (result) {
                             is FilterResult.Success -> {
-                                aiResultsByPlatform[platform] = result.relevantProducts
-                                platformFilteredCounts[platform] = result.filteredOut.size
+                                println(
+                                    "✅ Per-platform AI: $platform - success in ${aiElapsed}ms " +
+                                        "(aiPowered=${result.aiPowered}, ${result.relevantProducts.size}/${products.size} kept, ${result.filteredOut.size} filtered)"
+                                )
+                                if (result.relevantProducts.isEmpty() && products.isNotEmpty()) {
+                                    println("⚠️ AI returned 0 items for $platform; keeping raw results")
+                                    aiResultsByPlatform[platform] = products
+                                    platformFilteredCounts[platform] = 0
+                                } else {
+                                    aiResultsByPlatform[platform] = result.relevantProducts
+                                    platformFilteredCounts[platform] = result.filteredOut.size
+                                }
                                 if (result.aiPowered) aiPoweredPlatforms.add(platform)
                             }
-                            is FilterResult.Error, null -> {
-                                println("⚠️ AI filter failed for $platform ($reason)")
+                            is FilterResult.Error -> {
+                                println("❌ Per-platform AI: $platform - error in ${aiElapsed}ms: ${result.message}")
+                                aiResultsByPlatform[platform] = products
+                                platformFilteredCounts[platform] = 0
+                            }
+                            null -> {
+                                println("⏱️ Per-platform AI: $platform - timeout after ${aiElapsed}ms")
                                 aiResultsByPlatform[platform] = products
                                 platformFilteredCounts[platform] = 0
                             }
@@ -242,7 +337,7 @@ class HomeViewModel @Inject constructor(
                 
                 // Show cached results as-is (AI will handle relevance)
                 val sortedCached = sortResultsByPlatformType(cachedResults)
-                val cachedBestDeal = repository.findBestDeal(sortedCached)
+                val cachedBestDeal = repository.findBestDealWithRelevance(sortedCached, query)
                 allResults.putAll(cachedResults)
                 
                 _uiState.update { 
@@ -334,7 +429,7 @@ class HomeViewModel @Inject constructor(
                                 
                                 // Progressive update: merge fresh results with display
                                 val sortedResults = mergedResults()
-                                val bestDeal = repository.findBestDeal(sortedResults)
+                                val bestDeal = repository.findBestDealWithRelevance(sortedResults, query)
                                 
                                 println("📊 Scraping: ${completedCount}/${Platforms.ALL.size} platforms, Total: ${rawScrapedProducts.size}")
                                 
@@ -357,10 +452,6 @@ class HomeViewModel @Inject constructor(
                             println("✅ Fresh scraping complete. Total: ${rawScrapedProducts.size} products")
                             println("🤖 Applying AI smart search...")
 
-                            val elapsed = System.currentTimeMillis() - searchStartTime
-                            val remaining = (FINAL_AI_MAX_WAIT_MS - elapsed)
-                                .coerceAtLeast(FINAL_AI_MIN_WAIT_MS)
-
                             launch {
                                 _uiState.update { state ->
                                     state.copy(
@@ -369,57 +460,96 @@ class HomeViewModel @Inject constructor(
                                 }
                                 startAiCall()
                                 try {
-                                    val result = withTimeoutOrNull(remaining) {
-                                        smartSearchRepository.smartSearch(
-                                            query = query,
-                                            scrapedProducts = rawScrapedProducts.toList(),
-                                            pincode = _uiState.value.pincode,
-                                            strictMode = true,
-                                            platformResults = allResults.toMap()
-                                        )
+                                    val softStatusJob = launch {
+                                        delay(FINAL_AI_SOFT_STATUS_MS)
+                                        _uiState.update { state ->
+                                            if (state.isSendingToAI) {
+                                                state.copy(
+                                                    statusMessage = "AI is taking longer • Showing current results"
+                                                )
+                                            } else {
+                                                state
+                                            }
+                                        }
                                     }
 
-                                    when (result) {
+                                    var finalResult = runFinalAi(
+                                        FINAL_AI_MAX_WAIT_MS.coerceAtLeast(FINAL_AI_MIN_WAIT_MS)
+                                    )
+                                    softStatusJob.cancel()
+
+                                    val shouldRetry = when (finalResult) {
+                                        null -> true
+                                        is SmartSearchResult.Error ->
+                                            isRetryableAiError(finalResult.message)
+                                        else -> false
+                                    }
+
+                                    if (shouldRetry) {
+                                        _uiState.update { state ->
+                                            state.copy(
+                                                statusMessage = "AI is taking longer • Retrying..."
+                                            )
+                                        }
+                                        delay(FINAL_AI_RETRY_DELAY_MS)
+                                        finalResult = runFinalAi(FINAL_AI_RETRY_MAX_WAIT_MS)
+                                    }
+
+                                    when (finalResult) {
                                         is SmartSearchResult.Success -> {
-                                            // Group by platform for display
-                                            val resultsByPlatform = result.relevantProducts
-                                                .groupBy { it.platform }
-                                            val sortedResults = sortResultsByPlatformType(resultsByPlatform)
+                                            if (finalResult.relevantProducts.isEmpty() && rawScrapedProducts.isNotEmpty()) {
+                                                println("⚠️ Final AI returned 0 items; keeping current results")
+                                                _uiState.update { state ->
+                                                    state.copy(
+                                                        isSearching = false,
+                                                        showingCachedResults = false,
+                                                        isRefreshingInBackground = false,
+                                                        statusMessage = "AI returned no relevant items • Showing current results",
+                                                        error = null
+                                                    )
+                                                }
+                                                loadCacheStats()
+                                            } else {
+                                                val groupedProducts = finalResult.productGroups
+                                                    .filter { it.products.size >= 2 }
+                                                    .associate { group -> group.canonicalName to group.products }
 
-                                            val groupedProducts = result.productGroups
-                                                .filter { it.products.size >= 2 }
-                                                .associate { group -> group.canonicalName to group.products }
-
-                                            _uiState.update { state ->
-                                                state.copy(
-                                                    isSearching = false,
-                                                    results = sortedResults,
-                                                    bestDeal = result.bestDeal,
-                                                    groupedProducts = groupedProducts,
-                                                    productGroups = result.productGroups,
-                                                    aiPowered = result.aiPowered,
-                                                    totalFiltered = result.filteredOut.size,
-                                                    showingCachedResults = false,
-                                                    isRefreshingInBackground = false,
-                                                    statusMessage = if (result.aiPowered) {
-                                                        "Smart AI powered result"
-                                                    } else {
-                                                        "Showing current results"
-                                                    },
-                                                    error = null
-                                                )
+                                                _uiState.update { state ->
+                                                    val filteredResults = applyAiFilterToExisting(
+                                                        state.results,
+                                                        finalResult.relevantProducts
+                                                    )
+                                                    state.copy(
+                                                        isSearching = false,
+                                                        results = filteredResults,
+                                                        bestDeal = finalResult.bestDeal ?: state.bestDeal,
+                                                        groupedProducts = groupedProducts,
+                                                        productGroups = finalResult.productGroups,
+                                                        aiPowered = finalResult.aiPowered || aiPoweredPlatforms.isNotEmpty(),
+                                                        totalFiltered = finalResult.filteredOut.size,
+                                                        showingCachedResults = false,
+                                                        isRefreshingInBackground = false,
+                                                        statusMessage = if (finalResult.aiPowered) {
+                                                            "Smart AI powered result"
+                                                        } else {
+                                                            "Showing current results"
+                                                        },
+                                                        error = null
+                                                    )
+                                                }
+                                                loadCacheStats()
                                             }
-                                            loadCacheStats()
                                         }
                                         is SmartSearchResult.Error, null -> {
-                                            val errorMessage = (result as? SmartSearchResult.Error)?.message
-                                            val isTimeout = result == null ||
+                                            val errorMessage = (finalResult as? SmartSearchResult.Error)?.message
+                                            val isTimeout = finalResult == null ||
                                                 (errorMessage?.contains("timeout", ignoreCase = true) == true) ||
                                                 (errorMessage?.contains("timed out", ignoreCase = true) == true)
-                                            val status = if (isTimeout) {
-                                                "AI is taking longer • Showing current results"
-                                            } else {
-                                                "AI unavailable • Showing current results"
+                                            val hasPartialAi = aiPoweredPlatforms.isNotEmpty()
+                                            val status = when {
+                                                hasPartialAi -> "Smart AI powered result"
+                                                isTimeout -> "AI is taking longer • Showing current results"
+                                                else -> "AI unavailable • Showing current results"
                                             }
                                             println("❌ Final AI grouping failed: ${errorMessage ?: "timeout"}")
                                             _uiState.update { state ->
@@ -427,6 +557,7 @@ class HomeViewModel @Inject constructor(
                                                     isSearching = false,
                                                     showingCachedResults = false,
                                                     isRefreshingInBackground = false,
+                                                    aiPowered = state.aiPowered || hasPartialAi,
                                                     statusMessage = status
                                                 )
                                             }

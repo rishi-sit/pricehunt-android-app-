@@ -467,8 +467,21 @@ class WebViewScraperHelper @Inject constructor(
                     // This is more reliable than complex content detection
                     mainHandler.postDelayed({
                         if (!result.isCompleted) {
-                            // First extraction attempt after initial delay
-                            checkForContentAndExtract(webView, result, 0)
+                            if (!waitForSelector.isNullOrBlank()) {
+                                val maxSelectorAttempts = (MAX_CONTENT_WAIT_MS / 250L).toInt().coerceAtLeast(10)
+                                waitForElement(webView, waitForSelector, maxSelectorAttempts) { found ->
+                                    if (result.isCompleted) return@waitForElement
+                                    if (found) {
+                                        println("WebView: Selector ready ($waitForSelector), extracting")
+                                        extractHtml(webView, result)
+                                    } else {
+                                        checkForContentAndExtract(webView, result, 0)
+                                    }
+                                }
+                            } else {
+                                // First extraction attempt after initial delay
+                                checkForContentAndExtract(webView, result, 0)
+                            }
                         }
                     }, PAGE_LOAD_DELAY_MS)
                     

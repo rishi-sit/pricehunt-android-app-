@@ -1,0 +1,396 @@
+--------- beginning of main
+02-02 22:49:26.834 20801 20801 I System.out: PlatformHealth: Loaded health data for 10 platforms
+02-02 22:49:26.840 20801 20801 I System.out: AdaptiveSelector: Loaded 3 learned selectors
+02-02 22:49:54.861 20801 20801 I System.out: 📝 HYBRID SEARCH: Starting for 'banana'
+02-02 22:49:55.078 20801 20801 I System.out: 💾 CACHE: Found cached results for 4 platforms (14 products)
+02-02 22:49:55.078 20801 20801 I System.out: ⚡ INSTANT: Found 14 cached products
+02-02 22:49:55.079 20801 20801 I System.out: 🔍 Per-platform AI: Zepto - queued (1 products, timeout=4000ms, reason=cache)
+02-02 22:49:55.080 20801 20801 I System.out: 🔍 Per-platform AI: Zepto - started
+02-02 22:49:55.084 20801 20801 I System.out: 🔍 Per-platform AI: Amazon Fresh - queued (5 products, timeout=4000ms, reason=cache)
+02-02 22:49:55.084 20801 20801 I System.out: 🔍 Per-platform AI: Amazon Fresh - started
+02-02 22:49:55.085 20801 20801 I System.out: 🔍 Per-platform AI: Amazon - queued (5 products, timeout=4000ms, reason=cache)
+02-02 22:49:55.085 20801 20801 I System.out: 🔍 Per-platform AI: Amazon - started
+02-02 22:49:55.085 20801 20801 I System.out: 🔍 Per-platform AI: Flipkart - queued (3 products, timeout=4000ms, reason=cache)
+02-02 22:49:55.085 20801 20801 I System.out: 🔍 Per-platform AI: Flipkart - started
+02-02 22:49:55.088 20801 20801 I System.out: === STARTING RAW SCRAPE: banana (pincode: 560001) ===
+02-02 22:49:55.088 20801 20801 I System.out: === NO LOCAL FILTERING - All intelligence handled by backend AI ===
+02-02 22:49:55.089 20801 21861 I System.out: === Launching all scrapers ===
+02-02 22:49:55.090 20801 21858 I System.out: Amazon: Starting (HTTP)
+02-02 22:49:55.091 20801 21858 I System.out: Amazon Fresh: Starting (HTTP)
+02-02 22:49:55.094 20801 21864 I System.out: Blinkit: Starting (WebView)
+02-02 22:49:55.094 20801 21867 I System.out: Instamart: Starting (WebView)
+02-02 22:49:55.095 20801 21859 I System.out: Zepto: Starting (WebView)
+02-02 22:49:55.098 20801 21867 I System.out: Blinkit: Searching for 'banana'...
+02-02 22:49:55.098 20801 21866 I System.out: Instamart: Searching for 'banana'...
+02-02 22:49:55.100 20801 21866 I System.out: DirectApiScraper: Instamart: Starting API scrape for 'banana'
+02-02 22:49:55.100 20801 21867 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-02 22:49:55.102 20801 21858 I System.out: Amazon Fresh: Using cached (5 products)
+02-02 22:49:55.102 20801 21858 I System.out: Amazon Fresh: Completed (1/10)
+02-02 22:49:55.102 20801 21860 I System.out: Amazon: Using cached (5 products)
+02-02 22:49:55.103 20801 21860 I System.out: Amazon: Completed (2/10)
+02-02 22:49:55.104 20801 21865 I System.out: Flipkart Minutes: Starting (WebView)
+02-02 22:49:55.106 20801 21859 I System.out: Zepto: Using cached (1 products)
+02-02 22:49:55.106 20801 21859 I System.out: Zepto: Completed (3/10)
+02-02 22:49:55.106 20801 21870 I System.out: JioMart Quick: Starting (WebView)
+02-02 22:49:55.107 20801 21865 I System.out: Flipkart Minutes: Searching for 'banana'...
+02-02 22:49:55.108 20801 21871 I System.out: JioMart Quick: Searching for 'banana'...
+02-02 22:49:55.109 20801 21865 I System.out: Flipkart Minutes: HTTP request to https://m.flipkart.com/search?q=banana&marketplace=GROCERY
+02-02 22:49:55.109 20801 21871 I System.out: DirectApiScraper: JioMart Quick: Starting API scrape for 'banana'
+02-02 22:49:55.341 20801 21866 I System.out: DirectApiScraper: Instamart: storeId fetch HTTP 404
+02-02 22:49:55.426 20801 21866 I System.out: DirectApiScraper: Instamart: HTTP 404
+02-02 22:49:55.426 20801 21866 I System.out: Instamart: Direct API failed (HTTP 404)
+02-02 22:49:55.427 20801 21866 I System.out: WebView: Location set to pincode=560001, lat=12.9716, lon=77.5946
+02-02 22:49:55.515 20801 20801 I System.out: [STREAM] Amazon Fresh: 5 products at 426ms
+02-02 22:49:55.515 20801 20801 I System.out: 🔍 Per-platform AI: Amazon Fresh - queued (5 products, timeout=4000ms, reason=fresh)
+02-02 22:49:55.515 20801 20801 I System.out: 📊 Scraping: 4/10 platforms, Total: 5
+02-02 22:49:55.516 20801 20801 I System.out: [STREAM] Amazon: 5 products at 426ms
+02-02 22:49:55.516 20801 20801 I System.out: 🔍 Per-platform AI: Amazon - queued (5 products, timeout=4000ms, reason=fresh)
+02-02 22:49:55.516 20801 20801 I System.out: 📊 Scraping: 4/10 platforms, Total: 10
+02-02 22:49:55.516 20801 20801 I System.out: [STREAM] Zepto: 1 products at 427ms
+02-02 22:49:55.516 20801 20801 I System.out: 🔍 Per-platform AI: Zepto - queued (1 products, timeout=4000ms, reason=fresh)
+02-02 22:49:55.516 20801 20801 I System.out: 📊 Scraping: 4/10 platforms, Total: 11
+02-02 22:49:55.608 20801 20801 I System.out: 🔍 Per-platform AI: Zepto - cancelled (stale request)
+02-02 22:49:55.609 20801 20801 I System.out: 🔍 Per-platform AI: Amazon Fresh - started
+02-02 22:49:55.746 20801 21865 I System.out: Flipkart Minutes: Got 496391 chars via HTTP
+02-02 22:49:55.828 20801 21866 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-02 22:49:55.829 20801 21866 I System.out: Instamart: Trying Cloudinary image extraction...
+02-02 22:49:55.924 20801 21866 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-02 22:49:55.924 20801 21866 I System.out: Instamart: Trying general image extraction...
+02-02 22:49:55.985 20801 21866 I System.out: Instamart: Found 1 images with alt
+02-02 22:49:55.985 20801 21866 I System.out: Instamart: Trying data-* extraction...
+02-02 22:49:56.024 20801 21865 I System.out: Flipkart Minutes: No product cards found
+02-02 22:49:56.024 20801 21865 I System.out: Flipkart Minutes: HTTP request to https://m.flipkart.com/grocery-supermart-store?q=banana
+02-02 22:49:56.030 20801 21867 I System.out: Blinkit: Starting Blinkit-specific extraction...
+02-02 22:49:56.033 20801 21866 I System.out: Instamart: Found 4 data-* elements
+02-02 22:49:56.038 20801 21866 I System.out: Instamart: Trying generic resilient extraction...
+02-02 22:49:56.038 20801 21867 I System.out: Blinkit: Found 0 product images
+02-02 22:49:56.049 20801 21867 I System.out: Blinkit: Found 0 data-* elements
+02-02 22:49:56.056 20801 21867 I System.out: Blinkit: Found 0 product links
+02-02 22:49:56.056 20801 21867 I System.out: Blinkit: Blinkit extraction found 0 products
+02-02 22:49:56.157 20801 21866 I System.out: Instamart: Total extraction found 0 products
+02-02 22:49:56.411 20801 21867 I System.out: Blinkit: Attempt 1/3 with 9s timeout
+02-02 22:49:56.422 20801 21865 I System.out: Flipkart Minutes: Got 523208 chars via HTTP
+02-02 22:49:56.425 20801 21866 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-02 22:49:56.426 20801 21866 I System.out: Instamart: Trying Cloudinary image extraction...
+02-02 22:49:56.438 20801 21866 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-02 22:49:56.438 20801 21866 I System.out: Instamart: Trying general image extraction...
+02-02 22:49:56.449 20801 21866 I System.out: Instamart: Found 1 images with alt
+02-02 22:49:56.449 20801 21866 I System.out: Instamart: Trying data-* extraction...
+02-02 22:49:56.462 20801 21866 I System.out: Instamart: Found 4 data-* elements
+02-02 22:49:56.464 20801 21866 I System.out: Instamart: Trying generic resilient extraction...
+02-02 22:49:56.489 20801 21865 I System.out: Flipkart Minutes: Using WebView (SPA site)...
+02-02 22:49:56.489 20801 21865 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-02 22:49:56.489 20801 21865 I System.out: Flipkart Minutes: Trying URL 1/1: https://m.flipkart.com/search?q=banana&marketplace=GROCERY
+02-02 22:49:56.511 20801 21866 I System.out: Instamart: Total extraction found 0 products
+02-02 22:49:56.511 20801 21866 I System.out: Instamart: Attempt 1/3 with 9s timeout
+02-02 22:49:56.556 20801 21871 I System.out: DirectApiScraper: JioMart: HTTP 500
+02-02 22:49:56.655 20801 20801 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-02 22:49:56.671 20801 20801 I System.out: WebView: Set location cookies for blinkit.com with pincode=560001
+02-02 22:49:56.721 20801 20801 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; OnePlus 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.144 Mobile Safari/537.36
+02-02 22:49:56.756 20801 20801 I System.out: WebView: Set location cookies for m.flipkart.com with pincode=560001
+02-02 22:49:56.786 20801 20801 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; OnePlus 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.144 Mobile Safari/537.36
+02-02 22:49:56.815 20801 20801 I System.out: WebView: Set comprehensive Swiggy cookies for pincode=560001
+02-02 22:49:56.817 20801 20801 I System.out: WebView: Set location cookies for www.swiggy.com with pincode=560001
+02-02 22:49:57.128 20801 20801 I System.out: WebView: Anti-detection script injected on page start
+02-02 22:49:57.128 20801 20801 I System.out: WebView: Anti-detection script injected on page start
+02-02 22:49:57.162 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:49:57.172 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:49:57.184 20801 20801 I System.out: WebView: Anti-detection script injected on page start
+02-02 22:49:57.256 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:49:57.984 20801 21871 I System.out: JioMart Quick: Direct API returned no products
+02-02 22:49:57.985 20801 21871 I System.out: JioMart Quick: HTTP request to https://www.jiomart.com/search/banana?deliveryType=express
+02-02 22:49:58.080 20801 21871 I System.out: JioMart Quick: HTTP 403
+02-02 22:49:58.115 20801 21871 I System.out: JioMart Quick: HTTP 403
+02-02 22:49:58.115 20801 21871 I System.out: JioMart Quick: Using WebView (SPA site)...
+02-02 22:49:58.115 20801 21871 I System.out: JioMart Quick: Loading https://www.jiomart.com/search/banana?deliveryType=express
+02-02 22:49:58.115 20801 21871 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-02 22:49:58.130 20801 20801 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.101 Mobile Safari/537.36
+02-02 22:49:58.159 20801 20801 I System.out: WebView: Set location cookies for www.jiomart.com with pincode=560001
+02-02 22:49:58.275 20801 20801 I System.out: WebView Console: Warning: Component with name Placeholderis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-02 22:49:58.323 20801 20801 I System.out: WebView Console: Warning: Component with name RNShimmeringViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-02 22:49:58.349 20801 20801 I System.out: WebView Console: Warning: Component with name GifViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-02 22:49:58.350 20801 20801 I System.out: WebView Console: Warning: Component with name LiveVideoViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-02 22:49:58.783 20801 20801 I System.out: ✅ Per-platform AI: Flipkart - success in 3698ms (aiPowered=true, 2/3 kept, 1 filtered)
+02-02 22:49:58.784 20801 20801 I System.out: 🔍 Per-platform AI: Amazon - started
+02-02 22:49:59.089 20801 20801 I System.out: 🔍 Per-platform AI: Amazon Fresh - cancelled (stale request)
+02-02 22:49:59.089 20801 20801 I System.out: 🔍 Per-platform AI: Zepto - started
+02-02 22:49:59.090 20801 20801 I System.out: 🔍 Per-platform AI: Amazon - cancelled (stale request)
+02-02 22:49:59.197 20801 20801 I System.out: WebView Console: ServiceWorker registration successful with scope:  https://www.flipkart.com/ (https://www.flipkart.com/search?q=banana&marketplace=GROCERY:1724)
+02-02 22:49:59.197 20801 20801 I System.out: WebView Console: ServiceWorker is active and sending message :  https://www.flipkart.com/ (https://www.flipkart.com/search?q=banana&marketplace=GROCERY:1733)
+02-02 22:49:59.208 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:49:59.245 20801 20801 I System.out: WebView: Anti-detection script injected on page start
+02-02 22:49:59.364 20801 20801 I System.out: WebView Console: hide header timeout (https://instamart-media-assets.swiggy.com/swiggy/raw/upload/dash-front-assets/js/app.es6.cd83c1c300ead98d.js:88)
+02-02 22:49:59.429 20801 20801 I System.out: ✅ Per-platform AI: Zepto - success in 340ms (aiPowered=false, 1/1 kept, 0 filtered)
+02-02 22:49:59.589 20801 20801 I System.out: WebView Console: Sync registration failed for web push Heart beat: UnknownError: Background Sync is disabled. (https://www.flipkart.com/search?q=banana&marketplace=GROCERY:1755)
+02-02 22:49:59.619 20801 20801 I System.out: ⏱️ Per-platform AI: Amazon Fresh - timeout after 4010ms
+02-02 22:49:59.626 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:49:59.672 20801 20801 I System.out: WebView Console: You are running a development build of Vue.
+02-02 22:49:59.672 20801 20801 I System.out: Make sure to use the production build (*.prod.js) when deploying for production. (https://www.jiomart.com/assets/global/js/vue_global.min.js:13)
+02-02 22:50:00.245 20801 20801 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1685726148383397?v=2.9.256&r=stable&domain=blinkit.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:134)
+02-02 22:50:00.384 20801 20801 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1149898238733621?v=2.9.256&r=stable&domain=www.swiggy.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:134)
+02-02 22:50:00.960 20801 20801 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1685726148383397&ev=PageView&dl=https%3A%2F%2Fblinkit.com%2Fs%2F%3Fq%3Dbanana&rl=&if=false&ts=1770052800321&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770052800288.87944321863989150&eid=ob3_plugin-set_3e860b31e80159b3f866e9f3528dacfdf9c486fe38b9a4dc7bde4f270fbacaec&ler=empty&cdl=API_unavailable&pmd[title]=Buy%20banana%20Online%20%7C%20blinkit&pmd[keywords]=Buy%20Grocery%20Online%2C%20Online%20Grocery%2C%20Grofers%2C%20Groffers%2C%20Groferss%2C%20blinkit%20grofers%2C%20blinkit%2C%20blink%20it%2C%20Grocery%20Store%2C%20Online%20Grocery%20Shopping%2C%20Online%20Grocery%20Store%2C%20Online%20Supermarket%2C%20Free%20Delivery%2C%20Great%20Offers%2C%20Best%20Prices&pmd[description]=Buy%20banana%20at%20best%20price%20and%20get%20it%20delivered%20at%20your%20doorstep.&plt=1929.7000000029802&it=1770052799293&coo=false&chmd=&chpv=&chfv=undefined&cf=1&expv2[0]=pl1&expv2[1]=el2&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=im1&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-02 22:50:00.975 20801 20801 I System.out: WebView Console: init jioads (https://www.jiomart.com/search/banana?deliveryType=express:2163)
+02-02 22:50:00.975 20801 20801 I System.out: WebView Console: jioads set config (https://www.jiomart.com/search/banana?deliveryType=express:2431)
+02-02 22:50:00.977 20801 20801 I System.out: WebView Console: %cWebsdk log%csetConfiguration called with options: [object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:00.977 20801 20801 I System.out: WebView Console: %cWebsdk log%cuid fetched: ae2f8a2d-86a7-425e-b574-a04c160aae00 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:00.977 20801 20801 I System.out: WebView Console: %cWebsdk log%cPartner IDs fetched: null color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:00.979 20801 20801 I System.out: WebView Console: %cWebsdk log%cResponse from FETCH color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:01.152 20801 20801 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1149898238733621&ev=PageView&dl=https%3A%2F%2Fwww.swiggy.com%2Finstamart%2Fsearch%3Fcustom_back%3Dtrue%26query%3Dbanana&rl=&if=false&ts=1770052800415&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770052800404.591339551231553235&eid=ob3_plugin-set_7c020a24cf59d2113c512bb1c29cb3536cf6c2e1d4f8b7896e4a2e5194dda64d&ler=empty&cdl=API_unavailable&pmd[title]=Instamart&plt=844.0999999940395&it=1770052799360&coo=false&chmd=&chpv=&chfv=undefined&cf=1&expv2[0]=pl1&expv2[1]=el2&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=im0&expv2[5]=hf2&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-02 22:50:01.305 20801 20801 I System.out: WebView Console: %cWebsdk log%cHTTP Call Status: 404 | State: 4 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:01.305 20801 20801 I System.out: WebView Console: %cWebsdk log%c[object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:01.352 20801 20801 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-02 22:50:01.381 20801 20801 I System.out: WebView Console: show_normal_payment_banner without_loggedIn 0 (https://www.jiomart.com/assets/version1768913331/ds2msite/js/cart.min.js:5)
+02-02 22:50:01.410 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (https://blinkit.com/scripts/sentryvendor.e2f90f003766ec83b607.js:1)
+02-02 22:50:01.934 20801 20801 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-02 22:50:01.935 20801 20801 I System.out: WebView Console: app obj [object Object] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/mapp.min.js:5)
+02-02 22:50:01.947 20801 20801 I System.out: ✅ Per-platform AI: Amazon - success in 3163ms (aiPowered=true, 4/5 kept, 1 filtered)
+02-02 22:50:02.004 20801 20801 I System.out: WebView Console: Page Load Time (sec): 3.84 (https://www.jiomart.com/search/banana?deliveryType=express:3941)
+02-02 22:50:02.136 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:02.164 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:02.329 20801 20801 I System.out: WebView Console: WARNING: Too many active WebGL contexts. Oldest context will be lost. (:111)
+02-02 22:50:02.333 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:03.522 20801 20801 I System.out: WebView Console: localshops  [object Proxy] [object Proxy] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.616 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.621 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.624 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.627 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.630 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.632 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.636 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.639 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.641 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.644 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.646 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.648 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.651 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.654 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.656 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.661 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.661 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.662 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.666 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.667 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.670 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.673 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.674 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.677 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.679 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.682 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.697 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.698 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.700 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.703 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.704 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.706 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.710 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.712 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.713 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.715 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.717 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.719 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.721 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.723 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.725 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.727 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.729 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.731 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.733 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.735 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.737 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.739 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.741 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:03.743 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:05.101 20801 21866 I System.out: Blinkit: Attempt 1 error: Timed out waiting for 10000 ms
+02-02 22:50:05.101 20801 21866 I System.out: Blinkit: ✗ All 3 attempts failed
+02-02 22:50:05.101 20801 21866 I System.out: Blinkit: [TIMEOUT]
+02-02 22:50:05.101 20801 21866 I System.out: Blinkit: ✗ No products
+02-02 22:50:05.104 20801 21866 I System.out: Blinkit: Completed (4/10)
+02-02 22:50:05.104 20801 20801 I System.out: [STREAM] Blinkit: 0 products at 10015ms
+02-02 22:50:05.104 20801 20801 I System.out: 🔍 Per-platform AI: Blinkit - skipped (0 products)
+02-02 22:50:05.104 20801 21867 I System.out: Flipkart: Starting (WebView)
+02-02 22:50:05.105 20801 20801 I System.out: 📊 Scraping: 4/10 platforms, Total: 11
+02-02 22:50:05.109 20801 21867 I System.out: Flipkart: Using cached (3 products)
+02-02 22:50:05.109 20801 21867 I System.out: Flipkart: Completed (5/10)
+02-02 22:50:05.109 20801 20801 I System.out: [STREAM] Flipkart: 3 products at 10020ms
+02-02 22:50:05.109 20801 20801 I System.out: 🔍 Per-platform AI: Flipkart - queued (3 products, timeout=4000ms, reason=fresh)
+02-02 22:50:05.110 20801 20801 I System.out: 🔍 Per-platform AI: Flipkart - started
+02-02 22:50:05.110 20801 21865 I System.out: JioMart: Starting (WebView)
+02-02 22:50:05.110 20801 20801 I System.out: 📊 Scraping: 4/10 platforms, Total: 14
+02-02 22:50:05.113 20801 21867 I System.out: JioMart: Searching for 'banana'...
+02-02 22:50:05.114 20801 21867 I System.out: DirectApiScraper: JioMart: Starting API scrape for 'banana'
+02-02 22:50:05.164 20801 21866 I System.out: Flipkart Minutes: URL 1 error: Timed out waiting for 10000 ms
+02-02 22:50:05.164 20801 21866 I System.out: Flipkart Minutes: Timeout reached, stopping URL attempts
+02-02 22:50:05.164 20801 21866 I System.out: Flipkart Minutes: ✗ All URLs failed
+02-02 22:50:05.164 20801 21866 I System.out: Flipkart Minutes: [TIMEOUT]
+02-02 22:50:05.164 20801 21866 I System.out: Flipkart Minutes: ✗ No products
+02-02 22:50:05.164 20801 21866 I System.out: Flipkart Minutes: Completed (6/10)
+02-02 22:50:05.165 20801 21866 I System.out: BigBasket: Starting (WebView)
+02-02 22:50:05.168 20801 21866 I System.out: BigBasket: Searching for 'banana'...
+02-02 22:50:05.168 20801 21866 I System.out: DirectApiScraper: BigBasket: Starting API scrape for 'banana'
+02-02 22:50:05.174 20801 20801 I System.out: WebView: Content ready! Extracting immediately (attempt 0)
+02-02 22:50:05.346 20801 21866 I System.out: DirectApiScraper: BigBasket: HTTP 400
+02-02 22:50:05.346 20801 21866 I System.out: BigBasket: Direct API failed (HTTP 400)
+02-02 22:50:05.347 20801 21866 I System.out: BigBasket: Loading https://www.bigbasket.com/ps/?q=banana (WebView)...
+02-02 22:50:05.347 20801 21866 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-02 22:50:05.423 20801 20801 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.101 Mobile Safari/537.36
+02-02 22:50:05.459 20801 20801 I System.out: WebView: Set location cookies for www.bigbasket.com with pincode=560001
+02-02 22:50:05.481 20801 21871 I System.out: Instamart: Attempt 1 error: Timed out waiting for 10000 ms
+02-02 22:50:05.482 20801 21871 I System.out: Instamart: ✗ All attempts failed
+02-02 22:50:05.482 20801 21871 I System.out: Instamart: [TIMEOUT]
+02-02 22:50:05.482 20801 21871 I System.out: Instamart: ✗ No products
+02-02 22:50:05.482 20801 21871 I System.out: Instamart: Completed (7/10)
+02-02 22:50:05.504 20801 20801 I System.out: [STREAM] Instamart: 0 products at 10415ms
+02-02 22:50:05.504 20801 20801 I System.out: 🔍 Per-platform AI: Instamart - skipped (0 products)
+02-02 22:50:05.505 20801 20801 I System.out: 📊 Scraping: 4/10 platforms, Total: 14
+02-02 22:50:06.204 20801 21867 I System.out: DirectApiScraper: JioMart: HTTP 500
+02-02 22:50:06.260 20801 21866 I System.out: JioMart Quick: ✓ Found 10 products via WebView
+02-02 22:50:06.261 20801 21866 I System.out: JioMart Quick: [RAW] Got 10 products
+02-02 22:50:06.269 20801 21866 I System.out: JioMart Quick: ✓ 10 products (raw, unfiltered)
+02-02 22:50:06.269 20801 21866 I System.out: JioMart Quick: Completed (8/10)
+02-02 22:50:06.269 20801 20801 I System.out: [STREAM] JioMart Quick: 10 products at 11180ms
+02-02 22:50:06.269 20801 20801 I System.out: 🔍 Per-platform AI: JioMart Quick - queued (10 products, timeout=4000ms, reason=fresh)
+02-02 22:50:06.270 20801 20801 I System.out: 🔍 Per-platform AI: JioMart Quick - started
+02-02 22:50:06.270 20801 20801 I System.out: 📊 Scraping: 5/10 platforms, Total: 24
+02-02 22:50:06.335 20801 20801 I System.out: WebView: Anti-detection script injected on page start
+02-02 22:50:06.356 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:06.652 20801 20801 I System.out: WebView: Backup extraction triggered
+02-02 22:50:06.807 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:06.870 20801 20801 I System.out: WebView Console: WARNING: Too many active WebGL contexts. Oldest context will be lost. (:111)
+02-02 22:50:06.874 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:06.969 20801 20801 I System.out: ✅ Per-platform AI: JioMart Quick - success in 699ms (aiPowered=false, 2/10 kept, 8 filtered)
+02-02 22:50:06.978 20801 21867 I System.out: JioMart: Direct API returned no products
+02-02 22:50:06.979 20801 21867 I System.out: JioMart: HTTP request to https://www.jiomart.com/search/banana
+02-02 22:50:07.443 20801 20801 I System.out: WebView: Error loading https://zn00za9ubdwvj6one-tatadigital.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_00za9ubdwvj6oNE: net::ERR_NAME_NOT_RESOLVED
+02-02 22:50:07.985 20801 20801 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1395135667375657?v=2.9.256&r=stable&domain=www.bigbasket.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:115)
+02-02 22:50:08.158 20801 21867 I System.out: JioMart: Got 259693 chars via HTTP
+02-02 22:50:08.179 20801 20801 I System.out: ✅ Per-platform AI: Flipkart - success in 3069ms (aiPowered=true, 2/3 kept, 1 filtered)
+02-02 22:50:08.231 20801 21867 I System.out: JioMart: No product cards in HTTP response
+02-02 22:50:08.231 20801 21867 I System.out: JioMart: HTTP request to https://www.jiomart.com/catalogsearch/result/?q=banana
+02-02 22:50:08.360 20801 20801 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=Search&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dbanana&rl=&if=false&ts=1770052808031&cd[content_ids]=%5B%5D&cd[content_type]=product&sw=320&sh=872&v=2.9.256&r=stable&ec=1&o=4126&fbp=fb.1.1770052808004.4189060744227914&ler=empty&cdl=API_unavailable&plt=908.2999999970198&it=1770052807576&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=im0&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-02 22:50:08.384 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-Medium-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:08.384 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-Bold-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:08.384 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-SemiBold-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:08.384 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-ExtraBold-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:08.403 20801 20801 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":1})
+02-02 22:50:08.521 20801 20801 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=Search&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dbanana&rl=&if=false&ts=1770052808042&cd[content_ids]=%5B%5D&cd[content_type]=product%20&sw=320&sh=872&v=2.9.256&r=stable&ec=2&o=4126&fbp=fb.1.1770052808004.4189060744227914&ler=empty&cdl=API_unavailable&plt=908.2999999970198&it=1770052807576&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=im0&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-02 22:50:08.594 20801 20801 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=PageView&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dbanana&rl=&if=false&ts=1770052808015&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770052808004.4189060744227914&ler=empty&cdl=API_unavailable&pmd[title]=&plt=908.2999999970198&it=1770052807576&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=im0&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-02 22:50:09.328 20801 20801 I System.out: WebView: Backup extraction triggered
+02-02 22:50:09.589 20801 21867 I System.out: JioMart: HTTP 500
+02-02 22:50:09.589 20801 21867 I System.out: JioMart: Using WebView (SPA site)...
+02-02 22:50:09.589 20801 21867 I System.out: JioMart: Loading https://www.jiomart.com/search/banana
+02-02 22:50:09.590 20801 21867 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-02 22:50:09.610 20801 20801 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-02 22:50:09.635 20801 20801 I System.out: WebView: Set location cookies for www.jiomart.com with pincode=560001
+02-02 22:50:10.112 20801 20801 I System.out: WebView: Backup extraction triggered
+02-02 22:50:10.123 20801 20801 I System.out: BigBasket: Timeout
+02-02 22:50:10.123 20801 20801 I System.out: 🔍 Per-platform AI: BigBasket - skipped (0 products)
+02-02 22:50:10.125 20801 20801 I System.out: 📊 Scraping: 5/10 platforms, Total: 24
+02-02 22:50:10.125 20801 20801 I System.out: JioMart: Timeout
+02-02 22:50:10.125 20801 20801 I System.out: 🔍 Per-platform AI: JioMart - skipped (0 products)
+02-02 22:50:10.126 20801 20801 I System.out: 📊 Scraping: 5/10 platforms, Total: 24
+02-02 22:50:10.126 20801 20801 I System.out: === RAW SCRAPE COMPLETED ===
+02-02 22:50:10.126 20801 20801 I System.out: ✅ Fresh scraping complete. Total: 24 products
+02-02 22:50:10.126 20801 20801 I System.out: 🤖 Applying AI smart search...
+02-02 22:50:10.129 20801 20801 I System.out: 🤖 Final AI request started (timeout=120000ms, products=24)
+02-02 22:50:10.193 20801 21867 I System.out: BigBasket: ✗ Error - Job was cancelled
+02-02 22:50:10.193 20801 21867 I System.out: BigBasket: ✗ Error - Job was cancelled
+02-02 22:50:10.194 20801 21871 I System.out: JioMart: ✗ WebView error - Job was cancelled
+02-02 22:50:10.194 20801 21871 I System.out: JioMart: ✗ Error - Job was cancelled
+02-02 22:50:10.196 20801 21867 I System.out: BigBasket: Completed (9/10)
+02-02 22:50:10.196 20801 21871 I System.out: JioMart: Completed (10/10)
+02-02 22:50:10.424 20801 20801 I System.out: WebView: Anti-detection script injected on page start
+02-02 22:50:10.446 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:10.503 20801 20801 I System.out: WebView Console: You are running a development build of Vue.
+02-02 22:50:10.503 20801 20801 I System.out: Make sure to use the production build (*.prod.js) when deploying for production. (https://www.jiomart.com/assets/global/js/vue_global.min.js:13)
+02-02 22:50:10.537 20801 20801 I System.out: WebView Console: A preload for 'https://www.jiomart.com/assets/ds2msite/js/jquery-3.4.1.min.js' is found, but is not used because the request credentials mode does not match. Consider taking a look at crossorigin attribute. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:10.589 20801 20801 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":1,"products":1,"images":1,"links":0,"jsonLd":1})
+02-02 22:50:10.598 20801 20801 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-02 22:50:10.599 20801 20801 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":1})
+02-02 22:50:10.700 20801 20801 I System.out: WebView Console: A preload for 'https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/buybox_algolia_filters.min.js' is found, but is not used because the request credentials mode does not match. Consider taking a look at crossorigin attribute. (https://www.jiomart.com/search/banana:3970)
+02-02 22:50:10.700 20801 20801 I System.out: WebView Console: A preload for 'https://www.jiomart.com/assets/version1768913331/ds2msite/js/autocomplete_vertex.min.js' is found, but is not used because the request credentials mode does not match. Consider taking a look at crossorigin attribute. (https://www.jiomart.com/search/banana:3970)
+02-02 22:50:10.820 20801 20801 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-02 22:50:10.821 20801 20801 I System.out: WebView Console: show_normal_payment_banner without_loggedIn 0 (https://www.jiomart.com/assets/version1768913331/ds2msite/js/cart.min.js:5)
+02-02 22:50:10.872 20801 20801 I System.out: WebView Console: init jioads (https://www.jiomart.com/search/banana:2163)
+02-02 22:50:10.872 20801 20801 I System.out: WebView Console: jioads set config (https://www.jiomart.com/search/banana:2431)
+02-02 22:50:10.872 20801 20801 I System.out: WebView Console: %cWebsdk log%csetConfiguration called with options: [object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:10.872 20801 20801 I System.out: WebView Console: %cWebsdk log%cuid fetched: ae2f8a2d-86a7-425e-b574-a04c160aae00 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:10.872 20801 20801 I System.out: WebView Console: %cWebsdk log%cPartner IDs fetched: null color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:10.872 20801 20801 I System.out: WebView Console: %cWebsdk log%cResponse from FETCH color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:10.906 20801 20801 I System.out: WebView Console: %cWebsdk log%cHTTP Call Status: 404 | State: 4 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:10.907 20801 20801 I System.out: WebView Console: %cWebsdk log%c[object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-02 22:50:10.991 20801 20801 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-02 22:50:10.991 20801 20801 I System.out: WebView Console: app obj [object Object] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/mapp.min.js:5)
+02-02 22:50:11.123 20801 20801 I System.out: WebView Console: Page Load Time (sec): 1.49 (https://www.jiomart.com/search/banana:3941)
+02-02 22:50:11.205 20801 20801 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-02 22:50:11.576 20801 20801 I System.out: ✅ Final AI success in 1448ms (aiPowered=false, products=13)
+02-02 22:50:12.277 20801 20801 I System.out: WebView Console: localshops  [object Proxy] [object Proxy] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.338 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.342 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.344 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.346 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.348 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.349 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.351 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.354 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.355 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.357 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.359 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.361 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.364 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.366 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.369 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.369 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.371 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.374 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.376 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.380 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.381 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.382 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.385 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.386 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.388 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.390 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.391 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.393 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.396 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.397 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.399 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.399 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.401 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.403 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.404 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.406 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.408 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.410 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.413 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.415 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.416 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.417 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.419 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.421 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.423 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.426 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.428 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.430 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.432 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:12.433 20801 20801 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-02 22:50:13.739 20801 20801 I System.out: WebView: Content ready! Extracting immediately (attempt 0)
+02-02 22:50:14.593 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-Medium-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:14.594 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-Bold-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:14.594 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-SemiBold-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:14.594 20801 20801 I System.out: WebView Console: The resource https://media-assets.swiggy.com/dls-web-assets/dls/fonts/Gilroy-ExtraBold-Rupee.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.swiggy.com/instamart/search?custom_back=true&query=banana:0)
+02-02 22:50:14.785 20801 20801 I System.out: WebView: Backup extraction triggered
+02-02 22:50:15.549 20801 20801 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-02 22:50:15.854 20801 20801 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-02 22:50:17.630 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/ds2msite/js/smart-app-banner-v3-1.min.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.631 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Black.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.631 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Medium.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.631 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1768913331/ds2msite/js/autocomplete_vertex.min.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.631 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Bold.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.632 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Bold.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.632 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/buybox_algolia_filters.min.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.632 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Medium.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.633 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/ds2msite/js/jquery-3.4.1.min.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:17.633 20801 20801 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Black.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana:0)
+02-02 22:50:19.266 20801 20801 I System.out: WebView Console: be = 8736437336311770052807186 (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-02 22:50:19.266 20801 20801 I System.out: WebView Console: sp = undefined (https://cdn.epsilondelta.co/static/gemGen.js:1)

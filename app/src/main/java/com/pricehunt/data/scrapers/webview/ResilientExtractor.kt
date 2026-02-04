@@ -1,11 +1,13 @@
 package com.pricehunt.data.scrapers.webview
 
 import com.pricehunt.data.model.Product
+import com.pricehunt.data.search.SearchIntelligence
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import java.util.regex.Pattern
 
 /**
  * Ultra-Resilient Product Extractor
@@ -189,11 +191,12 @@ object ResilientExtractor {
                 val validProducts = products.filter { isValidProductName(it.name) }
                 
                 if (validProducts.isNotEmpty()) {
-                    logI(TAG, "[$platformName] ✓ ${strategy.name} SUCCESS - ${validProducts.size} products")
-                    validProducts.take(3).forEachIndexed { i, p ->
+                    val enrichedProducts = enrichProductsWithQuantity(doc, validProducts)
+                    logI(TAG, "[$platformName] ✓ ${strategy.name} SUCCESS - ${enrichedProducts.size} products")
+                    enrichedProducts.take(3).forEachIndexed { i, p ->
                         logD(TAG, "[$platformName]   ${i+1}. ${p.name.take(50)} - ₹${p.price}")
                     }
-                    return validProducts.take(10)
+                    return enrichedProducts.take(10)
                 }
             } catch (e: Exception) {
                 logE(TAG, "[$platformName] ${strategy.name} error: ${e.message}")
@@ -869,6 +872,7 @@ object ResilientExtractor {
         )
         
         val seenUrls = mutableSetOf<String>()
+        val seenNamePrice = mutableSetOf<String>()
         
         for (pattern in linkPatterns) {
             val links = doc.select(pattern)
@@ -1256,6 +1260,7 @@ object ResilientExtractor {
         logD(TAG, "[$platformName] Found ${productLinks.size} Instamart product links")
         
         val seenUrls = mutableSetOf<String>()
+        val seenNamePrice = mutableSetOf<String>()
         
         for (link in productLinks.take(15)) {
             val href = link.attr("abs:href")
@@ -1370,6 +1375,7 @@ object ResilientExtractor {
         )
         
         val seenUrls = mutableSetOf<String>()
+        val seenNamePrice = mutableSetOf<String>()
         
         // Strategy 1: Find product links with Zepto-specific patterns
         for (pattern in zeptoUrlPatterns) {
@@ -1395,11 +1401,15 @@ object ResilientExtractor {
                 seenUrls.add(href)
                 
                 // Find the product container
-                val container = findProductContainer(link) ?: link
+                val container = findZeptoProductContainer(link) ?: findProductContainer(link) ?: link
                 
                 // Extract product info
                 val img = container.selectFirst("img[alt], img[src]")
-                val name = img?.attr("alt")?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                val name = link.selectFirst("img[alt]")?.attr("alt")?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                    ?: link.attr("aria-label")?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                    ?: link.selectFirst("h2, h3, h4, [class*='name'], [class*='title']")?.text()
+                        ?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                    ?: img?.attr("alt")?.takeIf { it.length in 5..120 && isValidProductName(it) }
                     ?: container.selectFirst("h2, h3, h4, [class*='name'], [class*='title']")?.text()
                         ?.takeIf { it.length in 5..120 && isValidProductName(it) }
                 
@@ -1410,9 +1420,14 @@ object ResilientExtractor {
                     ?: img?.attr("abs:data-src")
                 
                 if (name != null && price != null && price > 0) {
-                    logD(TAG, "[$platformName] ✓ Extracted: $name = ₹$price (MRP: ${originalPrice ?: "N/A"}) -> $href")
+                    val finalName = appendQuantityToNameIfMissing(name, container.text())
+                    val dedupeKey = "${finalName.lowercase()}|${String.format("%.2f", price)}"
+                    if (!seenNamePrice.add(dedupeKey)) {
+                        continue
+                    }
+                    logD(TAG, "[$platformName] ✓ Extracted: $finalName = ₹$price (MRP: ${originalPrice ?: "N/A"}) -> $href")
                     results.add(createProduct(
-                        ProductData(name, price, originalPrice, imageUrl, href),
+                        ProductData(finalName, price, originalPrice, imageUrl, href),
                         platformName, platformColor, deliveryTime, baseUrl
                     ))
                 }
@@ -1462,23 +1477,33 @@ object ResilientExtractor {
                             }
                             
                             // Use Zepto-specific price extraction
-                            val img = element.selectFirst("img[alt], img[src]")
-                            val name = img?.attr("alt")?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                            val container = findZeptoProductContainer(element) ?: element
+                            val img = container.selectFirst("img[alt], img[src]")
+                            val name = element.selectFirst("img[alt]")?.attr("alt")?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                                ?: element.attr("aria-label")?.takeIf { it.length in 5..120 && isValidProductName(it) }
                                 ?: element.selectFirst("h2, h3, h4, [class*='name'], [class*='title']")?.text()
                                     ?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                                ?: img?.attr("alt")?.takeIf { it.length in 5..120 && isValidProductName(it) }
+                                ?: container.selectFirst("h2, h3, h4, [class*='name'], [class*='title']")?.text()
+                                    ?.takeIf { it.length in 5..120 && isValidProductName(it) }
                             
-                            val price = extractZeptoPrice(element)
-                            val originalPrice = if (price != null) extractZeptoOriginalPrice(element, price) else null
+                            val price = extractZeptoPrice(container)
+                            val originalPrice = if (price != null) extractZeptoOriginalPrice(container, price) else null
                             val imageUrl = img?.attr("abs:src")?.takeIf { it.isNotBlank() }
                             
                             if (name != null && price != null && price > 0) {
                                 val finalUrl = productUrl
                                 if (finalUrl != null && finalUrl.contains("zeptonow.com") && !finalUrl.contains("/search")) {
+                                    val finalName = appendQuantityToNameIfMissing(name, container.text())
+                                    val dedupeKey = "${finalName.lowercase()}|${String.format("%.2f", price)}"
+                                    if (!seenNamePrice.add(dedupeKey)) {
+                                        return@forEach
+                                    }
                                     results.add(createProduct(
-                                        ProductData(name, price, originalPrice, imageUrl, finalUrl),
+                                        ProductData(finalName, price, originalPrice, imageUrl, finalUrl),
                                         platformName, platformColor, deliveryTime, baseUrl
                                     ))
-                                    logD(TAG, "[$platformName] ✓ Extracted via selector: $name = ₹$price -> $finalUrl")
+                                    logD(TAG, "[$platformName] ✓ Extracted via selector: $finalName = ₹$price -> $finalUrl")
                                 } else {
                                     logW(TAG, "[$platformName] ⚠ No valid URL for: $name")
                                 }
@@ -1599,6 +1624,20 @@ object ResilientExtractor {
         
         logD(TAG, "[Zepto] Selected price: ₹$selectedPrice (candidates: ${validCandidates.map { it.price }})")
         return selectedPrice
+    }
+
+    private fun findZeptoProductContainer(element: Element): Element? {
+        val candidates = sequenceOf(element) + element.parents().asSequence()
+        return candidates.take(7).firstOrNull { el ->
+            val text = el.text()
+            val textLen = text.length
+            if (textLen !in 20..600) return@firstOrNull false
+            val priceCount = PRICE_REGEX.findAll(text).count()
+            if (priceCount !in 1..4) return@firstOrNull false
+            val linkCount = el.select("a[href*='/pn/'], a[href*='/prn/'], a[href*='/product/']").size
+            if (linkCount > 3) return@firstOrNull false
+            el.select("img").isNotEmpty()
+        }
     }
     
     /**
@@ -2661,6 +2700,62 @@ object ResilientExtractor {
             url = productUrl,
             imageUrl = data.imageUrl
         )
+    }
+
+    private fun enrichProductsWithQuantity(doc: Document, products: List<Product>): List<Product> {
+        return products.map { product ->
+            if (SearchIntelligence.parseQuantity(product.name) != null) {
+                product
+            } else {
+                val contextText = findQuantityContext(doc, product.name)
+                val enrichedName = appendQuantityToNameIfMissing(product.name, contextText)
+                if (enrichedName != product.name) {
+                    product.copy(name = enrichedName)
+                } else {
+                    product
+                }
+            }
+        }
+    }
+
+    private fun appendQuantityToNameIfMissing(name: String, contextText: String?): String {
+        val trimmed = name.trim()
+        if (SearchIntelligence.parseQuantity(trimmed) != null) return trimmed
+        val context = contextText?.takeIf { it.isNotBlank() } ?: return trimmed
+        val parsed = SearchIntelligence.parseQuantity(context) ?: return trimmed
+        val display = parsed.toDisplayString()
+        if (display.isBlank()) return trimmed
+        if (trimmed.contains(display, ignoreCase = true)) return trimmed
+        return "$trimmed, $display"
+    }
+
+    private fun findQuantityContext(doc: Document, productName: String): String? {
+        val tokens = productName
+            .split(Regex("\\s+"))
+            .filter { it.length > 2 }
+        if (tokens.isEmpty()) return null
+
+        val keys = listOf(
+            tokens.take(4).joinToString(" "),
+            tokens.take(2).joinToString(" "),
+            tokens.first()
+        ).distinct().filter { it.isNotBlank() }
+
+        for (key in keys) {
+            val regex = Pattern.compile(Pattern.quote(key), Pattern.CASE_INSENSITIVE)
+            val elements = doc.getElementsMatchingText(regex)
+            for (element in elements.take(10)) {
+                val container = element.parents()
+                    .firstOrNull { it.text().length in 20..600 }
+                    ?: element
+                val context = container.text()
+                if (SearchIntelligence.parseQuantity(context) != null) {
+                    return context
+                }
+            }
+        }
+
+        return null
     }
     
     /**

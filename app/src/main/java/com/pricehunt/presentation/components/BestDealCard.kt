@@ -281,9 +281,25 @@ private fun BestDealContent(
                     }
                 }
                 
+                // Extract and display quantity
+                val quantity = remember(product.name) {
+                    SearchIntelligence.parseQuantity(product.name)?.toDisplayString()
+                }
+                quantity?.let { qty ->
+                    Text(
+                        qty,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                
                 // Per-unit price for fair comparison (e.g., ₹21.8/100ml)
                 val perUnitPrice = remember(product) {
                     SearchIntelligence.calculatePerUnitPrice(product)
+                }
+                val perPiecePrice = remember(product) {
+                    SearchIntelligence.calculatePerPiecePrice(product)
                 }
                 perUnitPrice?.let { pup ->
                     Surface(
@@ -292,6 +308,20 @@ private fun BestDealContent(
                     ) {
                         Text(
                             "💰 ${pup.toDisplayString()} - Best Value!",
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF4CAF50),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                if (perPiecePrice != null && perUnitPrice?.unitType != "count") {
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            "💰 ${perPiecePrice.toDisplayString()}",
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color(0xFF4CAF50),

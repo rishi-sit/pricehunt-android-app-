@@ -13,9 +13,11 @@ import com.pricehunt.data.scrapers.api.DirectApiScraper
 import com.pricehunt.data.scrapers.api.ApiScrapeResult
 import com.pricehunt.data.scrapers.health.PlatformHealthMonitor
 import com.pricehunt.data.scrapers.webview.WebViewScraperHelper
+import com.pricehunt.data.search.SearchIntelligence
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.net.URLEncoder
+import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -258,7 +260,7 @@ class SelfHealingScraper @Inject constructor(
      * 2. HTTP scraping - Fast, works for server-rendered pages
      * 3. WebView with adaptive extraction - For JavaScript-heavy SPAs
      * 4. Alternative URLs - Try different URL patterns
-     * 5. AI Fallback - Send raw HTML to backend for Gemini extraction
+     * 5. AI Fallback - Send raw HTML to backend for AI extraction
      */
     private suspend fun scrapePlatform(
         platform: String,
@@ -365,7 +367,7 @@ class SelfHealingScraper @Inject constructor(
             }
         }
         
-        // Strategy 4: AI FALLBACK - Send raw HTML to backend for Gemini extraction
+        // Strategy 4: AI FALLBACK - Send raw HTML to backend for AI extraction
         log("$platform: Trying AI fallback extraction...")
         try {
             val aiResult = scrapeWithAIFallback(
@@ -389,7 +391,7 @@ class SelfHealingScraper @Inject constructor(
     }
     
     /**
-     * AI Fallback: Send raw HTML to backend for Gemini-powered extraction
+     * AI Fallback: Send raw HTML to backend for AI-powered extraction
      * This is the ULTIMATE FALLBACK when all client-side extraction fails
      */
     private suspend fun scrapeWithAIFallback(
@@ -503,10 +505,11 @@ class SelfHealingScraper @Inject constructor(
         }
         
         val products = extractionResults.map { it.product }
+        val enrichedProducts = enrichProductsWithQuantity(doc, products)
         val avgConfidence = extractionResults.map { it.confidence }.average()
         
         // Fix URLs if needed
-        val fixedProducts = products.map { product ->
+        val fixedProducts = enrichedProducts.map { product ->
             if (product.url.isBlank() || product.url == config.baseUrl) {
                 product.copy(
                     url = "${config.baseUrl}/search?q=${URLEncoder.encode(product.name, "UTF-8")}&pincode=$pincode"
@@ -564,11 +567,13 @@ class SelfHealingScraper @Inject constructor(
             return ScrapeResult.Failure("No products in HTTP response", html = html) // Include HTML for AI fallback
         }
         
+        val doc = org.jsoup.Jsoup.parse(html)
         val products = extractionResults.map { it.product }
+        val enrichedProducts = enrichProductsWithQuantity(doc, products)
         val avgConfidence = extractionResults.map { it.confidence }.average()
         
         return ScrapeResult.Success(
-            products = products,
+            products = enrichedProducts,
             avgConfidence = avgConfidence,
             structureHash = null
         )
@@ -746,6 +751,62 @@ class SelfHealingScraper @Inject constructor(
         } catch (e: Exception) {
             // Unit test environment
         }
+    }
+
+    private fun enrichProductsWithQuantity(doc: org.jsoup.nodes.Document, products: List<Product>): List<Product> {
+        return products.map { product ->
+            if (SearchIntelligence.parseQuantity(product.name) != null) {
+                product
+            } else {
+                val contextText = findQuantityContext(doc, product.name)
+                val enrichedName = appendQuantityToNameIfMissing(product.name, contextText)
+                if (enrichedName != product.name) {
+                    product.copy(name = enrichedName)
+                } else {
+                    product
+                }
+            }
+        }
+    }
+
+    private fun appendQuantityToNameIfMissing(name: String, contextText: String?): String {
+        val trimmed = name.trim()
+        if (SearchIntelligence.parseQuantity(trimmed) != null) return trimmed
+        val context = contextText?.takeIf { it.isNotBlank() } ?: return trimmed
+        val parsed = SearchIntelligence.parseQuantity(context) ?: return trimmed
+        val display = parsed.toDisplayString()
+        if (display.isBlank()) return trimmed
+        if (trimmed.contains(display, ignoreCase = true)) return trimmed
+        return "$trimmed, $display"
+    }
+
+    private fun findQuantityContext(doc: org.jsoup.nodes.Document, productName: String): String? {
+        val tokens = productName
+            .split(Regex("\\s+"))
+            .filter { it.length > 2 }
+        if (tokens.isEmpty()) return null
+
+        val keys = listOf(
+            tokens.take(4).joinToString(" "),
+            tokens.take(2).joinToString(" "),
+            tokens.first()
+        ).distinct().filter { it.isNotBlank() }
+
+        for (key in keys) {
+            val regex = Pattern.compile(Pattern.quote(key), Pattern.CASE_INSENSITIVE)
+            val elements = doc.getElementsMatchingText(regex)
+            for (element in elements.take(10)) {
+                val container = element.parents()
+                    .firstOrNull { it.text().length in 20..600 }
+                    ?: element
+                val context = container.text()
+                if (SearchIntelligence.parseQuantity(context) != null) {
+                    return context
+                }
+            }
+        }
+
+        return null
     }
 }
 

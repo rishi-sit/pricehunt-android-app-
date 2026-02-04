@@ -1,20 +1,23 @@
 package com.pricehunt.data.repository
 
+import android.util.Log
 import com.pricehunt.data.model.Platforms
 import com.pricehunt.data.model.Product
 import com.pricehunt.data.remote.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Repository for AI-powered smart search using backend Gemini integration.
+ * Repository for AI-powered smart search using backend AI integration (Groq/Mistral/Gemini).
  * 
  * Flow:
  * 1. Android app scrapes products from all platforms (using WebView scrapers)
  * 2. Scraped products are sent to backend `/api/smart-search-and-match`
- * 3. Backend uses Gemini AI to:
+ * 3. Backend uses AI (Mistral) to:
  *    - Filter out irrelevant products (e.g., "milkshake" when searching "milk")
  *    - Match similar products across platforms
  *    - Find best deals
@@ -75,6 +78,17 @@ class SmartSearchRepository @Inject constructor(
             
             val response = api.smartSearchAndMatch(request)
             
+            // Log AI provider info for debugging
+            val aiMeta = response.aiMeta
+            Log.i("SmartSearchRepo", "🤖 AI Provider: ${aiMeta?.provider ?: "unknown"}, " +
+                "Model: ${aiMeta?.model ?: "unknown"}, " +
+                "Latency: ${aiMeta?.latencyMs ?: 0}ms, " +
+                "Products: ${response.allProducts.size}, " +
+                "Groups: ${response.productGroups.size}")
+            if (aiMeta?.fallbackReason != null) {
+                Log.w("SmartSearchRepo", "⚠️ Fallback: ${aiMeta.fallbackReason}")
+            }
+            
             SmartSearchResult.Success(
                 query = response.query,
                 aiPowered = response.aiPowered,
@@ -85,8 +99,14 @@ class SmartSearchRepository @Inject constructor(
                 filteredOut = response.filteredOut,
                 stats = response.stats
             )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()?.take(300)
+            println("SmartSearchRepository: HTTP ${e.code()} - ${errorBody ?: e.message()}")
+            SmartSearchResult.Error("HTTP ${e.code()}")
         } catch (e: Exception) {
-            println("SmartSearchRepository: Error - ${e.message}")
+            println("SmartSearchRepository: Error (${e.javaClass.simpleName}) - ${e.message}")
             SmartSearchResult.Error(e.message ?: "Unknown error")
         }
     }
@@ -130,13 +150,31 @@ class SmartSearchRepository @Inject constructor(
             
             val response = api.smartSearch(request)
             
+            // Log AI provider info for debugging
+            val aiMeta = response.aiMeta
+            Log.i("SmartSearchRepo", "🤖 AI Provider: ${aiMeta?.provider ?: "unknown"}, " +
+                "Model: ${aiMeta?.model ?: "unknown"}, " +
+                "Latency: ${aiMeta?.latencyMs ?: 0}ms, " +
+                "Results: ${response.results.size}, " +
+                "Filtered: ${response.filteredOut.size}")
+            if (aiMeta?.fallbackReason != null) {
+                Log.w("SmartSearchRepo", "⚠️ Fallback: ${aiMeta.fallbackReason}")
+            }
+            
             FilterResult.Success(
                 aiPowered = response.aiPowered,
                 relevantProducts = response.results.map { it.toProduct() },
                 filteredOut = response.filteredOut,
                 bestDeal = response.bestDeal?.toProduct()
             )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()?.take(300)
+            println("SmartSearchRepository: HTTP ${e.code()} - ${errorBody ?: e.message()}")
+            FilterResult.Error("HTTP ${e.code()}")
         } catch (e: Exception) {
+            println("SmartSearchRepository: Error (${e.javaClass.simpleName}) - ${e.message}")
             FilterResult.Error(e.message ?: "Unknown error")
         }
     }
@@ -158,7 +196,14 @@ class SmartSearchRepository @Inject constructor(
                 productGroups = response.productGroups.map { it.toLocalGroup() },
                 unmatchedProducts = response.unmatchedProducts.map { it.toProduct() }
             )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()?.take(300)
+            println("SmartSearchRepository: HTTP ${e.code()} - ${errorBody ?: e.message()}")
+            MatchResult.Error("HTTP ${e.code()}")
         } catch (e: Exception) {
+            println("SmartSearchRepository: Error (${e.javaClass.simpleName}) - ${e.message}")
             MatchResult.Error(e.message ?: "Unknown error")
         }
     }

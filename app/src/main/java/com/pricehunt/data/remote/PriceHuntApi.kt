@@ -27,7 +27,7 @@ interface PriceHuntApi {
     
     /**
      * Smart search with AI filtering.
-     * Sends scraped products to backend for Gemini AI analysis.
+     * Sends scraped products to backend for AI analysis.
      */
     @POST("/api/smart-search")
     suspend fun smartSearch(@Body request: SmartSearchRequest): SmartSearchResponse
@@ -153,11 +153,19 @@ data class SmartSearchResponse(
     @SerializedName("query") val query: String,
     @SerializedName("pincode") val pincode: String?,
     @SerializedName("ai_powered") val aiPowered: Boolean,
+    @SerializedName("ai_meta") val aiMeta: AiMeta?,
     @SerializedName("query_understanding") val queryUnderstanding: Map<String, Any>?,
     @SerializedName("results") val results: List<ApiProductWithRelevance>,
     @SerializedName("filtered_out") val filteredOut: List<FilteredProduct>,
     @SerializedName("best_deal") val bestDeal: ApiProductWithRelevance?,
     @SerializedName("stats") val stats: SearchStats
+)
+
+data class AiMeta(
+    @SerializedName("provider") val provider: String?,
+    @SerializedName("model") val model: String?,
+    @SerializedName("latency_ms") val latencyMs: Int?,
+    @SerializedName("fallback_reason") val fallbackReason: String?
 )
 
 data class MatchProductsResponse(
@@ -171,6 +179,7 @@ data class SmartSearchAndMatchResponse(
     @SerializedName("query") val query: String,
     @SerializedName("pincode") val pincode: String?,
     @SerializedName("ai_powered") val aiPowered: Boolean,
+    @SerializedName("ai_meta") val aiMeta: AiMeta?,
     @SerializedName("query_understanding") val queryUnderstanding: Map<String, Any>?,
     @SerializedName("product_groups") val productGroups: List<ProductGroup>,
     @SerializedName("all_products") val allProducts: List<ApiProductWithRelevance>,

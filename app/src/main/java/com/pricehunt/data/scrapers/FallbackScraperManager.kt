@@ -2,7 +2,10 @@ package com.pricehunt.data.scrapers
 
 import com.pricehunt.data.model.Platforms
 import com.pricehunt.data.model.Product
+import com.pricehunt.data.remote.AIExtractRequest
+import com.pricehunt.data.remote.PriceHuntApi
 import com.pricehunt.data.scrapers.webview.WebViewScraperHelper
+import com.pricehunt.data.search.SearchIntelligence
 import com.pricehunt.data.scrapers.webview.ResilientExtractor
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -24,7 +27,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class FallbackScraperManager @Inject constructor(
-    private val webViewHelper: WebViewScraperHelper
+    private val webViewHelper: WebViewScraperHelper,
+    private val api: PriceHuntApi
 ) {
     
     companion object {
@@ -226,7 +230,7 @@ class FallbackScraperManager @Inject constructor(
      * Get fallback strategies for a platform
      */
     private fun getFallbackStrategies(platform: String): List<ScraperStrategy> {
-        return when (platform) {
+        val strategies = when (platform) {
             Platforms.FLIPKART, Platforms.FLIPKART_MINUTES -> listOf(
                 ScraperStrategy("HTTP alternative URL") { _, eq, pc -> scrapeFlipkartAlt(eq, pc) },
                 ScraperStrategy("WebView with scroll") { _, eq, pc -> scrapeFlipkartWebView(eq, pc) },
@@ -254,6 +258,9 @@ class FallbackScraperManager @Inject constructor(
                 ScraperStrategy("Price pattern extraction") { _, eq, pc -> scrapeBlinkitPatterns(eq, pc) }
             )
             else -> emptyList()
+        }
+        return strategies + ScraperStrategy("AI fallback extraction") { q, eq, pc ->
+            aiExtractFallback(platform, q, eq, pc)
         }
     }
     
@@ -288,7 +295,8 @@ class FallbackScraperManager @Inject constructor(
             color = Platforms.BIGBASKET_COLOR,
             delivery = "1-2 hours",
             baseUrl = "https://www.bigbasket.com",
-            pincode = pincode
+            pincode = pincode,
+            waitForSelector = "img[src*='bbassets'], img[src*='bigbasket'], [data-qa*='product'], [data-testid*='product']"
         )
     }
     
@@ -465,7 +473,8 @@ class FallbackScraperManager @Inject constructor(
             delivery = "15-30 mins",
             baseUrl = "https://www.swiggy.com/instamart",
             pincode = pincode,
-            timeoutMs = 12_000L  // Reduced for faster fallback
+            timeoutMs = 12_000L,  // Reduced for faster fallback
+            waitForSelector = "img[src*='cloudinary'], img[src*='swiggy']"
         )
     }
     
@@ -504,7 +513,8 @@ class FallbackScraperManager @Inject constructor(
             delivery = "1-2 days",
             baseUrl = "https://www.jiomart.com",
             pincode = pincode,
-            timeoutMs = 12_000L  // Reduced for faster fallback
+            timeoutMs = 12_000L,  // Reduced for faster fallback
+            waitForSelector = "a[href*='/p/'], img[alt]"
         )
     }
     
@@ -540,7 +550,8 @@ class FallbackScraperManager @Inject constructor(
             delivery = "10 mins",
             baseUrl = "https://www.zeptonow.com",
             pincode = pincode,
-            timeoutMs = 12_000L  // Reduced for faster fallback
+            timeoutMs = 12_000L,  // Reduced for faster fallback
+            waitForSelector = "a[href*='/pn/'], img[alt]"
         )
     }
     
@@ -552,7 +563,8 @@ class FallbackScraperManager @Inject constructor(
             delivery = "10 mins",
             baseUrl = "https://blinkit.com",
             pincode = pincode,
-            timeoutMs = 12_000L  // Reduced for faster fallback
+            timeoutMs = 12_000L,  // Reduced for faster fallback
+            waitForSelector = "img[alt]"
         )
     }
     
@@ -582,13 +594,15 @@ class FallbackScraperManager @Inject constructor(
         delivery: String,
         baseUrl: String,
         pincode: String,
-        timeoutMs: Long = 15_000L
+        timeoutMs: Long = 15_000L,
+        waitForSelector: String? = null
     ): List<Product> {
         webViewHelper.setLocation(pincode)
         
         val html = webViewHelper.loadAndGetHtml(
             url = url,
             timeoutMs = timeoutMs,
+            waitForSelector = waitForSelector,
             pincode = pincode
         )
         
@@ -607,6 +621,131 @@ class FallbackScraperManager @Inject constructor(
                 product.url
             }
             product.copy(url = finalUrl)
+        }
+    }
+
+    private suspend fun aiExtractFallback(
+        platform: String,
+        query: String,
+        encodedQuery: String,
+        pincode: String
+    ): List<Product> {
+        val config = getAIFallbackConfig(platform, encodedQuery) ?: return emptyList()
+        return try {
+            webViewHelper.setLocation(pincode)
+            val html = webViewHelper.loadAndGetHtml(
+                url = config.searchUrl,
+                timeoutMs = 15_000L,
+                waitForSelector = config.waitForSelector,
+                pincode = pincode
+            )?.take(100_000)
+
+            if (html.isNullOrBlank()) {
+                return emptyList()
+            }
+
+            val response = api.aiExtract(
+                AIExtractRequest(
+                    html = html,
+                    platform = platform,
+                    searchQuery = query,
+                    baseUrl = config.baseUrl
+                )
+            )
+
+            if (!response.aiPowered || response.productsFound <= 0) {
+                return emptyList()
+            }
+
+            response.products.map { aiProduct ->
+                Product(
+                    name = aiProduct.name,
+                    price = aiProduct.price,
+                    originalPrice = aiProduct.originalPrice,
+                    imageUrl = aiProduct.imageUrl ?: "",
+                    platform = platform,
+                    platformColor = config.color,
+                    deliveryTime = config.deliveryTime,
+                    url = aiProduct.productUrl ?: config.baseUrl,
+                    rating = null,
+                    discount = aiProduct.originalPrice?.let { orig ->
+                        if (orig > aiProduct.price) "${((orig - aiProduct.price) / orig * 100).toInt()}% off" else null
+                    },
+                    available = aiProduct.inStock
+                )
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    private data class AIFallbackConfig(
+        val searchUrl: String,
+        val baseUrl: String,
+        val color: Long,
+        val deliveryTime: String,
+        val waitForSelector: String?
+    )
+
+    private fun getAIFallbackConfig(platform: String, encodedQuery: String): AIFallbackConfig? {
+        return when (platform) {
+            Platforms.BIGBASKET -> AIFallbackConfig(
+                searchUrl = "https://www.bigbasket.com/ps/?q=$encodedQuery",
+                baseUrl = "https://www.bigbasket.com",
+                color = Platforms.BIGBASKET_COLOR,
+                deliveryTime = "1-2 hours",
+                waitForSelector = "img[src*='bbassets'], img[src*='bigbasket'], [data-qa*='product'], [data-testid*='product']"
+            )
+            Platforms.INSTAMART -> AIFallbackConfig(
+                searchUrl = "https://www.swiggy.com/instamart/search?custom_back=true&query=$encodedQuery",
+                baseUrl = "https://www.swiggy.com/instamart",
+                color = Platforms.INSTAMART_COLOR,
+                deliveryTime = "15-30 mins",
+                waitForSelector = "img[src*='cloudinary'], img[src*='swiggy']"
+            )
+            Platforms.BLINKIT -> AIFallbackConfig(
+                searchUrl = "https://blinkit.com/s/?q=$encodedQuery",
+                baseUrl = "https://blinkit.com",
+                color = Platforms.BLINKIT_COLOR,
+                deliveryTime = "10 mins",
+                waitForSelector = "img[alt]"
+            )
+            Platforms.ZEPTO -> AIFallbackConfig(
+                searchUrl = "https://www.zeptonow.com/search?query=$encodedQuery",
+                baseUrl = "https://www.zeptonow.com",
+                color = Platforms.ZEPTO_COLOR,
+                deliveryTime = "10 mins",
+                waitForSelector = "a[href*='/pn/'], img[alt]"
+            )
+            Platforms.FLIPKART_MINUTES -> AIFallbackConfig(
+                searchUrl = "https://www.flipkart.com/search?q=$encodedQuery&marketplace=GROCERY",
+                baseUrl = "https://www.flipkart.com",
+                color = Platforms.FLIPKART_MINUTES_COLOR,
+                deliveryTime = "10-15 mins",
+                waitForSelector = "a[href*='/p/'], img[alt]"
+            )
+            Platforms.JIOMART_QUICK -> AIFallbackConfig(
+                searchUrl = "https://www.jiomart.com/search/$encodedQuery?deliveryType=express",
+                baseUrl = "https://www.jiomart.com",
+                color = Platforms.JIOMART_COLOR,
+                deliveryTime = "15-30 mins",
+                waitForSelector = "a[href*='/p/'], img[alt]"
+            )
+            Platforms.JIOMART -> AIFallbackConfig(
+                searchUrl = "https://www.jiomart.com/search/$encodedQuery",
+                baseUrl = "https://www.jiomart.com",
+                color = Platforms.JIOMART_COLOR,
+                deliveryTime = "1-2 days",
+                waitForSelector = "a[href*='/p/'], img[alt]"
+            )
+            Platforms.FLIPKART -> AIFallbackConfig(
+                searchUrl = "https://www.flipkart.com/search?q=$encodedQuery",
+                baseUrl = "https://www.flipkart.com",
+                color = Platforms.FLIPKART_COLOR,
+                deliveryTime = "1-2 days",
+                waitForSelector = "a[href*='/p/'], img[alt]"
+            )
+            else -> null
         }
     }
     
@@ -701,8 +840,9 @@ class FallbackScraperManager @Inject constructor(
                         "$baseUrl/s?k=${URLEncoder.encode(name, "UTF-8")}&pincode=$pincode"
                     }
                     
+                    val finalName = appendQuantityToNameIfMissing(name.trim(), card.text())
                     products.add(Product(
-                        name = name.trim(),
+                        name = finalName,
                         price = price,
                         originalPrice = originalPrice,
                         imageUrl = imageUrl,
@@ -788,8 +928,9 @@ class FallbackScraperManager @Inject constructor(
                         productUrl = "$baseUrl/search?q=${URLEncoder.encode(name, "UTF-8")}&pincode=$pincode"
                     }
                     
+                    val finalName = appendQuantityToNameIfMissing(name.trim(), card.text())
                     products.add(Product(
-                        name = name.trim(),
+                        name = finalName,
                         price = price,
                         originalPrice = originalPrice,
                         imageUrl = imageUrl,
@@ -861,8 +1002,9 @@ class FallbackScraperManager @Inject constructor(
                 productUrl = "$baseUrl$productUrl"
             }
             
+            val finalName = appendQuantityToNameIfMissing(name.trim(), container.text())
             products.add(Product(
-                name = name.trim(),
+                name = finalName,
                 price = price,
                 originalPrice = null,
                 imageUrl = imageUrl,
@@ -900,8 +1042,9 @@ class FallbackScraperManager @Inject constructor(
             val price = match.groupValues[2].toDoubleOrNull() ?: return@forEach
             
             if (name.length > 3 && price in 10.0..5000.0) {
+                val finalName = appendQuantityToNameIfMissing(name.trim(), null)
                 products.add(Product(
-                    name = name.trim(),
+                    name = finalName,
                     price = price,
                     originalPrice = null,
                     imageUrl = "",
@@ -939,8 +1082,9 @@ class FallbackScraperManager @Inject constructor(
                     val price = match.groupValues[2].toDoubleOrNull() ?: return@forEach
                     
                     if (name.length > 3 && price in 10.0..5000.0) {
+                        val finalName = appendQuantityToNameIfMissing(name.trim(), null)
                         products.add(Product(
-                            name = name.trim(),
+                            name = finalName,
                             price = price,
                             originalPrice = null,
                             imageUrl = "",
@@ -960,6 +1104,17 @@ class FallbackScraperManager @Inject constructor(
         }
         
         return products
+    }
+
+    private fun appendQuantityToNameIfMissing(name: String, contextText: String?): String {
+        val trimmed = name.trim()
+        if (SearchIntelligence.parseQuantity(trimmed) != null) return trimmed
+        val context = contextText?.takeIf { it.isNotBlank() } ?: return trimmed
+        val parsed = SearchIntelligence.parseQuantity(context) ?: return trimmed
+        val display = parsed.toDisplayString()
+        if (display.isBlank()) return trimmed
+        if (trimmed.contains(display, ignoreCase = true)) return trimmed
+        return "$trimmed, $display"
     }
 }
 

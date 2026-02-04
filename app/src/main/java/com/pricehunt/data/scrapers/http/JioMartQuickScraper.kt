@@ -103,8 +103,9 @@ class JioMartQuickScraper @Inject constructor(
                             productUrl = "$baseUrl/search/${URLEncoder.encode(name, "UTF-8")}?deliveryType=express&pincode=$pincode"
                         }
 
+                        val finalName = appendQuantityToNameIfMissing(name.trim(), card.text())
                         products.add(Product(
-                            name = name.trim(),
+                            name = finalName,
                             price = price,
                             originalPrice = null,
                             imageUrl = card.selectFirst("img")?.attr("src") ?: "",

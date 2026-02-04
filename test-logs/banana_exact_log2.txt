@@ -1,0 +1,250 @@
+--------- beginning of main
+02-01 19:23:39.373 29021 29021 I System.out: 📝 HYBRID SEARCH: Starting for 'banana'
+02-01 19:23:39.436 29021 29021 I System.out: 💾 CACHE: Found cached results for 0 platforms (0 products)
+02-01 19:23:39.436 29021 29021 I System.out: === STARTING RAW SCRAPE: banana (pincode: 560001) ===
+02-01 19:23:39.436 29021 29021 I System.out: === NO LOCAL FILTERING - All intelligence handled by backend AI ===
+02-01 19:23:39.436 29021 11518 I System.out: === Launching all scrapers ===
+02-01 19:23:39.437 29021 30229 I System.out: Amazon: Starting (HTTP)
+02-01 19:23:39.437 29021 11517 I System.out: Blinkit: Starting (WebView)
+02-01 19:23:39.437 29021 30575 I System.out: Instamart: Starting (WebView)
+02-01 19:23:39.437 29021 11517 I System.out: Zepto: Starting (WebView)
+02-01 19:23:39.438 29021 30577 I System.out: BigBasket: Starting (WebView)
+02-01 19:23:39.438 29021 30229 I System.out: Amazon Fresh: Starting (HTTP)
+02-01 19:23:39.438 29021 30229 I System.out: Amazon: Searching for 'banana'...
+02-01 19:23:39.439 29021 30229 I System.out: Amazon: Fetching https://www.amazon.in/s?k=banana (pincode: 560001)
+02-01 19:23:39.439 29021 18773 I System.out: Blinkit: Searching for 'banana'...
+02-01 19:23:39.439 29021 18773 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-01 19:23:39.440 29021 18775 I System.out: Instamart: Searching for 'banana'...
+02-01 19:23:39.440 29021 18775 I System.out: DirectApiScraper: Instamart: Starting API scrape for 'banana'
+02-01 19:23:39.441 29021 22729 I System.out: Zepto: Searching for 'banana'...
+02-01 19:23:39.441 29021 22732 I System.out: BigBasket: Searching for 'banana'...
+02-01 19:23:39.441 29021 22732 I System.out: DirectApiScraper: BigBasket: Starting API scrape for 'banana'
+02-01 19:23:39.441 29021 30580 I System.out: Amazon Fresh: Searching for 'banana'...
+02-01 19:23:39.442 29021 22729 I System.out: DirectApiScraper: Zepto: Starting API scrape for 'banana'
+02-01 19:23:39.448 29021 30580 I System.out: Amazon Fresh: Fetching https://www.amazon.in/s?k=banana&i=nowstore (pincode: 560001)
+02-01 19:23:39.450 29021 22729 I System.out: DirectApiScraper: Zepto: API error: Unable to resolve host "api.zeptonow.com": No address associated with hostname
+02-01 19:23:39.605 29021 22732 I System.out: DirectApiScraper: BigBasket: HTTP 403
+02-01 19:23:39.605 29021 22732 I System.out: BigBasket: Direct API failed (HTTP 403)
+02-01 19:23:39.605 29021 22732 I System.out: BigBasket: Loading https://www.bigbasket.com/ps/?q=banana (WebView)...
+02-01 19:23:39.606 29021 22732 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-01 19:23:39.649 29021 29021 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; OnePlus 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.144 Mobile Safari/537.36
+02-01 19:23:39.677 29021 29021 I System.out: WebView: Set location cookies for www.bigbasket.com with pincode=560001
+02-01 19:23:39.703 29021 18775 I System.out: DirectApiScraper: Instamart: storeId fetch HTTP 404
+02-01 19:23:39.798 29021 18775 I System.out: DirectApiScraper: Instamart: HTTP 404
+02-01 19:23:39.798 29021 18775 I System.out: Instamart: Direct API failed (HTTP 404)
+02-01 19:23:39.798 29021 18775 I System.out: WebView: Location set to pincode=560001, lat=12.9716, lon=77.5946
+02-01 19:23:40.034 29021 29021 I System.out: WebView: Anti-detection script injected on page start
+02-01 19:23:40.058 29021 29021 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-01 19:23:40.214 29021 18773 I System.out: Blinkit: Starting Blinkit-specific extraction...
+02-01 19:23:40.215 29021 18773 I System.out: Blinkit: Found 0 product images
+02-01 19:23:40.215 29021 18773 I System.out: Blinkit: Found 0 data-* elements
+02-01 19:23:40.215 29021 18773 I System.out: Blinkit: Found 0 product links
+02-01 19:23:40.215 29021 18773 I System.out: Blinkit: Blinkit extraction found 0 products
+02-01 19:23:40.265 29021 18773 I System.out: Blinkit: Attempt 1/3 with 9s timeout
+02-01 19:23:40.275 29021 29021 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36
+02-01 19:23:40.292 29021 29021 I System.out: WebView: Set location cookies for blinkit.com with pincode=560001
+02-01 19:23:40.425 29021 18775 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-01 19:23:40.425 29021 18775 I System.out: Instamart: Trying Cloudinary image extraction...
+02-01 19:23:40.427 29021 18775 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-01 19:23:40.427 29021 18775 I System.out: Instamart: Trying general image extraction...
+02-01 19:23:40.429 29021 18775 I System.out: Instamart: Found 1 images with alt
+02-01 19:23:40.429 29021 18775 I System.out: Instamart: Trying data-* extraction...
+02-01 19:23:40.431 29021 18775 I System.out: Instamart: Found 4 data-* elements
+02-01 19:23:40.432 29021 18775 I System.out: Instamart: Trying generic resilient extraction...
+02-01 19:23:40.441 29021 18775 I System.out: Instamart: Total extraction found 0 products
+02-01 19:23:40.709 29021 22729 I System.out: DirectApiScraper: Zepto: HTTP 404
+02-01 19:23:40.709 29021 22729 I System.out: Zepto: Direct API failed (HTTP 404)
+02-01 19:23:40.709 29021 22729 I System.out: Zepto: Loading https://www.zeptonow.com/search?query=banana
+02-01 19:23:40.709 29021 22729 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-01 19:23:40.720 29021 29021 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-01 19:23:40.734 29021 29021 I System.out: WebView: Set location cookies for www.zeptonow.com with pincode=560001
+02-01 19:23:41.301 29021 18775 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-01 19:23:41.302 29021 18775 I System.out: Instamart: Trying Cloudinary image extraction...
+02-01 19:23:41.303 29021 18775 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-01 19:23:41.303 29021 18775 I System.out: Instamart: Trying general image extraction...
+02-01 19:23:41.307 29021 18775 I System.out: Instamart: Found 1 images with alt
+02-01 19:23:41.307 29021 18775 I System.out: Instamart: Trying data-* extraction...
+02-01 19:23:41.309 29021 18775 I System.out: Instamart: Found 4 data-* elements
+02-01 19:23:41.310 29021 18775 I System.out: Instamart: Trying generic resilient extraction...
+02-01 19:23:41.320 29021 18775 I System.out: Instamart: Total extraction found 0 products
+02-01 19:23:41.320 29021 18775 I System.out: Instamart: Attempt 1/3 with 9s timeout
+02-01 19:23:41.333 29021 29021 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; OnePlus 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.144 Mobile Safari/537.36
+02-01 19:23:41.348 29021 29021 I System.out: WebView: Set comprehensive Swiggy cookies for pincode=560001
+02-01 19:23:41.350 29021 29021 I System.out: WebView: Set location cookies for www.swiggy.com with pincode=560001
+02-01 19:23:41.845 29021 29021 I System.out: WebView: Anti-detection script injected on page start
+02-01 19:23:41.858 29021 29021 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-01 19:23:41.884 29021 30580 I System.out: Amazon Fresh: Received HTML (803163 bytes)
+02-01 19:23:41.923 29021 30580 I System.out: Amazon Fresh: Found 14 product cards
+02-01 19:23:41.925 29021 30580 I System.out: Amazon Fresh: Using ASIN: B09R82ZR1H
+02-01 19:23:41.925 29021 30580 I System.out: Amazon Fresh: Product URL for 'Beyond Snack Kerala Banana Chi' = https://www.amazon.in/dp/B09R82ZR1H?pincode=560001&i=nowstore
+02-01 19:23:41.925 29021 30580 I System.out: Amazon Fresh: ✓ Added Beyond Snack Kerala Banana Chi at ₹17.0 -> https://www.amazon.in/dp/B09R82ZR1H?pincode=560001&i=nowstore
+02-01 19:23:41.926 29021 30580 I System.out: Amazon Fresh: Using ASIN: B0C5XTRQMH
+02-01 19:23:41.926 29021 30580 I System.out: Amazon Fresh: Product URL for 'Beyond Snáck Kerala Banana Chi' = https://www.amazon.in/dp/B0C5XTRQMH?pincode=560001&i=nowstore
+02-01 19:23:41.926 29021 30580 I System.out: Amazon Fresh: ✓ Added Beyond Snáck Kerala Banana Chi at ₹15.0 -> https://www.amazon.in/dp/B0C5XTRQMH?pincode=560001&i=nowstore
+02-01 19:23:41.927 29021 30580 I System.out: Amazon Fresh: Using ASIN: B08WJ12R6N
+02-01 19:23:41.927 29021 30580 I System.out: Amazon Fresh: Product URL for 'Chheda's - Yellow Banana Chips' = https://www.amazon.in/dp/B08WJ12R6N?pincode=560001&i=nowstore
+02-01 19:23:41.927 29021 30580 I System.out: Amazon Fresh: ✓ Added Chheda's - Yellow Banana Chips at ₹142.0 -> https://www.amazon.in/dp/B08WJ12R6N?pincode=560001&i=nowstore
+02-01 19:23:41.928 29021 30580 I System.out: Amazon Fresh: Using ASIN: B08WHGWJH4
+02-01 19:23:41.928 29021 30580 I System.out: Amazon Fresh: Product URL for 'Chheda's Salt N Pepper Banana ' = https://www.amazon.in/dp/B08WHGWJH4?pincode=560001&i=nowstore
+02-01 19:23:41.928 29021 30580 I System.out: Amazon Fresh: ✓ Added Chheda's Salt N Pepper Banana  at ₹121.0 -> https://www.amazon.in/dp/B08WHGWJH4?pincode=560001&i=nowstore
+02-01 19:23:41.929 29021 30580 I System.out: Amazon Fresh: Using ASIN: B0DHXB67ZR
+02-01 19:23:41.929 29021 30580 I System.out: Amazon Fresh: Product URL for 'Modern Kitchens Spicy Banana C' = https://www.amazon.in/dp/B0DHXB67ZR?pincode=560001&i=nowstore
+02-01 19:23:41.929 29021 30580 I System.out: Amazon Fresh: ✓ Added Modern Kitchens Spicy Banana C at ₹48.0 -> https://www.amazon.in/dp/B0DHXB67ZR?pincode=560001&i=nowstore
+02-01 19:23:41.930 29021 30580 I System.out: Amazon Fresh: Using ASIN: B0CGM7VY6Z
+02-01 19:23:41.931 29021 30580 I System.out: Amazon Fresh: Product URL for 'Sweet Karam Coffee Nendran Ban' = https://www.amazon.in/dp/B0CGM7VY6Z?pincode=560001&i=nowstore
+02-01 19:23:41.931 29021 30580 I System.out: Amazon Fresh: ✓ Added Sweet Karam Coffee Nendran Ban at ₹57.0 -> https://www.amazon.in/dp/B0CGM7VY6Z?pincode=560001&i=nowstore
+02-01 19:23:41.932 29021 30580 I System.out: Amazon Fresh: Using ASIN: B07L26KYJN
+02-01 19:23:41.932 29021 30580 I System.out: Amazon Fresh: Product URL for 'Chheda's - Long Masala Banana ' = https://www.amazon.in/dp/B07L26KYJN?pincode=560001&i=nowstore
+02-01 19:23:41.932 29021 30580 I System.out: Amazon Fresh: ✓ Added Chheda's - Long Masala Banana  at ₹71.0 -> https://www.amazon.in/dp/B07L26KYJN?pincode=560001&i=nowstore
+02-01 19:23:41.933 29021 30580 I System.out: Amazon Fresh: Using ASIN: B0D8JYK9PL
+02-01 19:23:41.933 29021 30580 I System.out: Amazon Fresh: Product URL for 'Beyond Snack Nendran Kerala Ba' = https://www.amazon.in/dp/B0D8JYK9PL?pincode=560001&i=nowstore
+02-01 19:23:41.933 29021 30580 I System.out: Amazon Fresh: ✓ Added Beyond Snack Nendran Kerala Ba at ₹64.0 -> https://www.amazon.in/dp/B0D8JYK9PL?pincode=560001&i=nowstore
+02-01 19:23:41.934 29021 30580 I System.out: Amazon Fresh: Using ASIN: B0C5XST9C1
+02-01 19:23:41.934 29021 30580 I System.out: Amazon Fresh: Product URL for 'Beyond Snack Kerala Banana Chi' = https://www.amazon.in/dp/B0C5XST9C1?pincode=560001&i=nowstore
+02-01 19:23:41.934 29021 30580 I System.out: Amazon Fresh: ✓ Added Beyond Snack Kerala Banana Chi at ₹16.0 -> https://www.amazon.in/dp/B0C5XST9C1?pincode=560001&i=nowstore
+02-01 19:23:41.935 29021 30580 I System.out: Amazon Fresh: Using ASIN: B09PR6YMNV
+02-01 19:23:41.935 29021 30580 I System.out: Amazon Fresh: Product URL for 'FLAVORS OF KERALA (FOK) Premiu' = https://www.amazon.in/dp/B09PR6YMNV?pincode=560001&i=nowstore
+02-01 19:23:41.935 29021 30580 I System.out: Amazon Fresh: ✓ Added FLAVORS OF KERALA (FOK) Premiu at ₹289.0 -> https://www.amazon.in/dp/B09PR6YMNV?pincode=560001&i=nowstore
+02-01 19:23:41.936 29021 30580 I System.out: Amazon Fresh: Using ASIN: B01LAOH3T0
+02-01 19:23:41.936 29021 30580 I System.out: Amazon Fresh: Product URL for 'Chheda's Snacks - Banana Chips' = https://www.amazon.in/dp/B01LAOH3T0?pincode=560001&i=nowstore
+02-01 19:23:41.936 29021 30580 I System.out: Amazon Fresh: ✓ Added Chheda's Snacks - Banana Chips at ₹84.0 -> https://www.amazon.in/dp/B01LAOH3T0?pincode=560001&i=nowstore
+02-01 19:23:41.937 29021 30580 I System.out: Amazon Fresh: No price for 'INSIGHT Banana Loose'
+02-01 19:23:41.937 29021 30580 I System.out: Amazon Fresh: Using ASIN: B01D3DJW72
+02-01 19:23:41.937 29021 30580 I System.out: Amazon Fresh: Product URL for 'Modern Kitchens Banana Chips S' = https://www.amazon.in/dp/B01D3DJW72?pincode=560001&i=nowstore
+02-01 19:23:41.938 29021 30580 I System.out: Amazon Fresh: ✓ Added Modern Kitchens Banana Chips S at ₹90.0 -> https://www.amazon.in/dp/B01D3DJW72?pincode=560001&i=nowstore
+02-01 19:23:41.939 29021 30580 I System.out: Amazon Fresh: Using ASIN: B0CYBVR2TB
+02-01 19:23:41.939 29021 30580 I System.out: Amazon Fresh: Product URL for 'Karachi Bakery Banana Chips 15' = https://www.amazon.in/dp/B0CYBVR2TB?pincode=560001&i=nowstore
+02-01 19:23:41.939 29021 30580 I System.out: Amazon Fresh: ✓ Added Karachi Bakery Banana Chips 15 at ₹119.0 -> https://www.amazon.in/dp/B0CYBVR2TB?pincode=560001&i=nowstore
+02-01 19:23:41.939 29021 30580 I System.out: Amazon Fresh: ✓ Found 13 products
+02-01 19:23:41.939 29021 30580 I System.out: Amazon Fresh: Returning 5 products: [Beyond Snack Kerala , Beyond Snáck Kerala , Chheda's - Yellow Ba, Chheda's Salt N Pepp, Modern Kitchens Spic]
+02-01 19:23:41.939 29021 30580 I System.out: Amazon Fresh: [RAW] Got 5 products
+02-01 19:23:41.943 29021 30580 I System.out: Amazon Fresh: ✓ 5 products (raw, unfiltered)
+02-01 19:23:41.943 29021 30580 I System.out: Amazon Fresh: Completed (1/10)
+02-01 19:23:41.943 29021 29021 I System.out: [STREAM] Amazon Fresh: 5 products at 2507ms
+02-01 19:23:41.944 29021 29021 I System.out: 📊 Scraping: 1/10 platforms, Total: 5
+02-01 19:23:41.961 29021 29021 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Beyond Snáck Kerala Banana Chips - Peri Peri Flavour 26/25 Gms'
+02-01 19:23:42.208 29021 30229 I System.out: Amazon: Found 14 product cards
+02-01 19:23:42.209 29021 30229 I System.out: Amazon: Using ASIN: B07BG8WX37
+02-01 19:23:42.209 29021 30229 I System.out: Amazon: ✓ Added Fresh Banana Robusta, 1kg at ₹54.0 -> https://www.amazon.in/dp/B07BG8WX37?pincode=560001
+02-01 19:23:42.210 29021 30229 I System.out: Amazon: Using ASIN: B07NXZWCX7
+02-01 19:23:42.210 29021 30229 I System.out: Amazon: ✓ Added Fresh Banana Yelakki, 500 g at ₹61.0 -> https://www.amazon.in/dp/B07NXZWCX7?pincode=560001
+02-01 19:23:42.211 29021 30229 I System.out: Amazon: Using ASIN: B07BG6QLP8
+02-01 19:23:42.211 29021 30229 I System.out: Amazon: ✓ Added Fresh Banana - Nendran, 500g at ₹40.0 -> https://www.amazon.in/dp/B07BG6QLP8?pincode=560001
+02-01 19:23:42.212 29021 30229 I System.out: Amazon: Using ASIN: B07BG4Y1CB
+02-01 19:23:42.212 29021 30229 I System.out: Amazon: ✓ Added Fresh Banana, Red, 500g at ₹73.0 -> https://www.amazon.in/dp/B07BG4Y1CB?pincode=560001
+02-01 19:23:42.213 29021 30229 I System.out: Amazon: Using ASIN: B07BG8F1FN
+02-01 19:23:42.213 29021 30229 I System.out: Amazon: ✓ Added Fresh Sapota, 250g at ₹18.0 -> https://www.amazon.in/dp/B07BG8F1FN?pincode=560001
+02-01 19:23:42.214 29021 30229 I System.out: Amazon: Using ASIN: B07KKJWF6K
+02-01 19:23:42.214 29021 30229 I System.out: Amazon: ✓ Added Fresh Guava (Amrudh) Fresh,500 at ₹77.0 -> https://www.amazon.in/dp/B07KKJWF6K?pincode=560001
+02-01 19:23:42.216 29021 30229 I System.out: Amazon: Using ASIN: B07L8HNL7X
+02-01 19:23:42.217 29021 30229 I System.out: Amazon: ✓ Added Fresh Kinnow Orange, 1 kg at ₹92.0 -> https://www.amazon.in/dp/B07L8HNL7X?pincode=560001
+02-01 19:23:42.217 29021 30229 I System.out: Amazon: Using ASIN: B07HN6SNDL
+02-01 19:23:42.217 29021 30229 I System.out: Amazon: ✓ Added Fresh Banana Raw, 500g at ₹34.0 -> https://www.amazon.in/dp/B07HN6SNDL?pincode=560001
+02-01 19:23:42.218 29021 30229 I System.out: Amazon: ✓ Found 8 products
+02-01 19:23:42.218 29021 30229 I System.out: Amazon: [RAW] Got 5 products
+02-01 19:23:42.226 29021 30229 I System.out: Amazon: ✓ 5 products (raw, unfiltered)
+02-01 19:23:42.226 29021 30229 I System.out: Amazon: Completed (2/10)
+02-01 19:23:42.236 29021 29021 I System.out: [STREAM] Amazon: 5 products at 2800ms
+02-01 19:23:42.237 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:43.544 29021 29021 I System.out: WebView Console: Error with Permissions-Policy header: Unrecognized feature: 'browsing-topics'. (:0)
+02-01 19:23:43.544 29021 29021 I System.out: WebView Console: Error with Permissions-Policy header: Unrecognized feature: 'web-share'. (:0)
+02-01 19:23:43.556 29021 29021 I System.out: WebView: Anti-detection script injected on page start
+02-01 19:23:43.556 29021 29021 I System.out: WebView: Anti-detection script injected on page start
+02-01 19:23:43.632 29021 29021 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-01 19:23:43.645 29021 29021 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-01 19:23:43.837 29021 29021 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-01 19:23:44.958 29021 29021 I System.out: ⚠️ AI returned 0 items for Amazon Fresh; keeping raw results
+02-01 19:23:45.583 29021 29021 I System.out: WebView Console: App data fetch failed with status: 400 (https://www.bbassets.com/monsters-inc/static_pwa/_next/static/chunks/492.9ef1b270fb46e78e.js:1)
+02-01 19:23:46.852 29021 29021 I System.out: WebView Console: hide header timeout (https://instamart-media-assets.swiggy.com/swiggy/raw/upload/dash-front-assets/js/app.es6.c270eb86bbfdf119.js:88)
+02-01 19:23:47.779 29021 29021 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-01 19:23:49.268 29021 30580 I System.out: Blinkit: Attempt 1 - empty HTML
+02-01 19:23:49.268 29021 30580 I System.out: Blinkit: ✗ All 3 attempts failed
+02-01 19:23:49.268 29021 30580 I System.out: Blinkit: [RAW] Got 0 products
+02-01 19:23:49.268 29021 30580 I System.out: Blinkit: ✗ No products
+02-01 19:23:49.269 29021 30580 I System.out: Blinkit: Completed (3/10)
+02-01 19:23:49.269 29021 30580 I System.out: Flipkart: Starting (WebView)
+02-01 19:23:49.271 29021 29021 I System.out: [STREAM] Blinkit: 0 products at 9834ms
+02-01 19:23:49.271 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:49.274 29021 30229 I System.out: Flipkart: Searching for 'banana'...
+02-01 19:23:49.274 29021 30229 I System.out: Flipkart: Using WebView (SPA site)...
+02-01 19:23:49.274 29021 30229 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-01 19:23:49.274 29021 30229 I System.out: Flipkart: Trying URL 1/3: https://m.flipkart.com/search?q=banana
+02-01 19:23:49.297 29021 29021 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-01 19:23:49.322 29021 29021 I System.out: WebView: Set location cookies for m.flipkart.com with pincode=560001
+02-01 19:23:49.610 29021 30229 I System.out: BigBasket: ✗ Error - Timed out waiting for 10000 ms
+02-01 19:23:49.610 29021 30229 I System.out: BigBasket: [TIMEOUT]
+02-01 19:23:49.610 29021 30229 I System.out: BigBasket: ✗ No products
+02-01 19:23:49.610 29021 30229 I System.out: BigBasket: Completed (4/10)
+02-01 19:23:49.610 29021 30229 I System.out: Flipkart Minutes: Starting (WebView)
+02-01 19:23:49.611 29021 29021 I System.out: [STREAM] BigBasket: 0 products at 10175ms
+02-01 19:23:49.612 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:49.612 29021 18775 I System.out: Flipkart Minutes: Searching for 'banana'...
+02-01 19:23:49.612 29021 18775 I System.out: Flipkart Minutes: HTTP request to https://m.flipkart.com/search?q=banana&marketplace=GROCERY
+02-01 19:23:49.803 29021 30229 I System.out: Instamart: Attempt 1 error: Timed out waiting for 10000 ms
+02-01 19:23:49.803 29021 30229 I System.out: Instamart: ✗ All attempts failed
+02-01 19:23:49.804 29021 30229 I System.out: Instamart: [TIMEOUT]
+02-01 19:23:49.804 29021 30229 I System.out: Instamart: ✗ No products
+02-01 19:23:49.804 29021 30229 I System.out: Instamart: Completed (5/10)
+02-01 19:23:49.804 29021 30229 I System.out: JioMart: Starting (WebView)
+02-01 19:23:49.806 29021 30580 I System.out: JioMart: Searching for 'banana'...
+02-01 19:23:49.807 29021 30580 I System.out: DirectApiScraper: JioMart: Starting API scrape for 'banana'
+02-01 19:23:49.809 29021 29021 I System.out: [STREAM] Instamart: 0 products at 10372ms
+02-01 19:23:49.809 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:50.712 29021 22729 I System.out: Zepto: ✗ Error - Timed out waiting for 10000 ms
+02-01 19:23:50.712 29021 22729 I System.out: Zepto: [TIMEOUT]
+02-01 19:23:50.712 29021 22729 I System.out: Zepto: ✗ No products
+02-01 19:23:50.712 29021 22729 I System.out: Zepto: Completed (6/10)
+02-01 19:23:50.712 29021 30229 I System.out: JioMart Quick: Starting (WebView)
+02-01 19:23:50.713 29021 29021 I System.out: [STREAM] Zepto: 0 products at 11277ms
+02-01 19:23:50.713 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:50.714 29021 30229 I System.out: JioMart Quick: Searching for 'banana'...
+02-01 19:23:50.714 29021 30229 I System.out: DirectApiScraper: JioMart Quick: Starting API scrape for 'banana'
+02-01 19:23:51.272 29021 29021 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-01 19:23:54.468 29021 29021 I System.out: Flipkart Minutes: Timeout
+02-01 19:23:54.469 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:54.469 29021 29021 I System.out: JioMart Quick: Timeout
+02-01 19:23:54.470 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:54.471 29021 29021 I System.out: Flipkart: Timeout
+02-01 19:23:54.472 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:54.472 29021 29021 I System.out: JioMart: Timeout
+02-01 19:23:54.473 29021 29021 I System.out: 📊 Scraping: 2/10 platforms, Total: 10
+02-01 19:23:54.473 29021 29021 I System.out: === RAW SCRAPE COMPLETED ===
+02-01 19:23:54.473 29021 29021 I System.out: ✅ Fresh scraping complete. Total: 10 products
+02-01 19:23:54.473 29021 29021 I System.out: 🤖 Applying AI smart search...
+02-01 19:23:54.475 29021 29021 I System.out: 🤖 Final AI request started (timeout=120000ms, products=10)
+02-01 19:23:54.506 29021 18773 I System.out: Flipkart: URL 1 error: Job was cancelled
+02-01 19:23:54.506 29021 18773 I System.out: Flipkart: Trying URL 2/3: https://www.flipkart.com/search?q=banana
+02-01 19:23:54.506 29021 18773 I System.out: Flipkart: URL 2 error: Job was cancelled
+02-01 19:23:54.506 29021 18773 I System.out: Flipkart: Trying URL 3/3: https://m.flipkart.com/search?q=banana&otracker=search
+02-01 19:23:54.506 29021 18773 I System.out: Flipkart: URL 3 error: Job was cancelled
+02-01 19:23:54.506 29021 18773 I System.out: Flipkart: ✗ All 3 URLs failed
+02-01 19:23:54.507 29021 18773 I System.out: Flipkart: ✗ Error - Job was cancelled
+02-01 19:23:54.507 29021 18773 I System.out: Flipkart: Completed (7/10)
+02-01 19:23:55.178 29021 29021 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":3})
+02-01 19:23:55.621 29021 18775 I System.out: Flipkart Minutes: HTTP error - Unable to resolve host "m.flipkart.com": No address associated with hostname
+02-01 19:23:55.622 29021 18775 I System.out: Flipkart Minutes: Using WebView (SPA site)...
+02-01 19:23:55.622 29021 18775 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-01 19:23:55.622 29021 18775 I System.out: Flipkart Minutes: Trying URL 1/1: https://m.flipkart.com/search?q=banana&marketplace=GROCERY
+02-01 19:23:55.623 29021 18775 I System.out: Flipkart Minutes: URL 1 error: Job was cancelled
+02-01 19:23:55.623 29021 18775 I System.out: Flipkart Minutes: ✗ All URLs failed
+02-01 19:23:55.623 29021 18775 I System.out: Flipkart Minutes: ✗ Error - Job was cancelled
+02-01 19:23:55.623 29021 18775 I System.out: Flipkart Minutes: Completed (8/10)
+02-01 19:23:55.823 29021 30580 I System.out: DirectApiScraper: JioMart: HTML scrape error: Unable to resolve host "www.jiomart.com": No address associated with hostname
+02-01 19:23:55.825 29021 30580 I System.out: DirectApiScraper: JioMart: HTML scrape error: Unable to resolve host "www.jiomart.com": No address associated with hostname
+02-01 19:23:55.825 29021 30580 I System.out: JioMart: ✗ Error - Job was cancelled
+02-01 19:23:55.825 29021 30580 I System.out: JioMart: Completed (9/10)
+02-01 19:23:56.722 29021 30229 I System.out: DirectApiScraper: JioMart: HTML scrape error: Unable to resolve host "www.jiomart.com": No address associated with hostname
+02-01 19:23:56.724 29021 30229 I System.out: DirectApiScraper: JioMart: HTML scrape error: Unable to resolve host "www.jiomart.com": No address associated with hostname
+02-01 19:23:56.724 29021 30229 I System.out: JioMart Quick: ✗ Error - Job was cancelled
+02-01 19:23:56.724 29021 30229 I System.out: JioMart Quick: Completed (10/10)
+02-01 19:23:59.291 29021 29021 I System.out: WebView: Error loading https://connect.facebook.net/en_US/fbevents.js: net::ERR_NAME_NOT_RESOLVED
+02-01 19:23:59.707 29021 29021 I System.out: WebView Console: be = 4643331492821769954023167 (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-01 19:23:59.707 29021 29021 I System.out: WebView Console: sp = undefined (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-01 19:24:04.802 29021 30229 I System.out: SmartSearchRepository: HTTP 500 - {"detail":"'NoneType' object has no attribute 'lower'"}
+02-01 19:24:04.807 29021 29021 I System.out: ❌ Final AI error in 10332ms: HTTP 500
+02-01 19:24:09.807 29021 29021 I System.out: 🤖 Final AI request started (timeout=60000ms, products=10)
+02-01 19:24:13.039 29021 29021 I System.out: WebView Console: be = 4643331492821769954023167 (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-01 19:24:13.039 29021 29021 I System.out: WebView Console: sp = undefined (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-01 19:24:18.190 29021 30229 I System.out: SmartSearchRepository: HTTP 500 - {"detail":"'NoneType' object has no attribute 'lower'"}
+02-01 19:24:18.193 29021 29021 I System.out: ❌ Final AI error in 8386ms: HTTP 500
+02-01 19:24:18.193 29021 29021 I System.out: ❌ Final AI grouping failed: HTTP 500

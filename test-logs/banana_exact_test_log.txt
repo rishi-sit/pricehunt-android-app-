@@ -1,0 +1,583 @@
+--------- beginning of main
+02-03 19:49:54.675  9747  9747 I System.out: PlatformHealth: Loaded health data for 0 platforms
+02-03 19:50:08.394  9747  9747 I System.out: 📝 HYBRID SEARCH: Starting for 'banana'
+02-03 19:50:08.582  9747  9747 I System.out: 💾 CACHE: Found cached results for 0 platforms (0 products)
+02-03 19:50:08.584  9747  9747 I System.out: === STARTING RAW SCRAPE: banana (pincode: 560001) ===
+02-03 19:50:08.584  9747  9747 I System.out: === NO LOCAL FILTERING - All intelligence handled by backend AI ===
+02-03 19:50:08.587  9747 10759 I System.out: === Launching all scrapers ===
+02-03 19:50:08.588  9747 10761 I System.out: Amazon: Starting (HTTP)
+02-03 19:50:08.589  9747 10761 I System.out: Amazon: Searching for 'banana'...
+02-03 19:50:08.590  9747 10760 I System.out: Blinkit: Starting (WebView)
+02-03 19:50:08.591  9747 10761 I System.out: Amazon: Fetching https://www.amazon.in/s?k=banana (pincode: 560001)
+02-03 19:50:08.591  9747 10760 I System.out: Blinkit: Searching for 'banana'...
+02-03 19:50:08.592  9747 10760 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:50:08.594  9747 10765 I System.out: Instamart: Starting (WebView)
+02-03 19:50:08.595  9747 10762 I System.out: Amazon Fresh: Starting (HTTP)
+02-03 19:50:08.596  9747 10765 I System.out: Instamart: Searching for 'banana'...
+02-03 19:50:08.596  9747 10762 I System.out: Zepto: Starting (WebView)
+02-03 19:50:08.596  9747 10765 I System.out: DirectApiScraper: Instamart: Starting API scrape for 'banana'
+02-03 19:50:08.597  9747 10766 I System.out: Flipkart Minutes: Starting (WebView)
+02-03 19:50:08.597  9747 10763 I System.out: Amazon Fresh: Searching for 'banana'...
+02-03 19:50:08.598  9747 10763 I System.out: Amazon Fresh: Fetching https://www.amazon.in/s?k=banana&i=nowstore (pincode: 560001)
+02-03 19:50:08.599  9747 10762 I System.out: Zepto: Searching for 'banana'...
+02-03 19:50:08.599  9747 10766 I System.out: Flipkart Minutes: Searching for 'banana'...
+02-03 19:50:08.599  9747 10762 I System.out: DirectApiScraper: Zepto: Starting API scrape for 'banana'
+02-03 19:50:08.600  9747 10766 I System.out: Flipkart Minutes: HTTP request to https://m.flipkart.com/search?q=banana&marketplace=GROCERY
+02-03 19:50:08.615  9747 10762 I System.out: DirectApiScraper: Zepto: API error: Unable to resolve host "api.zeptonow.com": No address associated with hostname
+02-03 19:50:08.892  9747 10765 I System.out: DirectApiScraper: Instamart: storeId fetch HTTP 404
+02-03 19:50:08.977  9747 10765 I System.out: DirectApiScraper: Instamart: HTTP 404
+02-03 19:50:08.977  9747 10765 I System.out: Instamart: Direct API failed (HTTP 404)
+02-03 19:50:08.978  9747 10765 I System.out: WebView: Location set to pincode=560001, lat=12.9716, lon=77.5946
+02-03 19:50:09.199  9747 10762 I System.out: DirectApiScraper: Zepto: HTTP 404
+02-03 19:50:09.200  9747 10762 I System.out: Zepto: Direct API failed (HTTP 404)
+02-03 19:50:09.200  9747 10762 I System.out: Zepto: Loading https://www.zeptonow.com/search?query=banana
+02-03 19:50:09.200  9747 10762 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:50:09.201  9747 10766 I System.out: Flipkart Minutes: Got 496550 chars via HTTP
+02-03 19:50:09.443  9747  9747 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36
+02-03 19:50:09.473  9747  9747 I System.out: WebView: Set location cookies for www.zeptonow.com with pincode=560001
+02-03 19:50:09.485  9747 10766 I System.out: Flipkart Minutes: No product cards found
+02-03 19:50:09.485  9747 10765 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-03 19:50:09.485  9747 10766 I System.out: Flipkart Minutes: HTTP request to https://m.flipkart.com/grocery-supermart-store?q=banana
+02-03 19:50:09.485  9747 10765 I System.out: Instamart: Trying Cloudinary image extraction...
+02-03 19:50:09.510  9747 10765 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-03 19:50:09.510  9747 10765 I System.out: Instamart: Trying general image extraction...
+02-03 19:50:09.542  9747 10765 I System.out: Instamart: Found 1 images with alt
+02-03 19:50:09.542  9747 10765 I System.out: Instamart: Trying data-* extraction...
+02-03 19:50:09.589  9747 10765 I System.out: Instamart: Found 4 data-* elements
+02-03 19:50:09.604  9747 10765 I System.out: Instamart: Trying generic resilient extraction...
+02-03 19:50:09.631  9747 10760 I System.out: Blinkit: Starting Blinkit-specific extraction...
+02-03 19:50:09.639  9747 10760 I System.out: Blinkit: Found 0 product images
+02-03 19:50:09.650  9747 10760 I System.out: Blinkit: Found 0 data-* elements
+02-03 19:50:09.657  9747 10760 I System.out: Blinkit: Found 0 product links
+02-03 19:50:09.657  9747 10760 I System.out: Blinkit: Blinkit extraction found 0 products
+02-03 19:50:09.790  9747 10765 I System.out: Instamart: Total extraction found 0 products
+02-03 19:50:09.842  9747 10766 I System.out: Flipkart Minutes: Got 523387 chars via HTTP
+02-03 19:50:09.898  9747 10766 I System.out: Flipkart Minutes: Using WebView (SPA site)...
+02-03 19:50:09.899  9747 10766 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:50:09.899  9747 10766 I System.out: Flipkart Minutes: Trying URL 1/1: https://m.flipkart.com/search?q=banana&marketplace=GROCERY
+02-03 19:50:09.907  9747  9747 I System.out: WebView Console: Error with Permissions-Policy header: Unrecognized feature: 'browsing-topics'. (:0)
+02-03 19:50:09.907  9747  9747 I System.out: WebView Console: Error with Permissions-Policy header: Unrecognized feature: 'web-share'. (:0)
+02-03 19:50:09.934  9747  9747 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-03 19:50:09.965  9747  9747 I System.out: WebView: Set location cookies for m.flipkart.com with pincode=560001
+02-03 19:50:09.989  9747  9747 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:50:10.009  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:10.036  9747 10760 I System.out: Blinkit: Attempt 1/3 with 9s timeout
+02-03 19:50:10.043  9747 10765 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-03 19:50:10.044  9747 10765 I System.out: Instamart: Trying Cloudinary image extraction...
+02-03 19:50:10.052  9747 10765 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-03 19:50:10.052  9747 10765 I System.out: Instamart: Trying general image extraction...
+02-03 19:50:10.060  9747 10765 I System.out: Instamart: Found 1 images with alt
+02-03 19:50:10.060  9747 10765 I System.out: Instamart: Trying data-* extraction...
+02-03 19:50:10.064  9747  9747 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-03 19:50:10.068  9747 10765 I System.out: Instamart: Found 4 data-* elements
+02-03 19:50:10.070  9747 10765 I System.out: Instamart: Trying generic resilient extraction...
+02-03 19:50:10.113  9747 10765 I System.out: Instamart: Total extraction found 0 products
+02-03 19:50:10.114  9747 10765 I System.out: Instamart: Attempt 1/3 with 9s timeout
+02-03 19:50:10.133  9747  9747 I System.out: WebView: Set location cookies for blinkit.com with pincode=560001
+02-03 19:50:10.199  9747  9747 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-03 19:50:10.223  9747  9747 I System.out: WebView: Set comprehensive Swiggy cookies for pincode=560001
+02-03 19:50:10.225  9747  9747 I System.out: WebView: Set location cookies for www.swiggy.com with pincode=560001
+02-03 19:50:10.299  9747 10761 I System.out: Amazon: Found 14 product cards
+02-03 19:50:10.319  9747 10761 I System.out: Amazon: ✓ Found 0 products
+02-03 19:50:10.319  9747 10761 I System.out: Amazon: [RAW] Got 0 products
+02-03 19:50:10.320  9747 10761 I System.out: Amazon: ✗ No products
+02-03 19:50:10.320  9747 10761 I System.out: Amazon: Completed (1/10)
+02-03 19:50:10.410  9747  9747 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:50:10.530  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:10.584  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:10.605  9747  9747 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:50:10.635  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:10.719  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:10.733  9747  9747 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:50:10.989  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:12.027  9747  9747 I System.out: WebView Console: Warning: Component with name Placeholderis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:12.058  9747  9747 I System.out: WebView Console: Warning: Component with name RNShimmeringViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:12.081  9747  9747 I System.out: WebView Console: Warning: Component with name GifViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:12.081  9747  9747 I System.out: WebView Console: Warning: Component with name LiveVideoViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:12.082  9747 10763 I System.out: Amazon Fresh: Received HTML (810245 bytes)
+02-03 19:50:12.282  9747 10763 I System.out: Amazon Fresh: Found 14 product cards
+02-03 19:50:12.289  9747 10763 I System.out: Amazon Fresh: Using ASIN: B09R82ZR1H
+02-03 19:50:12.289  9747 10763 I System.out: Amazon Fresh: Product URL for 'Beyond Snack Kerala Banana Chi' = https://www.amazon.in/dp/B09R82ZR1H?pincode=560001&i=nowstore
+02-03 19:50:12.290  9747 10763 I System.out: Amazon Fresh: ✓ Added Beyond Snack Kerala Banana Chi at ₹17.0 -> https://www.amazon.in/dp/B09R82ZR1H?pincode=560001&i=nowstore
+02-03 19:50:12.293  9747 10763 I System.out: Amazon Fresh: Using ASIN: B08WHGWJH4
+02-03 19:50:12.294  9747 10763 I System.out: Amazon Fresh: Product URL for 'Chheda's Salt N Pepper Banana ' = https://www.amazon.in/dp/B08WHGWJH4?pincode=560001&i=nowstore
+02-03 19:50:12.294  9747 10763 I System.out: Amazon Fresh: ✓ Added Chheda's Salt N Pepper Banana  at ₹121.0 -> https://www.amazon.in/dp/B08WHGWJH4?pincode=560001&i=nowstore
+02-03 19:50:12.298  9747 10763 I System.out: Amazon Fresh: Using ASIN: B0DHXB67ZR
+02-03 19:50:12.298  9747 10763 I System.out: Amazon Fresh: Product URL for 'Modern Kitchens Spicy Banana C' = https://www.amazon.in/dp/B0DHXB67ZR?pincode=560001&i=nowstore
+02-03 19:50:12.298  9747 10763 I System.out: Amazon Fresh: ✓ Added Modern Kitchens Spicy Banana C at ₹48.0 -> https://www.amazon.in/dp/B0DHXB67ZR?pincode=560001&i=nowstore
+02-03 19:50:12.301  9747 10763 I System.out: Amazon Fresh: Using ASIN: B0C5XVJNNX
+02-03 19:50:12.301  9747 10763 I System.out: Amazon Fresh: Product URL for 'Beyond Snáck Kerala Banana Chi' = https://www.amazon.in/dp/B0C5XVJNNX?pincode=560001&i=nowstore
+02-03 19:50:12.301  9747 10763 I System.out: Amazon Fresh: ✓ Added Beyond Snáck Kerala Banana Chi at ₹20.0 -> https://www.amazon.in/dp/B0C5XVJNNX?pincode=560001&i=nowstore
+02-03 19:50:12.306  9747 10763 I System.out: Amazon Fresh: Using ASIN: B0CGM7VY6Z
+02-03 19:50:12.306  9747 10763 I System.out: Amazon Fresh: Product URL for 'Sweet Karam Coffee Nendran Ban' = https://www.amazon.in/dp/B0CGM7VY6Z?pincode=560001&i=nowstore
+02-03 19:50:12.306  9747 10763 I System.out: Amazon Fresh: ✓ Added Sweet Karam Coffee Nendran Ban at ₹57.0 -> https://www.amazon.in/dp/B0CGM7VY6Z?pincode=560001&i=nowstore
+02-03 19:50:12.310  9747 10763 I System.out: Amazon Fresh: Using ASIN: B07L26KYJN
+02-03 19:50:12.310  9747 10763 I System.out: Amazon Fresh: Product URL for 'Chheda's - Long Masala Banana ' = https://www.amazon.in/dp/B07L26KYJN?pincode=560001&i=nowstore
+02-03 19:50:12.310  9747 10763 I System.out: Amazon Fresh: ✓ Added Chheda's - Long Masala Banana  at ₹71.0 -> https://www.amazon.in/dp/B07L26KYJN?pincode=560001&i=nowstore
+02-03 19:50:12.313  9747 10763 I System.out: Amazon Fresh: Using ASIN: B0D8JYK9PL
+02-03 19:50:12.313  9747 10763 I System.out: Amazon Fresh: Product URL for 'Beyond Snack Nendran Kerala Ba' = https://www.amazon.in/dp/B0D8JYK9PL?pincode=560001&i=nowstore
+02-03 19:50:12.313  9747 10763 I System.out: Amazon Fresh: ✓ Added Beyond Snack Nendran Kerala Ba at ₹64.0 -> https://www.amazon.in/dp/B0D8JYK9PL?pincode=560001&i=nowstore
+02-03 19:50:12.316  9747 10763 I System.out: Amazon Fresh: Using ASIN: B0C5XST9C1
+02-03 19:50:12.316  9747 10763 I System.out: Amazon Fresh: Product URL for 'Beyond Snack Kerala Banana Chi' = https://www.amazon.in/dp/B0C5XST9C1?pincode=560001&i=nowstore
+02-03 19:50:12.317  9747 10763 I System.out: Amazon Fresh: ✓ Added Beyond Snack Kerala Banana Chi at ₹20.0 -> https://www.amazon.in/dp/B0C5XST9C1?pincode=560001&i=nowstore
+02-03 19:50:12.320  9747 10763 I System.out: Amazon Fresh: Using ASIN: B09PR6YMNV
+02-03 19:50:12.320  9747 10763 I System.out: Amazon Fresh: Product URL for 'FLAVORS OF KERALA (FOK) Premiu' = https://www.amazon.in/dp/B09PR6YMNV?pincode=560001&i=nowstore
+02-03 19:50:12.320  9747 10763 I System.out: Amazon Fresh: ✓ Added FLAVORS OF KERALA (FOK) Premiu at ₹289.0 -> https://www.amazon.in/dp/B09PR6YMNV?pincode=560001&i=nowstore
+02-03 19:50:12.323  9747 10763 I System.out: Amazon Fresh: Using ASIN: B01LAOH3T0
+02-03 19:50:12.323  9747 10763 I System.out: Amazon Fresh: Product URL for 'Chheda's Snacks - Banana Chips' = https://www.amazon.in/dp/B01LAOH3T0?pincode=560001&i=nowstore
+02-03 19:50:12.323  9747 10763 I System.out: Amazon Fresh: ✓ Added Chheda's Snacks - Banana Chips at ₹84.0 -> https://www.amazon.in/dp/B01LAOH3T0?pincode=560001&i=nowstore
+02-03 19:50:12.326  9747 10763 I System.out: Amazon Fresh: Using ASIN: B01D3DJW72
+02-03 19:50:12.326  9747 10763 I System.out: Amazon Fresh: Product URL for 'Modern Kitchens Banana Chips S' = https://www.amazon.in/dp/B01D3DJW72?pincode=560001&i=nowstore
+02-03 19:50:12.326  9747 10763 I System.out: Amazon Fresh: ✓ Added Modern Kitchens Banana Chips S at ₹90.0 -> https://www.amazon.in/dp/B01D3DJW72?pincode=560001&i=nowstore
+02-03 19:50:12.330  9747 10763 I System.out: Amazon Fresh: Using ASIN: B08CDKRJND
+02-03 19:50:12.330  9747 10763 I System.out: Amazon Fresh: Product URL for 'Little Moppet Foods Raw Kerala' = https://www.amazon.in/dp/B08CDKRJND?pincode=560001&i=nowstore
+02-03 19:50:12.330  9747 10763 I System.out: Amazon Fresh: ✓ Added Little Moppet Foods Raw Kerala at ₹355.0 -> https://www.amazon.in/dp/B08CDKRJND?pincode=560001&i=nowstore
+02-03 19:50:12.333  9747 10763 I System.out: Amazon Fresh: Using ASIN: B0CYBVR2TB
+02-03 19:50:12.333  9747 10763 I System.out: Amazon Fresh: Product URL for 'Karachi Bakery Banana Chips 15' = https://www.amazon.in/dp/B0CYBVR2TB?pincode=560001&i=nowstore
+02-03 19:50:12.333  9747 10763 I System.out: Amazon Fresh: ✓ Added Karachi Bakery Banana Chips 15 at ₹119.0 -> https://www.amazon.in/dp/B0CYBVR2TB?pincode=560001&i=nowstore
+02-03 19:50:12.336  9747 10763 I System.out: Amazon Fresh: Using ASIN: B0CBCLPFMP
+02-03 19:50:12.336  9747 10763 I System.out: Amazon Fresh: Product URL for 'Sproutlets Raw Banana Powder -' = https://www.amazon.in/dp/B0CBCLPFMP?pincode=560001&i=nowstore
+02-03 19:50:12.336  9747 10763 I System.out: Amazon Fresh: ✓ Added Sproutlets Raw Banana Powder - at ₹375.0 -> https://www.amazon.in/dp/B0CBCLPFMP?pincode=560001&i=nowstore
+02-03 19:50:12.337  9747 10763 I System.out: Amazon Fresh: ✓ Found 14 products
+02-03 19:50:12.337  9747 10763 I System.out: Amazon Fresh: Returning 5 products: [Beyond Snack Kerala , Chheda's Salt N Pepp, Modern Kitchens Spic, Beyond Snáck Kerala , Sweet Karam Coffee N]
+02-03 19:50:12.337  9747 10763 I System.out: Amazon Fresh: [RAW] Got 5 products
+02-03 19:50:12.345  9747 10763 I System.out: Amazon Fresh: ✓ 5 products (raw, unfiltered)
+02-03 19:50:12.346  9747 10763 I System.out: Amazon Fresh: Completed (2/10)
+02-03 19:50:12.768  9747  9747 I System.out: WebView Console: ServiceWorker registration successful with scope:  https://www.flipkart.com/ (https://www.flipkart.com/search?q=banana&marketplace=GROCERY:1721)
+02-03 19:50:12.769  9747  9747 I System.out: WebView Console: ServiceWorker is active and sending message :  https://www.flipkart.com/ (https://www.flipkart.com/search?q=banana&marketplace=GROCERY:1730)
+02-03 19:50:12.793  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:13.455  9747  9747 I System.out: WebView Console: Sync registration failed for web push Heart beat: UnknownError: Background Sync is disabled. (https://www.flipkart.com/search?q=banana&marketplace=GROCERY:1752)
+02-03 19:50:13.748  9747  9747 I System.out: WebView Console: hide header timeout (https://instamart-media-assets.swiggy.com/swiggy/raw/upload/dash-front-assets/js/app.es6.cd83c1c300ead98d.js:88)
+02-03 19:50:13.787  9747  9747 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1149898238733621?v=2.9.256&r=stable&domain=www.swiggy.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:134)
+02-03 19:50:13.989  9747  9747 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1685726148383397?v=2.9.256&r=stable&domain=blinkit.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:134)
+02-03 19:50:14.314  9747  9747 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1149898238733621&ev=PageView&dl=https%3A%2F%2Fwww.swiggy.com%2Finstamart%2Fsearch%3Fcustom_back%3Dtrue%26query%3Dbanana&rl=&if=false&ts=1770128413825&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770128413806.127478169955179622&eid=ob3_plugin-set_cf44cc4681254132209f6ae2840f49a332d7ee2345b42ae970d2d8c5d2d616b8&ler=empty&cdl=API_unavailable&pmd[title]=Instamart&plt=958.2000000178814&it=1770128412730&coo=false&chmd=&chpv=&chfv=undefined&cf=1&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct3&expv2[5]=hf2&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:50:14.409  9747  9747 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1685726148383397&ev=PageView&dl=https%3A%2F%2Fblinkit.com%2Fs%2F%3Fq%3Dbanana&rl=&if=false&ts=1770128414020&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770128414006.163548341284948750&eid=ob3_plugin-set_0d647f7fd3911362d1b6388778733fb917eeded1f7c8259b548612cccdf1c2b3&ler=empty&cdl=API_unavailable&pmd[title]=Buy%20banana%20Online%20%7C%20blinkit&pmd[keywords]=Buy%20Grocery%20Online%2C%20Online%20Grocery%2C%20Grofers%2C%20Groffers%2C%20Groferss%2C%20blinkit%20grofers%2C%20blinkit%2C%20blink%20it%2C%20Grocery%20Store%2C%20Online%20Grocery%20Shopping%2C%20Online%20Grocery%20Store%2C%20Online%20Supermarket%2C%20Free%20Delivery%2C%20Great%20Offers%2C%20Best%20Prices&pmd[description]=Buy%20banana%20at%20best%20price%20and%20get%20it%20delivered%20at%20your%20doorstep.&plt=1729.2000000178814&it=1770128413474&coo=false&chmd=&chpv=&chfv=undefined&cf=1&expv2[0]=pl1&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=im0&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:50:14.738  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (https://blinkit.com/scripts/sentryvendor.df85f9ffd4f9be92831b.js:1)
+02-03 19:50:15.375  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:15.458  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:16.326  9747  9747 I System.out: WebView: Content ready! Extracting immediately (attempt 7)
+02-03 19:50:16.327  9747  9747 I System.out: WebView: Content ready! Extracting immediately (attempt 7)
+02-03 19:50:16.693  9747 10763 I System.out: Zepto: Got 264536 chars HTML
+02-03 19:50:16.733  9747 10763 I System.out: Zepto: DEBUG - All prices in HTML: [₹32, ₹37, ₹5, ₹76, ₹88, ₹12, ₹106, ₹129, ₹23, ₹77, ₹100, ₹23, ₹75, ₹94, ₹19, ₹57, ₹60, ₹3, ₹1, ₹200]
+02-03 19:50:16.735  9747 10763 I System.out: Zepto: DEBUG - Per-unit prices found: []
+02-03 19:50:16.896  9747 10763 I System.out: Zepto: DEBUG - Extracted: 'Banana Robusta' = ₹77.0 (original: 88.0)
+02-03 19:50:16.896  9747 10763 I System.out: Zepto: URL for 'Banana Robusta' -> https://www.zeptonow.com/pn/banana-robusta/pvid/436c0025-de54-4748-a189-79e292f26071?pincode=560001
+02-03 19:50:16.896  9747 10763 I System.out: Zepto: [RAW] Got 1 products
+02-03 19:50:16.898  9747 10763 I System.out: Zepto: ✓ 1 products (raw, unfiltered)
+02-03 19:50:16.898  9747 10763 I System.out: Zepto: Completed (3/10)
+02-03 19:50:16.899  9747 10763 I System.out: JioMart Quick: Starting (WebView)
+02-03 19:50:16.900  9747 10763 I System.out: JioMart Quick: Searching for 'banana'...
+02-03 19:50:16.900  9747 10763 I System.out: DirectApiScraper: JioMart Quick: Starting API scrape for 'banana'
+02-03 19:50:16.906  9747  9747 I System.out: [STREAM] Zepto: 1 products at 8320ms
+02-03 19:50:16.906  9747  9747 I System.out: 🔍 Per-platform AI: Zepto - queued (1 products, timeout=4000ms, reason=fresh)
+02-03 19:50:16.907  9747  9747 I System.out: 🔍 Per-platform AI: Zepto - started
+02-03 19:50:16.908  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:16.909  9747  9747 I System.out: 📊 Relevance: HIGH=1, MEDIUM=0, LOW=0
+02-03 19:50:16.909  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:16.909  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:16.910  9747  9747 I System.out: 🏆 Best Deal: Banana Robusta = ₹77.0
+02-03 19:50:16.910  9747  9747 I System.out: 📊 Scraping: 1/10 platforms, Total: 1
+02-03 19:50:17.135  9747  9747 I System.out: WebView: Selector ready (img[alt]), extracting
+02-03 19:50:17.195  9747 10760 I System.out: Blinkit: Got 155270 chars
+02-03 19:50:17.241  9747 10760 I System.out: Blinkit: HTML Structure Monitor:
+02-03 19:50:17.241  9747 10760 I System.out:   - Images with alt: 1
+02-03 19:50:17.241  9747 10760 I System.out:   - data-product elements: 0
+02-03 19:50:17.241  9747 10760 I System.out:   - Product links: 0
+02-03 19:50:17.241  9747 10760 I System.out:   - Price occurrences: 48
+02-03 19:50:17.272  9747 10760 I System.out: Blinkit: Starting Blinkit-specific extraction...
+02-03 19:50:17.273  9747 10760 I System.out: Blinkit: Found 1 product images
+02-03 19:50:17.288  9747 10760 I System.out: Blinkit: Found 0 data-* elements
+02-03 19:50:17.288  9747 10760 I System.out: Blinkit: Found 0 product links
+02-03 19:50:17.288  9747 10760 I System.out: Blinkit: Blinkit extraction found 0 products
+02-03 19:50:17.288  9747 10760 I System.out: Blinkit: Blinkit-specific extraction failed, trying generic...
+02-03 19:50:17.418  9747 10760 I System.out: Blinkit: ✓ Found 5 products on attempt 1
+02-03 19:50:17.418  9747 10760 I System.out: Blinkit: [RAW] Got 5 products
+02-03 19:50:17.422  9747 10760 I System.out: Blinkit: ✓ 5 products (raw, unfiltered)
+02-03 19:50:17.422  9747 10760 I System.out: Blinkit: Completed (4/10)
+02-03 19:50:17.422  9747 10760 I System.out: BigBasket: Starting (WebView)
+02-03 19:50:17.423  9747  9747 I System.out: [STREAM] Blinkit: 5 products at 8837ms
+02-03 19:50:17.423  9747  9747 I System.out: 🔍 Per-platform AI: Blinkit - queued (5 products, timeout=4000ms, reason=fresh)
+02-03 19:50:17.423  9747  9747 I System.out: 🔍 Per-platform AI: Blinkit - started
+02-03 19:50:17.423  9747 10766 I System.out: BigBasket: Searching for 'banana'...
+02-03 19:50:17.424  9747 10766 I System.out: DirectApiScraper: BigBasket: Starting API scrape for 'banana'
+02-03 19:50:17.424  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:17.428  9747  9747 I System.out: 📊 Relevance: HIGH=6, MEDIUM=0, LOW=0
+02-03 19:50:17.428  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:17.428  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:17.428  9747  9747 I System.out:   ✅ HIGH [40]: Too Yumm Classic Salted Nendran Banana C = ₹48.0
+02-03 19:50:17.429  9747  9747 I System.out:   ✅ HIGH [40]: Beyond Snack Kerala Original style Banan = ₹56.0
+02-03 19:50:17.429  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:17.432  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:17.432  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:17.432  9747  9747 I System.out: 📊 Scraping: 2/10 platforms, Total: 6
+02-03 19:50:17.589  9747  9747 I System.out: ✅ Per-platform AI: Zepto - success in 682ms (aiPowered=false, 1/1 kept, 0 filtered)
+02-03 19:50:17.589  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:17.592  9747  9747 I System.out: 📊 Relevance: HIGH=6, MEDIUM=0, LOW=0
+02-03 19:50:17.592  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:17.592  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:17.592  9747  9747 I System.out:   ✅ HIGH [40]: Too Yumm Classic Salted Nendran Banana C = ₹48.0
+02-03 19:50:17.592  9747  9747 I System.out:   ✅ HIGH [40]: Beyond Snack Kerala Original style Banan = ₹56.0
+02-03 19:50:17.592  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:17.594  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:17.594  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:17.786  9747 10766 I System.out: DirectApiScraper: BigBasket: HTTP 400
+02-03 19:50:17.786  9747 10766 I System.out: BigBasket: Direct API failed (HTTP 400)
+02-03 19:50:17.786  9747 10766 I System.out: BigBasket: Loading https://www.bigbasket.com/ps/?q=banana (WebView)...
+02-03 19:50:17.787  9747 10766 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:50:17.804  9747  9747 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-03 19:50:17.840  9747  9747 I System.out: WebView: Set location cookies for www.bigbasket.com with pincode=560001
+02-03 19:50:17.882  9747  9747 I System.out: WebView: Selector ready (img[src*='cloudinary'], img[src*='swiggy']), extracting
+02-03 19:50:17.969  9747 10766 I System.out: Instamart: Got 239116 chars
+02-03 19:50:17.983  9747 10763 I System.out: DirectApiScraper: JioMart: HTTP 500
+02-03 19:50:18.067  9747 10766 I System.out: Instamart: HTML Structure Monitor:
+02-03 19:50:18.067  9747 10766 I System.out:   - __NEXT_DATA__: false
+02-03 19:50:18.067  9747 10766 I System.out:   - Cloudinary/Swiggy images: 75
+02-03 19:50:18.067  9747 10766 I System.out:   - Images with alt: 34
+02-03 19:50:18.067  9747 10766 I System.out:   - data-* elements: 276
+02-03 19:50:18.067  9747 10766 I System.out:   - Price occurrences: 2
+02-03 19:50:18.067  9747 10766 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-03 19:50:18.068  9747 10766 I System.out: Instamart: Trying Cloudinary image extraction...
+02-03 19:50:18.113  9747 10766 I System.out: Instamart: Found 75 Cloudinary/Swiggy images
+02-03 19:50:18.134  9747 10766 I System.out: Instamart: Trying general image extraction...
+02-03 19:50:18.171  9747 10766 I System.out: Instamart: Found 34 images with alt
+02-03 19:50:18.230  9747  9747 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:50:18.264  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:18.608  9747 10765 I System.out: Flipkart Minutes: URL 1 error: Timed out waiting for 10000 ms
+02-03 19:50:18.608  9747 10765 I System.out: Flipkart Minutes: Timeout reached, stopping URL attempts
+02-03 19:50:18.608  9747 10765 I System.out: Flipkart Minutes: ✗ All URLs failed
+02-03 19:50:18.609  9747 10765 I System.out: Flipkart Minutes: [TIMEOUT]
+02-03 19:50:18.609  9747 10765 I System.out: Flipkart Minutes: ✗ No products
+02-03 19:50:18.610  9747 10765 I System.out: Flipkart Minutes: Completed (5/10)
+02-03 19:50:18.611  9747 10761 I System.out: Flipkart: Starting (WebView)
+02-03 19:50:18.613  9747 10761 I System.out: Flipkart: Searching for 'banana'...
+02-03 19:50:18.615  9747 10761 I System.out: Flipkart: Using WebView (SPA site)...
+02-03 19:50:18.616  9747 10761 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:50:18.616  9747 10761 I System.out: Flipkart: Trying URL 1/3: https://m.flipkart.com/search?q=banana
+02-03 19:50:18.618  9747  9747 I System.out: [STREAM] Flipkart Minutes: 0 products at 10032ms
+02-03 19:50:18.618  9747  9747 I System.out: 🔍 Per-platform AI: Flipkart Minutes - skipped (0 products)
+02-03 19:50:18.619  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:18.624  9747  9747 I System.out: 📊 Relevance: HIGH=6, MEDIUM=0, LOW=0
+02-03 19:50:18.624  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:18.624  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:18.624  9747  9747 I System.out:   ✅ HIGH [40]: Too Yumm Classic Salted Nendran Banana C = ₹48.0
+02-03 19:50:18.624  9747  9747 I System.out:   ✅ HIGH [40]: Beyond Snack Kerala Original style Banan = ₹56.0
+02-03 19:50:18.624  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:18.627  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:18.627  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:18.628  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:18.631  9747  9747 I System.out: 📊 Relevance: HIGH=6, MEDIUM=0, LOW=0
+02-03 19:50:18.631  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:18.631  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:18.631  9747  9747 I System.out:   ✅ HIGH [40]: Too Yumm Classic Salted Nendran Banana C = ₹48.0
+02-03 19:50:18.631  9747  9747 I System.out:   ✅ HIGH [40]: Beyond Snack Kerala Original style Banan = ₹56.0
+02-03 19:50:18.631  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:18.634  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:18.634  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:18.634  9747  9747 I System.out: 📊 Scraping: 2/10 platforms, Total: 6
+02-03 19:50:18.692  9747  9747 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.143 Mobile Safari/537.36
+02-03 19:50:18.728  9747  9747 I System.out: WebView: Set location cookies for m.flipkart.com with pincode=560001
+02-03 19:50:18.746  9747 10766 I System.out: Instamart: Trying data-* extraction...
+02-03 19:50:18.782  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:18.782  9747 10766 I System.out: Instamart: Found 276 data-* elements
+02-03 19:50:18.845  9747 10766 I System.out: Instamart: Trying generic resilient extraction...
+02-03 19:50:18.886  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:18.938  9747  9747 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:50:18.979  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:19.082  9747 10766 I System.out: Instamart: Total extraction found 0 products
+02-03 19:50:19.082  9747 10766 I System.out: Instamart: Attempt 1 - no valid products
+02-03 19:50:19.082  9747 10766 I System.out: Instamart: ✗ All attempts failed
+02-03 19:50:19.082  9747 10766 I System.out: Instamart: [TIMEOUT]
+02-03 19:50:19.082  9747 10766 I System.out: Instamart: ✗ No products
+02-03 19:50:19.083  9747 10766 I System.out: Instamart: Completed (6/10)
+02-03 19:50:19.083  9747  9747 I System.out: [STREAM] Instamart: 0 products at 10497ms
+02-03 19:50:19.083  9747 10766 I System.out: JioMart: Starting (WebView)
+02-03 19:50:19.083  9747  9747 I System.out: 🔍 Per-platform AI: Instamart - skipped (0 products)
+02-03 19:50:19.083  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:19.084  9747 10766 I System.out: JioMart: Searching for 'banana'...
+02-03 19:50:19.085  9747 10766 I System.out: DirectApiScraper: JioMart: Starting API scrape for 'banana'
+02-03 19:50:19.088  9747  9747 I System.out: 📊 Relevance: HIGH=6, MEDIUM=0, LOW=0
+02-03 19:50:19.088  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:19.088  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:19.088  9747  9747 I System.out:   ✅ HIGH [40]: Too Yumm Classic Salted Nendran Banana C = ₹48.0
+02-03 19:50:19.088  9747  9747 I System.out:   ✅ HIGH [40]: Beyond Snack Kerala Original style Banan = ₹56.0
+02-03 19:50:19.088  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:19.091  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:19.091  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:19.091  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:19.095  9747  9747 I System.out: 📊 Relevance: HIGH=6, MEDIUM=0, LOW=0
+02-03 19:50:19.095  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:19.095  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:19.095  9747  9747 I System.out:   ✅ HIGH [40]: Too Yumm Classic Salted Nendran Banana C = ₹48.0
+02-03 19:50:19.095  9747  9747 I System.out:   ✅ HIGH [40]: Beyond Snack Kerala Original style Banan = ₹56.0
+02-03 19:50:19.095  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:19.098  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:19.098  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:19.098  9747  9747 I System.out: 📊 Scraping: 2/10 platforms, Total: 6
+02-03 19:50:19.169  9747 10763 I System.out: JioMart Quick: Direct API returned no products
+02-03 19:50:19.170  9747 10763 I System.out: JioMart Quick: HTTP request to https://www.jiomart.com/search/banana?deliveryType=express
+02-03 19:50:19.276  9747 10763 I System.out: JioMart Quick: HTTP 403
+02-03 19:50:19.415  9747 10763 I System.out: JioMart Quick: HTTP 403
+02-03 19:50:19.416  9747 10763 I System.out: JioMart Quick: Using WebView (SPA site)...
+02-03 19:50:19.416  9747 10763 I System.out: JioMart Quick: Loading https://www.jiomart.com/search/banana?deliveryType=express
+02-03 19:50:19.416  9747 10763 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:50:19.437  9747  9747 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; OnePlus 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.144 Mobile Safari/537.36
+02-03 19:50:19.457  9747  9747 I System.out: WebView: Set location cookies for www.jiomart.com with pincode=560001
+02-03 19:50:19.732  9747  9747 I System.out: WebView Console: Warning: Component with name Placeholderis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:19.776  9747  9747 I System.out: WebView Console: Warning: Component with name RNShimmeringViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:19.802  9747  9747 I System.out: WebView Console: Warning: Component with name GifViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:19.802  9747  9747 I System.out: WebView Console: Warning: Component with name LiveVideoViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:50:19.836  9747  9747 I System.out: WebView Console: App data fetch failed with status: 400 (https://www.bbassets.com/monsters-inc/static_pwa/_next/static/chunks/492.9ef1b270fb46e78e.js:1)
+02-03 19:50:19.974  9747  9747 I System.out: WebView Console: ServiceWorker registration successful with scope:  https://www.flipkart.com/ (https://www.flipkart.com/search?q=banana:1727)
+02-03 19:50:19.974  9747  9747 I System.out: WebView Console: ServiceWorker is active and sending message :  https://www.flipkart.com/ (https://www.flipkart.com/search?q=banana:1736)
+02-03 19:50:20.000  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:20.010  9747  9747 I System.out: WebView Console: Sync registration failed for web push Heart beat: UnknownError: Background Sync is disabled. (https://www.flipkart.com/search?q=banana:1758)
+02-03 19:50:20.128  9747 10766 I System.out: DirectApiScraper: JioMart: HTTP 500
+02-03 19:50:20.294  9747  9747 I System.out: WebView: Backup extraction triggered
+02-03 19:50:20.675  9747  9747 I System.out: ✅ Per-platform AI: Blinkit - success in 3252ms (aiPowered=true, 3/5 kept, 2 filtered)
+02-03 19:50:20.676  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:20.677  9747  9747 I System.out: 📊 Relevance: HIGH=4, MEDIUM=0, LOW=0
+02-03 19:50:20.678  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:20.678  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:20.678  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:20.678  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:20.679  9747  9747 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:50:20.679  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:20.725  9747  9747 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:50:20.763  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:20.802  9747  9747 I System.out: WebView Console: You are running a development build of Vue.
+02-03 19:50:20.802  9747  9747 I System.out: Make sure to use the production build (*.prod.js) when deploying for production. (https://www.jiomart.com/assets/global/js/vue_global.min.js:13)
+02-03 19:50:20.989  9747  9747 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":1})
+02-03 19:50:21.176  9747  9747 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-03 19:50:21.469  9747 10766 I System.out: JioMart: Direct API returned no products
+02-03 19:50:21.470  9747 10766 I System.out: JioMart: HTTP request to https://www.jiomart.com/search/banana
+02-03 19:50:22.417  9747  9747 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-03 19:50:22.437  9747  9747 I System.out: WebView Console: show_normal_payment_banner without_loggedIn 0 (https://www.jiomart.com/assets/version1768913331/ds2msite/js/cart.min.js:5)
+02-03 19:50:22.577  9747  9747 I System.out: WebView: Content ready! Extracting immediately (attempt 0)
+02-03 19:50:22.606  9747  9747 I System.out: WebView Console: init jioads (https://www.jiomart.com/search/banana?deliveryType=express:2163)
+02-03 19:50:22.606  9747  9747 I System.out: WebView Console: jioads set config (https://www.jiomart.com/search/banana?deliveryType=express:2431)
+02-03 19:50:22.609  9747  9747 I System.out: WebView Console: %cWebsdk log%csetConfiguration called with options: [object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:50:22.610  9747  9747 I System.out: WebView Console: %cWebsdk log%cuid fetched: 8b3cea37-1697-4e2e-b647-20a0ae428d09 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:50:22.610  9747  9747 I System.out: WebView Console: %cWebsdk log%cPartner IDs fetched: null color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:50:22.611  9747  9747 I System.out: WebView Console: %cWebsdk log%cResponse from FETCH color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:50:22.738  9747 10763 I System.out: Flipkart: Got 522048 chars from URL 1
+02-03 19:50:22.760  9747  9747 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-03 19:50:22.763  9747  9747 I System.out: WebView Console: app obj [object Object] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/mapp.min.js:5)
+02-03 19:50:22.776  9747  9747 I System.out: WebView Console: %cWebsdk log%cHTTP Call Status: 404 | State: 4 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:50:22.776  9747  9747 I System.out: WebView Console: %cWebsdk log%c[object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:50:22.829  9747 10766 I System.out: JioMart: Got 259693 chars via HTTP
+02-03 19:50:22.855  9747 10766 I System.out: JioMart: No product cards in HTTP response
+02-03 19:50:22.855  9747 10766 I System.out: JioMart: HTTP request to https://www.jiomart.com/catalogsearch/result/?q=banana
+02-03 19:50:22.994  9747  9747 I System.out: WebView Console: Page Load Time (sec): 3.53 (https://www.jiomart.com/search/banana?deliveryType=express:3941)
+02-03 19:50:23.015  9747 10763 I System.out: Flipkart: ✓ Found 3 products via URL 1
+02-03 19:50:23.016  9747 10763 I System.out: Flipkart: [RAW] Got 3 products
+02-03 19:50:23.021  9747 10763 I System.out: Flipkart: ✓ 3 products (raw, unfiltered)
+02-03 19:50:23.022  9747 10763 I System.out: Flipkart: Completed (7/10)
+02-03 19:50:23.022  9747  9747 I System.out: [STREAM] Flipkart: 3 products at 14436ms
+02-03 19:50:23.022  9747  9747 I System.out: 🔍 Per-platform AI: Flipkart - queued (3 products, timeout=4000ms, reason=fresh)
+02-03 19:50:23.023  9747  9747 I System.out: 🔍 Per-platform AI: Flipkart - started
+02-03 19:50:23.024  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:23.029  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=2, LOW=0
+02-03 19:50:23.029  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.029  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:23.029  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:23.029  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:23.029  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:23.029  9747  9747 I System.out:   ⚠️ MED [0]: with Bank offer = ₹30.0
+02-03 19:50:23.029  9747  9747 I System.out:   ⚠️ MED [0]: Kathali kela, 4 Units = ₹90.0
+02-03 19:50:23.032  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:23.033  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:23.033  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:23.033  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:23.033  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.033  9747  9747 I System.out: 📊 Scraping: 3/10 platforms, Total: 9
+02-03 19:50:23.075  9747  9747 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:50:23.254  9747  9747 I System.out: WebView: Error loading https://zn00za9ubdwvj6one-tatadigital.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_00za9ubdwvj6oNE: net::ERR_NAME_NOT_RESOLVED
+02-03 19:50:23.603  9747  9747 I System.out: BigBasket: Timeout
+02-03 19:50:23.603  9747  9747 I System.out: 🔍 Per-platform AI: BigBasket - skipped (0 products)
+02-03 19:50:23.604  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:23.609  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=2, LOW=0
+02-03 19:50:23.609  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.609  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:23.609  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:23.610  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:23.610  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:23.610  9747  9747 I System.out:   ⚠️ MED [0]: with Bank offer = ₹30.0
+02-03 19:50:23.610  9747  9747 I System.out:   ⚠️ MED [0]: Kathali kela, 4 Units = ₹90.0
+02-03 19:50:23.612  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:23.612  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:23.612  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:23.612  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:23.612  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.613  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:23.616  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=2, LOW=0
+02-03 19:50:23.616  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.616  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:23.616  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:23.616  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:23.617  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:23.617  9747  9747 I System.out:   ⚠️ MED [0]: with Bank offer = ₹30.0
+02-03 19:50:23.617  9747  9747 I System.out:   ⚠️ MED [0]: Kathali kela, 4 Units = ₹90.0
+02-03 19:50:23.619  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:23.619  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:23.619  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:23.619  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:23.619  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.620  9747  9747 I System.out: 📊 Scraping: 3/10 platforms, Total: 9
+02-03 19:50:23.620  9747  9747 I System.out: JioMart Quick: Timeout
+02-03 19:50:23.620  9747  9747 I System.out: 🔍 Per-platform AI: JioMart Quick - skipped (0 products)
+02-03 19:50:23.620  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:23.623  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=2, LOW=0
+02-03 19:50:23.623  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.623  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:23.623  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:23.623  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:23.623  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:23.623  9747  9747 I System.out:   ⚠️ MED [0]: with Bank offer = ₹30.0
+02-03 19:50:23.623  9747  9747 I System.out:   ⚠️ MED [0]: Kathali kela, 4 Units = ₹90.0
+02-03 19:50:23.626  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:23.626  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:23.626  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:23.626  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:23.626  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.626  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:23.629  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=2, LOW=0
+02-03 19:50:23.629  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.629  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:23.630  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:23.630  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:23.630  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:23.630  9747  9747 I System.out:   ⚠️ MED [0]: with Bank offer = ₹30.0
+02-03 19:50:23.630  9747  9747 I System.out:   ⚠️ MED [0]: Kathali kela, 4 Units = ₹90.0
+02-03 19:50:23.631  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:23.631  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:23.631  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:23.632  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:23.632  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.632  9747  9747 I System.out: 📊 Scraping: 3/10 platforms, Total: 9
+02-03 19:50:23.632  9747  9747 I System.out: JioMart: Timeout
+02-03 19:50:23.632  9747  9747 I System.out: 🔍 Per-platform AI: JioMart - skipped (0 products)
+02-03 19:50:23.632  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:23.633  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=2, LOW=0
+02-03 19:50:23.634  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.634  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:23.634  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:23.634  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:23.634  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:23.634  9747  9747 I System.out:   ⚠️ MED [0]: with Bank offer = ₹30.0
+02-03 19:50:23.634  9747  9747 I System.out:   ⚠️ MED [0]: Kathali kela, 4 Units = ₹90.0
+02-03 19:50:23.635  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:23.635  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:23.635  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:23.635  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:23.635  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.636  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:23.637  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=2, LOW=0
+02-03 19:50:23.637  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.637  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:23.637  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:23.637  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:23.637  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:23.637  9747  9747 I System.out:   ⚠️ MED [0]: with Bank offer = ₹30.0
+02-03 19:50:23.637  9747  9747 I System.out:   ⚠️ MED [0]: Kathali kela, 4 Units = ₹90.0
+02-03 19:50:23.639  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:23.639  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:23.639  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:23.639  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:23.639  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:23.639  9747  9747 I System.out: 📊 Scraping: 3/10 platforms, Total: 9
+02-03 19:50:23.639  9747  9747 I System.out: === RAW SCRAPE COMPLETED ===
+02-03 19:50:23.639  9747  9747 I System.out: ✅ Fresh scraping complete. Total: 9 products
+02-03 19:50:23.639  9747  9747 I System.out: 🤖 Applying AI smart search...
+02-03 19:50:23.641  9747  9747 I System.out: 🤖 Final AI request started (timeout=120000ms, products=9)
+02-03 19:50:23.661  9747 10760 I System.out: JioMart Quick: ✗ WebView error - Job was cancelled
+02-03 19:50:23.662  9747 10760 I System.out: JioMart Quick: ✗ Error - Job was cancelled
+02-03 19:50:23.663  9747 10763 I System.out: BigBasket: ✗ Error - Job was cancelled
+02-03 19:50:23.663  9747 10763 I System.out: BigBasket: ✗ Error - Job was cancelled
+02-03 19:50:23.663  9747 10760 I System.out: JioMart Quick: Completed (8/10)
+02-03 19:50:23.663  9747 10763 I System.out: BigBasket: Completed (9/10)
+02-03 19:50:23.809  9747  9747 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1395135667375657?v=2.9.256&r=stable&domain=www.bigbasket.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:115)
+02-03 19:50:23.896  9747 10766 I System.out: JioMart: HTTP 500
+02-03 19:50:23.897  9747 10766 I System.out: JioMart: ✗ Error - Job was cancelled
+02-03 19:50:23.897  9747 10766 I System.out: JioMart: Completed (10/10)
+02-03 19:50:24.076  9747  9747 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=PageView&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dbanana&rl=&if=false&ts=1770128423834&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770128423827.185417068519211768&ler=empty&cdl=API_unavailable&pmd[title]=&plt=374.59999999403954&it=1770128423669&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct3&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:50:24.076  9747  9747 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=Search&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dbanana&rl=&if=false&ts=1770128423844&cd[content_type]=product%20&sw=320&sh=872&v=2.9.256&r=stable&ec=2&o=4126&fbp=fb.1.1770128423827.185417068519211768&ler=empty&cdl=API_unavailable&plt=374.59999999403954&it=1770128423669&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el2&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct3&expv2[5]=hf3&expv2[6]=pt1&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:50:24.076  9747  9747 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=Search&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dbanana&rl=&if=false&ts=1770128423840&cd[content_type]=product&sw=320&sh=872&v=2.9.256&r=stable&ec=1&o=4126&fbp=fb.1.1770128423827.185417068519211768&ler=empty&cdl=API_unavailable&plt=374.59999999403954&it=1770128423669&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct3&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:50:24.909  9747  9747 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":1})
+02-03 19:50:25.595  9747  9747 I System.out: WebView Console: be = 2885796582551770128418995 (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-03 19:50:25.595  9747  9747 I System.out: WebView Console: sp = undefined (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-03 19:50:26.175  9747  9747 I System.out: ✅ Per-platform AI: Flipkart - success in 3152ms (aiPowered=true, 1/3 kept, 2 filtered)
+02-03 19:50:26.176  9747  9747 I System.out: 🔍 Best Deal Search: 'banana' → Primary keyword: 'banana'
+02-03 19:50:26.178  9747  9747 I System.out: 📊 Relevance: HIGH=5, MEDIUM=0, LOW=0
+02-03 19:50:26.179  9747  9747 I System.out:   ✅ HIGH [50]: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:26.179  9747  9747 I System.out:   ✅ HIGH [30]: Baby Banana (Baale Hannu) = ₹26.0
+02-03 19:50:26.179  9747  9747 I System.out:   ✅ HIGH [30]: Yellaki Banana (Yellaki Baale Hannu) = ₹61.0
+02-03 19:50:26.179  9747  9747 I System.out:   ✅ HIGH [50]: Banana Yellaki, 12 Units = ₹66.0
+02-03 19:50:26.179  9747  9747 I System.out:   ✅ HIGH [50]: Banana Robusta = ₹77.0
+02-03 19:50:26.181  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:26.182  9747  9747 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:50:26.182  9747  9747 I System.out:     💰 Banana Yellaki, 12 Units = ₹66.0 (₹5.5/pc)
+02-03 19:50:26.182  9747  9747 I System.out:   💵 Raw cheapest: Banana (Baale Hannu) (per-unit best too expensive)
+02-03 19:50:26.182  9747  9747 I System.out: 🏆 Best Deal: Banana (Baale Hannu) = ₹25.0
+02-03 19:50:26.698  9747  9747 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Black.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana?deliveryType=express:0)
+02-03 19:50:26.698  9747  9747 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Medium.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana?deliveryType=express:0)
+02-03 19:50:26.698  9747  9747 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Bold.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana?deliveryType=express:0)
+02-03 19:50:26.699  9747  9747 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Bold.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana?deliveryType=express:0)
+02-03 19:50:26.699  9747  9747 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Medium.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana?deliveryType=express:0)
+02-03 19:50:26.699  9747  9747 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Black.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/banana?deliveryType=express:0)
+02-03 19:50:26.754  9747  9747 I System.out: WebView: Backup extraction triggered
+02-03 19:50:27.452  9747  9747 I System.out: SearchIntelligence: ✓ Banana Yellaki, 12 Units → ₹5.5/pc
+02-03 19:50:27.647  9747  9747 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-03 19:50:27.648  9747  9747 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-03 19:50:28.934  9747  9747 I System.out: WebView Console: localshops  [object Proxy] [object Proxy] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:28.991  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:28.998  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:28.998  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:28.998  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.000  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.006  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.006  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.006  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.008  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.010  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.014  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.014  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.015  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.016  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.018  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.023  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.023  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.023  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.024  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.025  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.027  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.031  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.032  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.033  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.040  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.040  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.040  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.040  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.042  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.053  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.056  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.057  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.059  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.060  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.065  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.066  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.066  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.067  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.068  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.073  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.073  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.073  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.074  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.075  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.077  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.080  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.081  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.082  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.082  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.084  9747  9747 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:50:29.175  9747  9747 I System.out: WebView: Content ready! Extracting immediately (attempt 11)
+02-03 19:50:29.603  9747  9747 I System.out: ✅ Final AI success in 5962ms (aiPowered=true, products=5)

@@ -1,0 +1,651 @@
+--------- beginning of main
+02-03 19:50:57.774 11389 11389 I System.out: PlatformHealth: Loaded health data for 0 platforms
+02-03 19:51:11.965 11389 11389 I System.out: 📝 HYBRID SEARCH: Starting for 'milk'
+02-03 19:51:12.163 11389 11389 I System.out: 💾 CACHE: Found cached results for 0 platforms (0 products)
+02-03 19:51:12.165 11389 11389 I System.out: === STARTING RAW SCRAPE: milk (pincode: 560001) ===
+02-03 19:51:12.165 11389 11389 I System.out: === NO LOCAL FILTERING - All intelligence handled by backend AI ===
+02-03 19:51:12.167 11389 12326 I System.out: === Launching all scrapers ===
+02-03 19:51:12.168 11389 12328 I System.out: Amazon: Starting (HTTP)
+02-03 19:51:12.169 11389 12332 I System.out: Amazon Fresh: Starting (HTTP)
+02-03 19:51:12.169 11389 12334 I System.out: Blinkit: Starting (WebView)
+02-03 19:51:12.170 11389 12329 I System.out: Zepto: Starting (WebView)
+02-03 19:51:12.170 11389 12333 I System.out: Instamart: Starting (WebView)
+02-03 19:51:12.171 11389 12342 I System.out: Flipkart Minutes: Starting (WebView)
+02-03 19:51:12.178 11389 12330 I System.out: Amazon: Searching for 'milk'...
+02-03 19:51:12.178 11389 12326 I System.out: Instamart: Searching for 'milk'...
+02-03 19:51:12.178 11389 12343 I System.out: Flipkart Minutes: Searching for 'milk'...
+02-03 19:51:12.179 11389 12332 I System.out: Blinkit: Searching for 'milk'...
+02-03 19:51:12.179 11389 12341 I System.out: Zepto: Searching for 'milk'...
+02-03 19:51:12.179 11389 12326 I System.out: DirectApiScraper: Instamart: Starting API scrape for 'milk'
+02-03 19:51:12.180 11389 12336 I System.out: Amazon Fresh: Searching for 'milk'...
+02-03 19:51:12.180 11389 12332 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:51:12.180 11389 12341 I System.out: DirectApiScraper: Zepto: Starting API scrape for 'milk'
+02-03 19:51:12.180 11389 12343 I System.out: Flipkart Minutes: HTTP request to https://m.flipkart.com/search?q=milk&marketplace=GROCERY
+02-03 19:51:12.180 11389 12330 I System.out: Amazon: Fetching https://www.amazon.in/s?k=milk (pincode: 560001)
+02-03 19:51:12.182 11389 12336 I System.out: Amazon Fresh: Fetching https://www.amazon.in/s?k=milk&i=nowstore (pincode: 560001)
+02-03 19:51:12.199 11389 12341 I System.out: DirectApiScraper: Zepto: API error: Unable to resolve host "api.zeptonow.com": No address associated with hostname
+02-03 19:51:12.487 11389 12326 I System.out: DirectApiScraper: Instamart: storeId fetch HTTP 404
+02-03 19:51:12.584 11389 12326 I System.out: DirectApiScraper: Instamart: HTTP 404
+02-03 19:51:12.584 11389 12326 I System.out: Instamart: Direct API failed (HTTP 404)
+02-03 19:51:12.585 11389 12326 I System.out: WebView: Location set to pincode=560001, lat=12.9716, lon=77.5946
+02-03 19:51:12.812 11389 12343 I System.out: Flipkart Minutes: Got 496683 chars via HTTP
+02-03 19:51:13.000 11389 12332 I System.out: Blinkit: Starting Blinkit-specific extraction...
+02-03 19:51:13.011 11389 12332 I System.out: Blinkit: Found 0 product images
+02-03 19:51:13.012 11389 12343 I System.out: Flipkart Minutes: No product cards found
+02-03 19:51:13.012 11389 12343 I System.out: Flipkart Minutes: HTTP request to https://m.flipkart.com/grocery-supermart-store?q=milk
+02-03 19:51:13.026 11389 12332 I System.out: Blinkit: Found 0 data-* elements
+02-03 19:51:13.034 11389 12332 I System.out: Blinkit: Found 0 product links
+02-03 19:51:13.034 11389 12332 I System.out: Blinkit: Blinkit extraction found 0 products
+02-03 19:51:13.063 11389 12326 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-03 19:51:13.063 11389 12326 I System.out: Instamart: Trying Cloudinary image extraction...
+02-03 19:51:13.094 11389 12326 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-03 19:51:13.094 11389 12326 I System.out: Instamart: Trying general image extraction...
+02-03 19:51:13.116 11389 12326 I System.out: Instamart: Found 1 images with alt
+02-03 19:51:13.116 11389 12326 I System.out: Instamart: Trying data-* extraction...
+02-03 19:51:13.134 11389 12326 I System.out: Instamart: Found 4 data-* elements
+02-03 19:51:13.139 11389 12326 I System.out: Instamart: Trying generic resilient extraction...
+02-03 19:51:13.248 11389 12326 I System.out: Instamart: Total extraction found 0 products
+02-03 19:51:13.287 11389 12343 I System.out: Flipkart Minutes: Got 523660 chars via HTTP
+02-03 19:51:13.350 11389 12343 I System.out: Flipkart Minutes: Using WebView (SPA site)...
+02-03 19:51:13.350 11389 12343 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:51:13.350 11389 12343 I System.out: Flipkart Minutes: Trying URL 1/1: https://m.flipkart.com/search?q=milk&marketplace=GROCERY
+02-03 19:51:13.489 11389 12332 I System.out: Blinkit: Attempt 1/3 with 9s timeout
+02-03 19:51:13.584 11389 12326 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-03 19:51:13.584 11389 12326 I System.out: Instamart: Trying Cloudinary image extraction...
+02-03 19:51:13.594 11389 12326 I System.out: Instamart: Found 0 Cloudinary/Swiggy images
+02-03 19:51:13.594 11389 12326 I System.out: Instamart: Trying general image extraction...
+02-03 19:51:13.602 11389 12326 I System.out: Instamart: Found 1 images with alt
+02-03 19:51:13.602 11389 12326 I System.out: Instamart: Trying data-* extraction...
+02-03 19:51:13.606 11389 11389 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.101 Mobile Safari/537.36
+02-03 19:51:13.610 11389 12326 I System.out: Instamart: Found 4 data-* elements
+02-03 19:51:13.612 11389 12326 I System.out: Instamart: Trying generic resilient extraction...
+02-03 19:51:13.634 11389 11389 I System.out: WebView: Set location cookies for m.flipkart.com with pincode=560001
+02-03 19:51:13.640 11389 12326 I System.out: Instamart: Total extraction found 0 products
+02-03 19:51:13.640 11389 12326 I System.out: Instamart: Attempt 1/3 with 9s timeout
+02-03 19:51:13.695 11389 11389 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36
+02-03 19:51:13.723 11389 11389 I System.out: WebView: Set location cookies for blinkit.com with pincode=560001
+02-03 19:51:13.750 11389 12336 I System.out: Amazon Fresh: Received HTML (836372 bytes)
+02-03 19:51:13.755 11389 11389 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36
+02-03 19:51:13.761 11389 12341 I System.out: DirectApiScraper: Zepto: HTTP 404
+02-03 19:51:13.761 11389 12341 I System.out: Zepto: Direct API failed (HTTP 404)
+02-03 19:51:13.762 11389 12341 I System.out: Zepto: Loading https://www.zeptonow.com/search?query=milk
+02-03 19:51:13.762 11389 12341 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:51:13.791 11389 11389 I System.out: WebView: Set comprehensive Swiggy cookies for pincode=560001
+02-03 19:51:13.795 11389 11389 I System.out: WebView: Set location cookies for www.swiggy.com with pincode=560001
+02-03 19:51:13.838 11389 11389 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; OnePlus 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.144 Mobile Safari/537.36
+02-03 19:51:13.856 11389 11389 I System.out: WebView: Set location cookies for www.zeptonow.com with pincode=560001
+02-03 19:51:13.995 11389 12330 I System.out: Amazon: Found 16 product cards
+02-03 19:51:14.001 11389 12330 I System.out: Amazon: Using ASIN: B0FF1VZVZK
+02-03 19:51:14.003 11389 12330 I System.out: Amazon: ✓ Added XLR8 at ₹460.0 -> https://www.amazon.in/dp/B0FF1VZVZK?pincode=560001
+02-03 19:51:14.008 11389 12330 I System.out: Amazon: Using ASIN: B0GG6Z52BN
+02-03 19:51:14.009 11389 12330 I System.out: Amazon: ✓ Added Ahuja Mart at ₹849.0 -> https://www.amazon.in/dp/B0GG6Z52BN?pincode=560001
+02-03 19:51:14.031 11389 12330 I System.out: Amazon: Using ASIN: B0129KE4WS
+02-03 19:51:14.031 11389 12330 I System.out: Amazon: ✓ Added Nandini at ₹68.0 -> https://www.amazon.in/dp/B0129KE4WS?pincode=560001
+02-03 19:51:14.031 11389 12330 I System.out: Amazon: ✓ Found 3 products
+02-03 19:51:14.032 11389 12330 I System.out: Amazon: [RAW] Got 3 products
+02-03 19:51:14.040 11389 12330 I System.out: Amazon: ✓ 3 products (raw, unfiltered)
+02-03 19:51:14.040 11389 12330 I System.out: Amazon: Completed (1/10)
+02-03 19:51:14.042 11389 12336 I System.out: Amazon Fresh: Found 15 product cards
+02-03 19:51:14.046 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0FDGDBS2Y
+02-03 19:51:14.046 11389 12336 I System.out: Amazon Fresh: Product URL for 'XLR8' = https://www.amazon.in/dp/B0FDGDBS2Y?pincode=560001&i=nowstore
+02-03 19:51:14.046 11389 12336 I System.out: Amazon Fresh: ✓ Added XLR8 at ₹230.0 -> https://www.amazon.in/dp/B0FDGDBS2Y?pincode=560001&i=nowstore
+02-03 19:51:14.050 11389 12336 I System.out: Amazon Fresh: Using ASIN: B07FXRZ7M5
+02-03 19:51:14.050 11389 12336 I System.out: Amazon Fresh: Product URL for 'Nandini' = https://www.amazon.in/dp/B07FXRZ7M5?pincode=560001&i=nowstore
+02-03 19:51:14.050 11389 12336 I System.out: Amazon Fresh: ✓ Added Nandini at ₹24.0 -> https://www.amazon.in/dp/B07FXRZ7M5?pincode=560001&i=nowstore
+02-03 19:51:14.053 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0DQXPM7L7
+02-03 19:51:14.053 11389 12336 I System.out: Amazon Fresh: Product URL for 'Nandini' = https://www.amazon.in/dp/B0DQXPM7L7?pincode=560001&i=nowstore
+02-03 19:51:14.054 11389 12336 I System.out: Amazon Fresh: ✓ Added Nandini at ₹27.0 -> https://www.amazon.in/dp/B0DQXPM7L7?pincode=560001&i=nowstore
+02-03 19:51:14.057 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0CR3TZV3P
+02-03 19:51:14.057 11389 12336 I System.out: Amazon Fresh: Product URL for 'Arokya' = https://www.amazon.in/dp/B0CR3TZV3P?pincode=560001&i=nowstore
+02-03 19:51:14.057 11389 12336 I System.out: Amazon Fresh: ✓ Added Arokya at ₹40.0 -> https://www.amazon.in/dp/B0CR3TZV3P?pincode=560001&i=nowstore
+02-03 19:51:14.057 11389 11389 I System.out: [STREAM] Amazon: 3 products at 1890ms
+02-03 19:51:14.058 11389 11389 I System.out: 🔍 Per-platform AI: Amazon - queued (3 products, timeout=4000ms, reason=fresh)
+02-03 19:51:14.058 11389 11389 I System.out: 🔍 Per-platform AI: Amazon - started
+02-03 19:51:14.059 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0CJYBKXF7
+02-03 19:51:14.059 11389 12336 I System.out: Amazon Fresh: Product URL for 'Arokya' = https://www.amazon.in/dp/B0CJYBKXF7?pincode=560001&i=nowstore
+02-03 19:51:14.060 11389 12336 I System.out: Amazon Fresh: ✓ Added Arokya at ₹19.0 -> https://www.amazon.in/dp/B0CJYBKXF7?pincode=560001&i=nowstore
+02-03 19:51:14.060 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:14.062 11389 11389 I System.out: 📊 Relevance: HIGH=0, MEDIUM=3, LOW=0
+02-03 19:51:14.062 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹68.0
+02-03 19:51:14.063 11389 12336 I System.out: Amazon Fresh: Using ASIN: B01IBTD4HC
+02-03 19:51:14.063 11389 11389 I System.out:   ⚠️ MED [0]: XLR8 = ₹460.0
+02-03 19:51:14.063 11389 12336 I System.out: Amazon Fresh: Product URL for 'Amul' = https://www.amazon.in/dp/B01IBTD4HC?pincode=560001&i=nowstore
+02-03 19:51:14.063 11389 11389 I System.out:   ⚠️ MED [0]: Ahuja Mart = ₹849.0
+02-03 19:51:14.063 11389 12336 I System.out: Amazon Fresh: ✓ Added Amul at ₹33.0 -> https://www.amazon.in/dp/B01IBTD4HC?pincode=560001&i=nowstore
+02-03 19:51:14.063 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:14.064 11389 11389 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:51:14.065 11389 11389 I System.out: 🏆 Best Deal: Nandini = ₹68.0
+02-03 19:51:14.065 11389 11389 I System.out: 📊 Scraping: 1/10 platforms, Total: 3
+02-03 19:51:14.066 11389 12336 I System.out: Amazon Fresh: Using ASIN: B01N0ZUDF7
+02-03 19:51:14.066 11389 12336 I System.out: Amazon Fresh: Product URL for 'Heritage' = https://www.amazon.in/dp/B01N0ZUDF7?pincode=560001&i=nowstore
+02-03 19:51:14.066 11389 12336 I System.out: Amazon Fresh: ✓ Added Heritage at ₹26.0 -> https://www.amazon.in/dp/B01N0ZUDF7?pincode=560001&i=nowstore
+02-03 19:51:14.069 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0129KE4WS
+02-03 19:51:14.070 11389 12336 I System.out: Amazon Fresh: Product URL for 'Nandini' = https://www.amazon.in/dp/B0129KE4WS?pincode=560001&i=nowstore
+02-03 19:51:14.070 11389 12336 I System.out: Amazon Fresh: ✓ Added Nandini at ₹68.0 -> https://www.amazon.in/dp/B0129KE4WS?pincode=560001&i=nowstore
+02-03 19:51:14.073 11389 12336 I System.out: Amazon Fresh: Using ASIN: B018E0HQPE
+02-03 19:51:14.073 11389 12336 I System.out: Amazon Fresh: Product URL for 'Amul' = https://www.amazon.in/dp/B018E0HQPE?pincode=560001&i=nowstore
+02-03 19:51:14.074 11389 12336 I System.out: Amazon Fresh: ✓ Added Amul at ₹74.0 -> https://www.amazon.in/dp/B018E0HQPE?pincode=560001&i=nowstore
+02-03 19:51:14.077 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0B4KMG64F
+02-03 19:51:14.077 11389 12336 I System.out: Amazon Fresh: Product URL for 'Heritage' = https://www.amazon.in/dp/B0B4KMG64F?pincode=560001&i=nowstore
+02-03 19:51:14.077 11389 12336 I System.out: Amazon Fresh: ✓ Added Heritage at ₹31.0 -> https://www.amazon.in/dp/B0B4KMG64F?pincode=560001&i=nowstore
+02-03 19:51:14.081 11389 12336 I System.out: Amazon Fresh: Using ASIN: B08B42TXXV
+02-03 19:51:14.081 11389 12336 I System.out: Amazon Fresh: Product URL for 'Akshayakalpa Amrutha - A2 Orga' = https://www.amazon.in/dp/B08B42TXXV?pincode=560001&i=nowstore
+02-03 19:51:14.081 11389 12336 I System.out: Amazon Fresh: ✓ Added Akshayakalpa Amrutha - A2 Orga at ₹45.0 -> https://www.amazon.in/dp/B08B42TXXV?pincode=560001&i=nowstore
+02-03 19:51:14.085 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0177F3YIK
+02-03 19:51:14.085 11389 12336 I System.out: Amazon Fresh: Product URL for 'Nandini' = https://www.amazon.in/dp/B0177F3YIK?pincode=560001&i=nowstore
+02-03 19:51:14.085 11389 12336 I System.out: Amazon Fresh: ✓ Added Nandini at ₹31.0 -> https://www.amazon.in/dp/B0177F3YIK?pincode=560001&i=nowstore
+02-03 19:51:14.088 11389 12336 I System.out: Amazon Fresh: Using ASIN: B07MBZF196
+02-03 19:51:14.088 11389 12336 I System.out: Amazon Fresh: Product URL for 'Heritage' = https://www.amazon.in/dp/B07MBZF196?pincode=560001&i=nowstore
+02-03 19:51:14.088 11389 12336 I System.out: Amazon Fresh: ✓ Added Heritage at ₹31.0 -> https://www.amazon.in/dp/B07MBZF196?pincode=560001&i=nowstore
+02-03 19:51:14.091 11389 12336 I System.out: Amazon Fresh: Using ASIN: B0CJXV8DRN
+02-03 19:51:14.091 11389 12336 I System.out: Amazon Fresh: Product URL for 'Nandini' = https://www.amazon.in/dp/B0CJXV8DRN?pincode=560001&i=nowstore
+02-03 19:51:14.091 11389 12336 I System.out: Amazon Fresh: ✓ Added Nandini at ₹29.0 -> https://www.amazon.in/dp/B0CJXV8DRN?pincode=560001&i=nowstore
+02-03 19:51:14.094 11389 12336 I System.out: Amazon Fresh: Using ASIN: B01GO0YNKM
+02-03 19:51:14.094 11389 12336 I System.out: Amazon Fresh: Product URL for 'Amul' = https://www.amazon.in/dp/B01GO0YNKM?pincode=560001&i=nowstore
+02-03 19:51:14.094 11389 12336 I System.out: Amazon Fresh: ✓ Added Amul at ₹80.0 -> https://www.amazon.in/dp/B01GO0YNKM?pincode=560001&i=nowstore
+02-03 19:51:14.094 11389 12336 I System.out: Amazon Fresh: ✓ Found 15 products
+02-03 19:51:14.094 11389 12336 I System.out: Amazon Fresh: Returning 5 products: [XLR8, Nandini, Nandini, Arokya, Arokya]
+02-03 19:51:14.094 11389 12336 I System.out: Amazon Fresh: [RAW] Got 5 products
+02-03 19:51:14.097 11389 12336 I System.out: Amazon Fresh: ✓ 5 products (raw, unfiltered)
+02-03 19:51:14.097 11389 12336 I System.out: Amazon Fresh: Completed (2/10)
+02-03 19:51:14.260 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:14.350 11389 11389 I System.out: [STREAM] Amazon Fresh: 5 products at 2182ms
+02-03 19:51:14.350 11389 11389 I System.out: 🔍 Per-platform AI: Amazon Fresh - queued (5 products, timeout=4000ms, reason=fresh)
+02-03 19:51:14.350 11389 11389 I System.out: 🔍 Per-platform AI: Amazon Fresh - started
+02-03 19:51:14.351 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:14.353 11389 11389 I System.out: 📊 Relevance: HIGH=0, MEDIUM=8, LOW=0
+02-03 19:51:14.353 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:14.353 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:14.353 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:14.353 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:14.355 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:14.355 11389 11389 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:51:14.355 11389 11389 I System.out: 🏆 Best Deal: Arokya = ₹19.0
+02-03 19:51:14.355 11389 11389 I System.out: 📊 Scraping: 2/10 platforms, Total: 8
+02-03 19:51:14.358 11389 11389 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:51:14.465 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:14.504 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:14.510 11389 11389 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:51:14.510 11389 11389 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:51:14.519 11389 11389 I System.out: WebView Console: Error with Permissions-Policy header: Unrecognized feature: 'browsing-topics'. (:0)
+02-03 19:51:14.519 11389 11389 I System.out: WebView Console: Error with Permissions-Policy header: Unrecognized feature: 'web-share'. (:0)
+02-03 19:51:14.582 11389 11389 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:51:14.775 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:14.796 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:14.814 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:16.020 11389 11389 I System.out: WebView Console: Warning: Component with name Placeholderis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:16.063 11389 11389 I System.out: WebView Console: Warning: Component with name RNShimmeringViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:16.087 11389 11389 I System.out: WebView Console: Warning: Component with name GifViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:16.087 11389 11389 I System.out: WebView Console: Warning: Component with name LiveVideoViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:17.166 11389 11389 I System.out: WebView Console: ServiceWorker registration successful with scope:  https://www.flipkart.com/ (https://www.flipkart.com/search?q=milk&marketplace=GROCERY:1725)
+02-03 19:51:17.166 11389 11389 I System.out: WebView Console: ServiceWorker is active and sending message :  https://www.flipkart.com/ (https://www.flipkart.com/search?q=milk&marketplace=GROCERY:1734)
+02-03 19:51:17.291 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:17.616 11389 11389 I System.out: WebView Console: Sync registration failed for web push Heart beat: UnknownError: Background Sync is disabled. (https://www.flipkart.com/search?q=milk&marketplace=GROCERY:1756)
+02-03 19:51:17.639 11389 11389 I System.out: ✅ Per-platform AI: Amazon Fresh - success in 3289ms (aiPowered=true, 0/5 kept, 5 filtered)
+02-03 19:51:17.639 11389 11389 I System.out: ⚠️ AI returned 0 items for Amazon Fresh; keeping raw results
+02-03 19:51:17.639 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:17.642 11389 11389 I System.out: 📊 Relevance: HIGH=0, MEDIUM=8, LOW=0
+02-03 19:51:17.642 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:17.643 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:17.643 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:17.643 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:17.645 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:17.646 11389 11389 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:51:17.646 11389 11389 I System.out: 🏆 Best Deal: Arokya = ₹19.0
+02-03 19:51:17.647 11389 11389 I System.out: WebView Console: hide header timeout (https://instamart-media-assets.swiggy.com/swiggy/raw/upload/dash-front-assets/js/app.es6.cd83c1c300ead98d.js:88)
+02-03 19:51:17.706 11389 11389 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1685726148383397?v=2.9.256&r=stable&domain=blinkit.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:134)
+02-03 19:51:17.718 11389 11389 I System.out: ✅ Per-platform AI: Amazon - success in 3659ms (aiPowered=true, 0/3 kept, 3 filtered)
+02-03 19:51:17.718 11389 11389 I System.out: ⚠️ AI returned 0 items for Amazon; keeping raw results
+02-03 19:51:17.718 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:17.721 11389 11389 I System.out: 📊 Relevance: HIGH=0, MEDIUM=8, LOW=0
+02-03 19:51:17.721 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:17.721 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:17.722 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:17.722 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:17.723 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'XLR8'
+02-03 19:51:17.724 11389 11389 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:51:17.724 11389 11389 I System.out: 🏆 Best Deal: Arokya = ₹19.0
+02-03 19:51:17.855 11389 11389 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1149898238733621?v=2.9.256&r=stable&domain=www.swiggy.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:134)
+02-03 19:51:17.948 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:17.990 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:18.203 11389 11389 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1685726148383397&ev=PageView&dl=https%3A%2F%2Fblinkit.com%2Fs%2F%3Fq%3Dmilk&rl=&if=false&ts=1770128477733&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770128477718.153382975939310411&eid=ob3_plugin-set_321305fb9cf97e7003b1d3f9f6730945db48b7d2911f3d8d1721e0b1ae156945&ler=empty&cdl=API_unavailable&pmd[title]=Buy%20milk%20Online%20%7C%20blinkit&pmd[keywords]=Buy%20Grocery%20Online%2C%20Online%20Grocery%2C%20Grofers%2C%20Groffers%2C%20Groferss%2C%20blinkit%20grofers%2C%20blinkit%2C%20blink%20it%2C%20Grocery%20Store%2C%20Online%20Grocery%20Shopping%2C%20Online%20Grocery%20Store%2C%20Online%20Supermarket%2C%20Free%20Delivery%2C%20Great%20Offers%2C%20Best%20Prices&pmd[description]=Buy%20milk%20at%20best%20price%20and%20get%20it%20delivered%20at%20your%20doorstep.&plt=1676.800000011921&it=1770128476928&coo=false&chmd=&chpv=&chfv=undefined&cf=1&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct2&expv2[5]=hf2&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:51:18.218 11389 11389 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1149898238733621&ev=PageView&dl=https%3A%2F%2Fwww.swiggy.com%2Finstamart%2Fsearch%3Fcustom_back%3Dtrue%26query%3Dmilk&rl=&if=false&ts=1770128477876&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770128477868.91135883375808782&eid=ob3_plugin-set_746ed55d6a65ce6b7e37c9aaeff220fd72e1e738faaf752c7d7a8ef55fd7d670&ler=empty&cdl=API_unavailable&pmd[title]=Instamart&plt=1100.5&it=1770128477275&coo=false&chmd=&chpv=&chfv=undefined&cf=1&expv2[0]=pl0&expv2[1]=el2&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=im0&expv2[5]=hf2&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:51:18.548 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (https://blinkit.com/scripts/sentryvendor.df85f9ffd4f9be92831b.js:1)
+02-03 19:51:19.172 11389 11389 I System.out: WebView Console: WARNING: Too many active WebGL contexts. Oldest context will be lost. (:111)
+02-03 19:51:19.178 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:19.290 11389 11389 I System.out: WebView Console: WARNING: Too many active WebGL contexts. Oldest context will be lost. (:111)
+02-03 19:51:19.296 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:20.605 11389 11389 I System.out: WebView: Content ready! Extracting immediately (attempt 1)
+02-03 19:51:20.707 11389 12330 I System.out: Zepto: Got 313826 chars HTML
+02-03 19:51:20.753 11389 12330 I System.out: Zepto: DEBUG - All prices in HTML: [₹24, ₹25, ₹27, ₹2, ₹31, ₹16, ₹26, ₹31, ₹33, ₹2, ₹14, ₹26, ₹35, ₹1, ₹26, ₹28, ₹2, ₹45, ₹42, ₹31]
+02-03 19:51:20.755 11389 12330 I System.out: Zepto: DEBUG - Per-unit prices found: []
+02-03 19:51:20.874 11389 11389 I System.out: WebView: Selector ready (img[alt]), extracting
+02-03 19:51:20.929 11389 12336 I System.out: Blinkit: Got 127303 chars
+02-03 19:51:20.968 11389 12336 I System.out: Blinkit: HTML Structure Monitor:
+02-03 19:51:20.968 11389 12336 I System.out:   - Images with alt: 1
+02-03 19:51:20.968 11389 12336 I System.out:   - data-product elements: 0
+02-03 19:51:20.968 11389 12336 I System.out:   - Product links: 0
+02-03 19:51:20.968 11389 12336 I System.out:   - Price occurrences: 27
+02-03 19:51:20.998 11389 12336 I System.out: Blinkit: Starting Blinkit-specific extraction...
+02-03 19:51:21.001 11389 12336 I System.out: Blinkit: Found 1 product images
+02-03 19:51:21.012 11389 12336 I System.out: Blinkit: Found 0 data-* elements
+02-03 19:51:21.013 11389 12336 I System.out: Blinkit: Found 0 product links
+02-03 19:51:21.013 11389 12336 I System.out: Blinkit: Blinkit extraction found 0 products
+02-03 19:51:21.013 11389 12336 I System.out: Blinkit: Blinkit-specific extraction failed, trying generic...
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: DEBUG - Extracted: 'Nandini Toned Fresh Milk | Pouch' = ₹24.0 (original: 25.0)
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: DEBUG - Extracted: 'Amul Taaza Homogenised Toned Milk (Tetra Pack)' = ₹16.0 (original: 26.0)
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: DEBUG - Extracted: 'Nandini Good Life Toned UHT Milk (Fino Pouch)' = ₹14.0 (original: 26.0)
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: DEBUG - Extracted: 'Amul Taaza Toned Fresh Milk | Pouch' = ₹26.0 (original: 28.0)
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: DEBUG - Extracted: 'Heritage Special Long Life Toned Milk (Pouch)' = ₹31.0 (original: 33.0)
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: URL for 'Nandini Toned Fresh Milk | Pouch' -> https://www.zeptonow.com/pn/nandini-toned-fresh-milk-pouch/pvid/25eb526c-9c26-48cd-95a3-8e4058910f8a?pincode=560001
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: URL for 'Amul Taaza Homogenised Toned Milk (Tetra Pack)' -> https://www.zeptonow.com/pn/amul-taaza-homogenised-toned-milk-tetra-pack/pvid/2a231315-2b07-4de0-af4a-3a4f9c48ad0c?pincode=560001
+02-03 19:51:21.102 11389 12330 I System.out: Zepto: URL for 'Nandini Good Life Toned UHT Milk (Fino Pouch)' -> https://www.zeptonow.com/pn/nandini-good-life-toned-uht-milk-fino-pouch/pvid/17ce1910-171f-4aac-8fcb-86d96d679487?pincode=560001
+02-03 19:51:21.103 11389 12330 I System.out: Zepto: URL for 'Amul Taaza Toned Fresh Milk | Pouch' -> https://www.zeptonow.com/pn/amul-taaza-toned-fresh-milk-pouch/pvid/9d447ba5-1d35-46e1-bc64-e932135d026f?pincode=560001
+02-03 19:51:21.103 11389 12330 I System.out: Zepto: URL for 'Heritage Special Long Life Toned Milk (Pouch)' -> https://www.zeptonow.com/pn/heritage-special-long-life-toned-milk-pouch/pvid/745ea592-6192-4dfc-8a18-c2396be123a2?pincode=560001
+02-03 19:51:21.103 11389 12330 I System.out: Zepto: [RAW] Got 5 products
+02-03 19:51:21.108 11389 12330 I System.out: Zepto: ✓ 5 products (raw, unfiltered)
+02-03 19:51:21.109 11389 12330 I System.out: Zepto: Completed (3/10)
+02-03 19:51:21.109 11389 12341 I System.out: JioMart Quick: Starting (WebView)
+02-03 19:51:21.111 11389 12326 I System.out: JioMart Quick: Searching for 'milk'...
+02-03 19:51:21.111 11389 12326 I System.out: DirectApiScraper: JioMart Quick: Starting API scrape for 'milk'
+02-03 19:51:21.119 11389 11389 I System.out: [STREAM] Zepto: 5 products at 8952ms
+02-03 19:51:21.120 11389 11389 I System.out: 🔍 Per-platform AI: Zepto - queued (5 products, timeout=4000ms, reason=fresh)
+02-03 19:51:21.120 11389 11389 I System.out: 🔍 Per-platform AI: Zepto - started
+02-03 19:51:21.121 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:21.130 11389 11389 I System.out: 📊 Relevance: HIGH=5, MEDIUM=8, LOW=0
+02-03 19:51:21.130 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:21.130 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:21.130 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:21.130 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:21.130 11389 11389 I System.out:   ✅ HIGH [40]: Heritage Special Long Life Toned Milk (P = ₹31.0
+02-03 19:51:21.130 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:21.130 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:21.130 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:21.133 11389 11389 I System.out:   📏 Per-unit comparison: 0 products have calculable unit price
+02-03 19:51:21.133 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:21.133 11389 11389 I System.out: 📊 Scraping: 3/10 platforms, Total: 13
+02-03 19:51:21.137 11389 12336 I System.out: Blinkit: ✓ Found 9 products on attempt 1
+02-03 19:51:21.137 11389 12336 I System.out: Blinkit: [RAW] Got 9 products
+02-03 19:51:21.141 11389 12336 I System.out: Blinkit: ✓ 9 products (raw, unfiltered)
+02-03 19:51:21.141 11389 12336 I System.out: Blinkit: Completed (4/10)
+02-03 19:51:21.142 11389 12336 I System.out: BigBasket: Starting (WebView)
+02-03 19:51:21.143 11389 12336 I System.out: BigBasket: Searching for 'milk'...
+02-03 19:51:21.143 11389 12336 I System.out: DirectApiScraper: BigBasket: Starting API scrape for 'milk'
+02-03 19:51:21.267 11389 11389 I System.out: [STREAM] Blinkit: 9 products at 9100ms
+02-03 19:51:21.268 11389 11389 I System.out: 🔍 Per-platform AI: Blinkit - queued (9 products, timeout=4000ms, reason=fresh)
+02-03 19:51:21.268 11389 11389 I System.out: 🔍 Per-platform AI: Blinkit - started
+02-03 19:51:21.268 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:21.279 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:21.279 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:21.279 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:21.279 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:21.279 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:21.279 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:21.279 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:21.279 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:21.279 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:21.283 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:21.284 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:21.284 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:21.284 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:21.284 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:21.284 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:21.284 11389 11389 I System.out: 📊 Scraping: 4/10 platforms, Total: 22
+02-03 19:51:21.340 11389 12336 I System.out: DirectApiScraper: BigBasket: HTTP 400
+02-03 19:51:21.340 11389 12336 I System.out: BigBasket: Direct API failed (HTTP 400)
+02-03 19:51:21.341 11389 12336 I System.out: BigBasket: Loading https://www.bigbasket.com/ps/?q=milk (WebView)...
+02-03 19:51:21.341 11389 12336 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:51:21.368 11389 11389 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; OnePlus 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.144 Mobile Safari/537.36
+02-03 19:51:21.394 11389 11389 I System.out: WebView: Set location cookies for www.bigbasket.com with pincode=560001
+02-03 19:51:21.703 11389 11389 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:51:21.742 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:21.742 11389 11389 I System.out: WebView: Selector ready (img[src*='cloudinary'], img[src*='swiggy']), extracting
+02-03 19:51:21.768 11389 12336 I System.out: Instamart: Got 115031 chars
+02-03 19:51:21.812 11389 12336 I System.out: Instamart: HTML Structure Monitor:
+02-03 19:51:21.812 11389 12336 I System.out:   - __NEXT_DATA__: false
+02-03 19:51:21.812 11389 12336 I System.out:   - Cloudinary/Swiggy images: 2
+02-03 19:51:21.812 11389 12336 I System.out:   - Images with alt: 1
+02-03 19:51:21.812 11389 12336 I System.out:   - data-* elements: 3
+02-03 19:51:21.812 11389 12336 I System.out:   - Price occurrences: 0
+02-03 19:51:21.812 11389 12336 I System.out: Instamart: Trying __NEXT_DATA__ extraction...
+02-03 19:51:21.813 11389 12336 I System.out: Instamart: Trying Cloudinary image extraction...
+02-03 19:51:21.824 11389 12336 I System.out: Instamart: Found 2 Cloudinary/Swiggy images
+02-03 19:51:21.824 11389 12336 I System.out: Instamart: Trying general image extraction...
+02-03 19:51:21.835 11389 12336 I System.out: Instamart: Found 1 images with alt
+02-03 19:51:21.835 11389 12336 I System.out: Instamart: Trying data-* extraction...
+02-03 19:51:21.847 11389 12336 I System.out: Instamart: Found 3 data-* elements
+02-03 19:51:21.848 11389 12336 I System.out: Instamart: Trying generic resilient extraction...
+02-03 19:51:21.881 11389 12336 I System.out: Instamart: Total extraction found 0 products
+02-03 19:51:21.881 11389 12336 I System.out: Instamart: Attempt 1 - no valid products
+02-03 19:51:21.881 11389 12336 I System.out: Instamart: ✗ All attempts failed
+02-03 19:51:21.881 11389 12336 I System.out: Instamart: [RAW] Got 0 products
+02-03 19:51:21.881 11389 12336 I System.out: Instamart: ✗ No products
+02-03 19:51:21.882 11389 12336 I System.out: Instamart: Completed (5/10)
+02-03 19:51:21.882 11389 12336 I System.out: Flipkart: Starting (WebView)
+02-03 19:51:21.884 11389 12336 I System.out: Flipkart: Searching for 'milk'...
+02-03 19:51:21.884 11389 12336 I System.out: Flipkart: Using WebView (SPA site)...
+02-03 19:51:21.884 11389 12336 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:51:21.884 11389 12336 I System.out: Flipkart: Trying URL 1/3: https://m.flipkart.com/search?q=milk
+02-03 19:51:21.925 11389 11389 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36
+02-03 19:51:21.956 11389 11389 I System.out: WebView: Set location cookies for m.flipkart.com with pincode=560001
+02-03 19:51:22.128 11389 11389 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:51:22.169 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:22.187 11389 12336 I System.out: Flipkart Minutes: URL 1 error: Timed out waiting for 10000 ms
+02-03 19:51:22.187 11389 12336 I System.out: Flipkart Minutes: Timeout reached, stopping URL attempts
+02-03 19:51:22.187 11389 12336 I System.out: Flipkart Minutes: ✗ All URLs failed
+02-03 19:51:22.188 11389 12336 I System.out: Flipkart Minutes: [TIMEOUT]
+02-03 19:51:22.188 11389 12336 I System.out: Flipkart Minutes: ✗ No products
+02-03 19:51:22.188 11389 12336 I System.out: Flipkart Minutes: Completed (6/10)
+02-03 19:51:22.188 11389 12341 I System.out: JioMart: Starting (WebView)
+02-03 19:51:22.190 11389 12341 I System.out: JioMart: Searching for 'milk'...
+02-03 19:51:22.190 11389 12341 I System.out: DirectApiScraper: JioMart: Starting API scrape for 'milk'
+02-03 19:51:22.196 11389 11389 I System.out: [STREAM] Flipkart Minutes: 0 products at 10029ms
+02-03 19:51:22.196 11389 11389 I System.out: 🔍 Per-platform AI: Flipkart Minutes - skipped (0 products)
+02-03 19:51:22.196 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:22.203 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:22.203 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:22.203 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:22.203 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:22.203 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:22.203 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:22.203 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:22.203 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:22.203 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:22.207 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:22.207 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:22.208 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:22.208 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:22.208 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:22.208 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:22.208 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:22.215 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:22.215 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:22.215 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:22.215 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:22.215 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:22.215 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:22.215 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:22.215 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:22.215 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:22.224 11389 12326 I System.out: DirectApiScraper: JioMart: HTTP 500
+02-03 19:51:22.224 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:22.225 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:22.225 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:22.225 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:22.225 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:22.225 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:22.225 11389 11389 I System.out: 📊 Scraping: 4/10 platforms, Total: 22
+02-03 19:51:22.227 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:22.334 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:22.717 11389 11389 I System.out: WebView Console: ServiceWorker registration successful with scope:  https://www.flipkart.com/ (https://www.flipkart.com/search?q=milk:1735)
+02-03 19:51:22.717 11389 11389 I System.out: WebView Console: ServiceWorker is active and sending message :  https://www.flipkart.com/ (https://www.flipkart.com/search?q=milk:1744)
+02-03 19:51:22.733 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:22.877 11389 11389 I System.out: WebView Console: Warning: Component with name Placeholderis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:22.943 11389 11389 I System.out: WebView Console: Warning: Component with name RNShimmeringViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:22.962 11389 11389 I System.out: WebView Console: Warning: Component with name GifViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:22.962 11389 11389 I System.out: WebView Console: Warning: Component with name LiveVideoViewis not available. Returning a fallback View (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:22.995 11389 11389 I System.out: WebView Console: Sync registration failed for web push Heart beat: UnknownError: Background Sync is disabled. (https://www.flipkart.com/search?q=milk:1766)
+02-03 19:51:23.223 11389 12341 I System.out: DirectApiScraper: JioMart: HTTP 500
+02-03 19:51:23.266 11389 12326 I System.out: JioMart Quick: Direct API returned no products
+02-03 19:51:23.266 11389 12326 I System.out: JioMart Quick: HTTP request to https://www.jiomart.com/search/milk?deliveryType=express
+02-03 19:51:23.312 11389 11389 I System.out: WebView Console: App data fetch failed with status: 400 (https://www.bbassets.com/monsters-inc/static_pwa/_next/static/chunks/492.9ef1b270fb46e78e.js:1)
+02-03 19:51:23.351 11389 12326 I System.out: JioMart Quick: HTTP 403
+02-03 19:51:23.392 11389 12326 I System.out: JioMart Quick: HTTP 403
+02-03 19:51:23.393 11389 12326 I System.out: JioMart Quick: Using WebView (SPA site)...
+02-03 19:51:23.393 11389 12326 I System.out: JioMart Quick: Loading https://www.jiomart.com/search/milk?deliveryType=express
+02-03 19:51:23.393 11389 12326 I System.out: WebView: Location set to pincode=560001, lat=12.9352, lon=77.6245
+02-03 19:51:23.411 11389 11389 I System.out: WebView: Created with User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36
+02-03 19:51:23.442 11389 11389 I System.out: WebView: Set location cookies for www.jiomart.com with pincode=560001
+02-03 19:51:23.937 11389 11389 I System.out: WebView Console: setNativeProps is deprecated. Please update props using React state instead. (https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/0dabfea1025c670ad99726ae9939d123/CrossCommon.js:1)
+02-03 19:51:24.222 11389 11389 I System.out: WebView: Backup extraction triggered
+02-03 19:51:24.477 11389 12341 I System.out: JioMart: Direct API returned no products
+02-03 19:51:24.478 11389 12341 I System.out: JioMart: HTTP request to https://www.jiomart.com/search/milk
+02-03 19:51:24.544 11389 11389 I System.out: WebView: Error loading https://zn00za9ubdwvj6one-tatadigital.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_00za9ubdwvj6oNE: net::ERR_NAME_NOT_RESOLVED
+02-03 19:51:24.571 11389 11389 I System.out: ✅ Per-platform AI: Zepto - success in 3451ms (aiPowered=true, 5/5 kept, 0 filtered)
+02-03 19:51:24.572 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:24.579 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:24.579 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:24.579 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:24.580 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:24.580 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:24.580 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:24.580 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:24.580 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:24.580 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:24.585 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:24.586 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:24.586 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:24.586 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:24.587 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:24.587 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:24.655 11389 11389 I System.out: WebView Console: Unrecognized feature: 'browsing-topics'. (https://connect.facebook.net/signals/config/1395135667375657?v=2.9.256&r=stable&domain=www.bigbasket.com&hme=18f1088ef3e8892a74f943ddaee05e3bbd28c980d3b65c4c57d9fe86969d4bce&ex_m=95%2C158%2C135%2C20%2C67%2C68%2C128%2C63%2C42%2C129%2C72%2C62%2C10%2C142%2C81%2C15%2C94%2C123%2C116%2C70%2C73%2C122%2C139%2C103%2C144%2C7%2C3%2C4%2C6%2C5%2C2%2C82%2C92%2C145%2C226%2C170%2C56%2C228%2C229%2C49%2C185%2C27%2C69%2C234%2C233%2C173%2C29%2C55%2C9%2C58%2C88%2C89%2C90%2C96%2C119%2C28%2C26%2C121%2C118%2C117%2C136%2C71%2C138%2C137%2C44%2C54%2C112%2C14%2C141%2C39%2C215%2C217%2C180%2C23%2C24%2C25%2C17%2C18%2C38%2C34%2C36%2C35%2C77%2C83%2C87%2C101%2C127%2C130%2C40%2C102%2C21%2C19%2C108%2C64%2C32%2C132%2C131%2C133%2C124%2C22%2C31%2C53%2C100%2C140%2C65%2C16%2C134%2C105%2C76%2C61%2C30%2C195%2C165%2C285%2C213%2C156%2C198%2C191%2C166%2C98%2C120%2C75%2C110%2C48%2C41%2C43%2C104%2C109%2C115%2C52%2C59%2C114%2C47%2C50%2C46%2C91%2C143%2C0%2C113%2C13%2C111%2C11%2C1%2C51%2C84%2C57%2C60%2C107%2C80%2C79%2C146%2C147%2C85%2C86%2C8%2C93%2C45%2C125%2C78%2C74%2C66%2C106%2C97%2C37%2C126%2C33%2C99%2C12%2C148:115)
+02-03 19:51:24.657 11389 11389 I System.out: ✅ Per-platform AI: Blinkit - success in 3389ms (aiPowered=true, 9/9 kept, 0 filtered)
+02-03 19:51:24.658 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:24.665 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:24.665 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:24.665 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:24.665 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:24.665 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:24.666 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:24.666 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:24.666 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:24.666 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:24.671 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:24.672 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:24.673 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:24.673 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:24.673 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:24.673 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:24.947 11389 11389 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=PageView&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dmilk&rl=&if=false&ts=1770128484674&sw=320&sh=872&v=2.9.256&r=stable&ec=0&o=4126&fbp=fb.1.1770128484665.722069777330989275&ler=empty&cdl=API_unavailable&pmd[title]=&plt=313.19999998807907&it=1770128484584&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct2&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:51:24.947 11389 11389 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=Search&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dmilk&rl=&if=false&ts=1770128484681&cd[content_type]=product&sw=320&sh=872&v=2.9.256&r=stable&ec=1&o=4126&fbp=fb.1.1770128484665.722069777330989275&ler=empty&cdl=API_unavailable&plt=313.19999998807907&it=1770128484584&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el2&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct2&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:51:24.956 11389 11389 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":1})
+02-03 19:51:24.965 11389 11389 I System.out: WebView: Error loading https://www.facebook.com/privacy_sandbox/pixel/register/trigger/?id=1395135667375657&ev=Search&dl=https%3A%2F%2Fwww.bigbasket.com%2Fps%2F%3Fq%3Dmilk&rl=&if=false&ts=1770128484688&cd[content_type]=product%20&sw=320&sh=872&v=2.9.256&r=stable&ec=2&o=4126&fbp=fb.1.1770128484665.722069777330989275&ler=empty&cdl=API_unavailable&plt=313.19999998807907&it=1770128484584&coo=false&chmd=&chpv=&chfv=undefined&expv2[0]=pl0&expv2[1]=el3&expv2[2]=bc1&expv2[3]=mr2&expv2[4]=ct2&expv2[5]=hf3&rqm=FGET: net::ERR_BLOCKED_BY_ORB
+02-03 19:51:25.175 11389 11389 I System.out: WebView: Content ready! Extracting immediately (attempt 0)
+02-03 19:51:25.304 11389 12330 I System.out: Flipkart: Got 538978 chars from URL 1
+02-03 19:51:25.488 11389 11389 I System.out: WebView: Anti-detection script injected on page start
+02-03 19:51:25.526 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:25.606 11389 11389 I System.out: WebView Console: You are running a development build of Vue.
+02-03 19:51:25.606 11389 11389 I System.out: Make sure to use the production build (*.prod.js) when deploying for production. (https://www.jiomart.com/assets/global/js/vue_global.min.js:13)
+02-03 19:51:25.766 11389 12330 I System.out: Flipkart: ✓ Found 5 products via URL 1
+02-03 19:51:25.767 11389 12330 I System.out: Flipkart: [RAW] Got 5 products
+02-03 19:51:25.775 11389 12330 I System.out: Flipkart: ✓ 5 products (raw, unfiltered)
+02-03 19:51:25.776 11389 12330 I System.out: Flipkart: Completed (7/10)
+02-03 19:51:25.946 11389 11389 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-03 19:51:25.996 11389 11389 I System.out: WebView Console: show_normal_payment_banner without_loggedIn 0 (https://www.jiomart.com/assets/version1768913331/ds2msite/js/cart.min.js:5)
+02-03 19:51:26.065 11389 11389 I System.out: WebView Console: init jioads (https://www.jiomart.com/search/milk?deliveryType=express:2163)
+02-03 19:51:26.065 11389 11389 I System.out: WebView Console: jioads set config (https://www.jiomart.com/search/milk?deliveryType=express:2431)
+02-03 19:51:26.066 11389 11389 I System.out: WebView Console: %cWebsdk log%csetConfiguration called with options: [object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:51:26.066 11389 11389 I System.out: WebView Console: %cWebsdk log%cuid fetched: 8b3cea37-1697-4e2e-b647-20a0ae428d09 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:51:26.066 11389 11389 I System.out: WebView Console: %cWebsdk log%cPartner IDs fetched: null color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:51:26.068 11389 11389 I System.out: WebView Console: %cWebsdk log%cResponse from FETCH color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:51:26.151 11389 11389 I System.out: WebView Console: %cWebsdk log%cHTTP Call Status: 404 | State: 4 color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:51:26.151 11389 11389 I System.out: WebView Console: %cWebsdk log%c[object Object] color: white; background-color: #095aac; padding:1px 3px; border-radius: 3px; margin-right: 7px  (https://jioadsweb.akamaized.net/jioads/retargeting/default/stable/v2/jioAds.js:2)
+02-03 19:51:26.223 11389 11389 I System.out: WebView Console: del msg  (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/ds2_delivery.min.js:5)
+02-03 19:51:26.223 11389 11389 I System.out: WebView Console: app obj [object Object] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/mapp.min.js:5)
+02-03 19:51:26.460 11389 11389 I System.out: WebView Console: Page Load Time (sec): 3.02 (https://www.jiomart.com/search/milk?deliveryType=express:3941)
+02-03 19:51:26.542 11389 11389 I System.out: WebView Console: Anti-detection script injected successfully (:175)
+02-03 19:51:26.827 11389 12341 I System.out: JioMart: Got 259689 chars via HTTP
+02-03 19:51:26.847 11389 12341 I System.out: JioMart: No product cards in HTTP response
+02-03 19:51:26.847 11389 12341 I System.out: JioMart: HTTP request to https://www.jiomart.com/catalogsearch/result/?q=milk
+02-03 19:51:27.168 11389 11389 I System.out: BigBasket: Timeout
+02-03 19:51:27.168 11389 11389 I System.out: 🔍 Per-platform AI: BigBasket - skipped (0 products)
+02-03 19:51:27.168 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:27.176 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:27.176 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:27.176 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:27.176 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:27.176 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:27.176 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:27.176 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:27.176 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:27.176 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:27.181 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:27.182 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:27.183 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:27.183 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:27.183 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:27.183 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:27.184 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:27.190 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:27.190 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:27.190 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:27.190 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:27.190 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:27.190 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:27.190 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:27.190 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:27.190 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:27.195 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:27.195 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:27.196 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:27.196 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:27.196 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:27.196 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:27.196 11389 11389 I System.out: 📊 Scraping: 4/10 platforms, Total: 22
+02-03 19:51:27.196 11389 11389 I System.out: JioMart Quick: Timeout
+02-03 19:51:27.197 11389 11389 I System.out: 🔍 Per-platform AI: JioMart Quick - skipped (0 products)
+02-03 19:51:27.197 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:27.202 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:27.203 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:27.203 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:27.203 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:27.203 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:27.203 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:27.203 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:27.203 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:27.203 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:27.207 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:27.208 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:27.209 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:27.209 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:27.209 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:27.209 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:27.209 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:27.215 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:27.215 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:27.215 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:27.215 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:27.215 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:27.215 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:27.215 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:27.215 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:27.215 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:27.219 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:27.220 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:27.221 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:27.221 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:27.221 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:27.221 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:27.221 11389 11389 I System.out: 📊 Scraping: 4/10 platforms, Total: 22
+02-03 19:51:27.221 11389 11389 I System.out: JioMart: Timeout
+02-03 19:51:27.221 11389 11389 I System.out: 🔍 Per-platform AI: JioMart - skipped (0 products)
+02-03 19:51:27.221 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:27.227 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:27.227 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:27.227 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:27.227 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:27.227 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:27.227 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:27.227 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:27.227 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:27.227 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:27.232 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:27.232 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:27.233 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:27.233 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:27.233 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:27.233 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:27.233 11389 11389 I System.out: 🔍 Best Deal Search: 'milk' → Primary keyword: 'milk'
+02-03 19:51:27.240 11389 11389 I System.out: 📊 Relevance: HIGH=14, MEDIUM=8, LOW=0
+02-03 19:51:27.240 11389 11389 I System.out:   ✅ HIGH [20]: Nandini Good Life Toned UHT Milk (Fino P = ₹14.0
+02-03 19:51:27.241 11389 11389 I System.out:   ✅ HIGH [20]: Amul Taaza Homogenised Toned Milk (Tetra = ₹16.0
+02-03 19:51:27.241 11389 11389 I System.out:   ✅ HIGH [30]: Nandini Toned Fresh Milk | Pouch = ₹24.0
+02-03 19:51:27.241 11389 11389 I System.out:   ✅ HIGH [40]: Amul Lactose Free Milk = ₹25.0
+02-03 19:51:27.241 11389 11389 I System.out:   ✅ HIGH [30]: Amul Taaza Toned Fresh Milk | Pouch = ₹26.0
+02-03 19:51:27.241 11389 11389 I System.out:   ⚠️ MED [0]: Arokya = ₹19.0
+02-03 19:51:27.241 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹24.0
+02-03 19:51:27.241 11389 11389 I System.out:   ⚠️ MED [0]: Nandini = ₹27.0
+02-03 19:51:27.245 11389 11389 I System.out: SearchIntelligence: ❌ Couldn't parse quantity from 'Amul Moti Toned Milk (90 Days Shelf Life)'
+02-03 19:51:27.246 11389 11389 I System.out: SearchIntelligence: ✓ Amul Taaza Toned Milk - Pack o → ₹16.0/pc
+02-03 19:51:27.247 11389 11389 I System.out:   📏 Per-unit comparison: 1 products have calculable unit price
+02-03 19:51:27.247 11389 11389 I System.out:     💰 Amul Taaza Toned Milk - Pack of 2 = ₹32.0 (₹16/pc)
+02-03 19:51:27.247 11389 11389 I System.out:   💵 Raw cheapest: Nandini Good Life Toned UHT Milk (Fino P (per-unit best too expensive)
+02-03 19:51:27.247 11389 11389 I System.out: 🏆 Best Deal: Nandini Good Life Toned UHT Milk (Fino Pouch) = ₹14.0
+02-03 19:51:27.247 11389 11389 I System.out: 📊 Scraping: 4/10 platforms, Total: 22
+02-03 19:51:27.247 11389 11389 I System.out: === RAW SCRAPE COMPLETED ===
+02-03 19:51:27.247 11389 11389 I System.out: ✅ Fresh scraping complete. Total: 22 products
+02-03 19:51:27.247 11389 11389 I System.out: 🤖 Applying AI smart search...
+02-03 19:51:27.249 11389 11389 I System.out: 🤖 Final AI request started (timeout=120000ms, products=22)
+02-03 19:51:27.295 11389 12326 I System.out: JioMart Quick: ✗ WebView error - Job was cancelled
+02-03 19:51:27.295 11389 12326 I System.out: JioMart Quick: ✗ Error - Job was cancelled
+02-03 19:51:27.296 11389 12330 I System.out: BigBasket: ✗ Error - Job was cancelled
+02-03 19:51:27.297 11389 12330 I System.out: BigBasket: ✗ Error - Job was cancelled
+02-03 19:51:27.298 11389 12330 I System.out: BigBasket: Completed (9/10)
+02-03 19:51:27.298 11389 12326 I System.out: JioMart Quick: Completed (9/10)
+02-03 19:51:27.613 11389 11389 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":1})
+02-03 19:51:27.888 11389 12341 I System.out: JioMart: HTTP 500
+02-03 19:51:27.888 11389 12341 I System.out: JioMart: ✗ Error - Job was cancelled
+02-03 19:51:27.889 11389 12341 I System.out: JioMart: Completed (10/10)
+02-03 19:51:29.156 11389 11389 I System.out: WebView Console: be = 9096309838471770128482656 (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-03 19:51:29.156 11389 11389 I System.out: WebView Console: sp = undefined (https://cdn.epsilondelta.co/static/gemGen.js:1)
+02-03 19:51:29.948 11389 11389 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Black.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/milk?deliveryType=express:0)
+02-03 19:51:29.948 11389 11389 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Medium.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/milk?deliveryType=express:0)
+02-03 19:51:29.948 11389 11389 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Bold.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/milk?deliveryType=express:0)
+02-03 19:51:29.949 11389 11389 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Bold.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/milk?deliveryType=express:0)
+02-03 19:51:29.949 11389 11389 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1766030765/ds2msite/fonts/jio/JioTypeW04-Medium.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/milk?deliveryType=express:0)
+02-03 19:51:29.949 11389 11389 I System.out: WebView Console: The resource https://www.jiomart.com/assets/version1764779825/ds2msite/fonts/jio/JioTypeW04-Black.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. (https://www.jiomart.com/search/milk?deliveryType=express:0)
+02-03 19:51:30.084 11389 11389 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-03 19:51:30.123 11389 11389 I System.out: WebView: Max wait reached, extracting (indicators: {"ready":false,"prices":0,"products":0,"images":0,"links":0,"jsonLd":0})
+02-03 19:51:32.511 11389 11389 I System.out: WebView Console: localshops  [object Proxy] [object Proxy] (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.603 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.612 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.613 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.620 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.621 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.624 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.629 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.630 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.636 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.637 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.637 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.640 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.641 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.646 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.646 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.648 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.648 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.653 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.653 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.653 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.655 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.657 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.661 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.661 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.661 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.662 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.668 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.669 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.669 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.673 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.673 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.677 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.678 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.680 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.680 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.681 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.691 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.692 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.692 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.692 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.692 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.692 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.692 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.697 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.698 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.698 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.699 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.714 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.714 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:32.714 11389 11389 I System.out: WebView Console: selected product undefined (https://www.jiomart.com/assets/version1768913331/ds2msite/js/ds2/vertex_search_vue.min.js:5)
+02-03 19:51:33.681 11389 11389 I System.out: ✅ Final AI success in 6432ms (aiPowered=true, products=14)
+02-03 19:51:33.721 11389 11389 I System.out: WebView: Content ready! Extracting immediately (attempt 12)

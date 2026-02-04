@@ -151,7 +151,8 @@ class AmazonFreshScraper @Inject constructor() : BaseScraper() {
                             discount = discount,
                             url = productUrl,
                             imageUrl = imageUrl,
-                            rating = rating
+                            rating = rating,
+                            contextText = card.text()
                         ))
                         
                         println("$platformName: ✓ Added ${name.take(30)} at ₹$price -> $productUrl")

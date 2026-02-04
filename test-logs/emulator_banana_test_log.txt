@@ -1,0 +1,2 @@
+--------- beginning of main
+02-03 19:57:12.045  4206  4206 I System.out: PlatformHealth: Loaded health data for 0 platforms

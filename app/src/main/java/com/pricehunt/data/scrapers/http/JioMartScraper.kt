@@ -102,8 +102,9 @@ class JioMartScraper @Inject constructor(
                         val priceText = parent?.selectFirst("[class*='price'], span:contains(₹)")?.text()
                         val price = priceText?.let { parsePrice(it) }?.takeIf { it > 0 } ?: continue
                         
+                        val finalName = appendQuantityToNameIfMissing(name.trim(), parent?.text())
                         products.add(Product(
-                            name = name.trim(),
+                            name = finalName,
                             price = price,
                             originalPrice = null,
                             imageUrl = parent?.selectFirst("img")?.attr("src") ?: "",
@@ -160,8 +161,9 @@ class JioMartScraper @Inject constructor(
                             productUrl = "$baseUrl/search/${URLEncoder.encode(name, "UTF-8")}?pincode=$pincode"
                         }
                         
+                        val finalName = appendQuantityToNameIfMissing(name.trim(), card.text())
                         products.add(Product(
-                            name = name.trim(),
+                            name = finalName,
                             price = price,
                             originalPrice = originalPrice,
                             imageUrl = imageUrl,

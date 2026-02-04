@@ -39,8 +39,8 @@ object NetworkModule {
             .protocols(listOf(Protocol.HTTP_2, Protocol.HTTP_1_1))
             // Optimized timeouts
             .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
             // Keep connections alive
             .retryOnConnectionFailure(true)
             .build()

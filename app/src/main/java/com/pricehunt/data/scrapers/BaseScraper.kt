@@ -2,6 +2,7 @@ package com.pricehunt.data.scrapers
 
 import com.google.gson.JsonElement
 import com.pricehunt.data.model.Product
+import com.pricehunt.data.search.SearchIntelligence
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -92,10 +93,12 @@ abstract class BaseScraper {
         url: String,
         imageUrl: String? = null,
         rating: Double? = null,
-        available: Boolean = true
+        available: Boolean = true,
+        contextText: String? = null
     ): Product {
+        val finalName = appendQuantityToNameIfMissing(name, contextText)
         return Product(
-            name = name.take(120),
+            name = finalName.take(120),
             price = price,
             originalPrice = originalPrice,
             discount = discount,
@@ -107,6 +110,17 @@ abstract class BaseScraper {
             deliveryTime = deliveryTime,
             available = available
         )
+    }
+
+    protected fun appendQuantityToNameIfMissing(name: String, contextText: String?): String {
+        val trimmed = name.trim()
+        if (SearchIntelligence.parseQuantity(trimmed) != null) return trimmed
+        val context = contextText?.takeIf { it.isNotBlank() } ?: return trimmed
+        val parsed = SearchIntelligence.parseQuantity(context) ?: return trimmed
+        val display = parsed.toDisplayString()
+        if (display.isBlank()) return trimmed
+        if (trimmed.contains(display, ignoreCase = true)) return trimmed
+        return "$trimmed, $display"
     }
     
     companion object {

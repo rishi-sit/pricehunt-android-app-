@@ -120,6 +120,9 @@ private fun PlatformPriceChip(
     val perUnitPrice = remember(product) {
         SearchIntelligence.calculatePerUnitPrice(product)
     }
+    val perPiecePrice = remember(product) {
+        SearchIntelligence.calculatePerPiecePrice(product)
+    }
     
     Card(
         modifier = modifier
@@ -207,6 +210,13 @@ private fun PlatformPriceChip(
             perUnitPrice?.let { pup ->
                 Text(
                     pup.toDisplayString(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextSecondary
+                )
+            }
+            if (perPiecePrice != null && perUnitPrice?.unitType != "count") {
+                Text(
+                    perPiecePrice.toDisplayString(),
                     style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary
                 )

@@ -69,10 +69,11 @@ class InstamartScraper @Inject constructor(
             val searchUrl = "$baseUrl/search?custom_back=true&query=$encodedQuery"
             
             // WebView needs adequate time for SPA to load
-            for (attempt in 1..1) {  // Single attempt for speed
-                val waitTime = 9_000L // 9 seconds
+            val attemptWaits = listOf(9_000L, 12_000L)
+            for ((index, waitTime) in attemptWaits.withIndex()) {
+                val attempt = index + 1
                 
-                println("$platformName: Attempt $attempt/3 with ${waitTime/1000}s timeout")
+                println("$platformName: Attempt $attempt/${attemptWaits.size} with ${waitTime/1000}s timeout")
                 
                 try {
                     // Load search page with location cookies already set
@@ -112,7 +113,7 @@ class InstamartScraper @Inject constructor(
                     }
                     
                     println("$platformName: Attempt $attempt - no valid products")
-                    
+                    delay(500)
                 } catch (e: Exception) {
                     println("$platformName: Attempt $attempt error: ${e.message}")
                 }
@@ -421,7 +422,7 @@ class InstamartScraper @Inject constructor(
             val imageUrl = img.attr("src").ifBlank { img.attr("data-src") }
             
             seenNames.add(alt.lowercase())
-            products.add(createProduct(alt, price, originalPrice, imageUrl))
+            products.add(createProduct(alt, price, originalPrice, imageUrl, contextText = priceContainer?.text()))
             
             if (products.size >= 15) break
         }
@@ -456,7 +457,7 @@ class InstamartScraper @Inject constructor(
             val imageUrl = img.attr("src").ifBlank { img.attr("data-src") }
             
             seenNames.add(alt.lowercase())
-            products.add(createProduct(alt, price, originalPrice, imageUrl))
+            products.add(createProduct(alt, price, originalPrice, imageUrl, contextText = container.text()))
             
             if (products.size >= 15) break
         }
@@ -492,7 +493,7 @@ class InstamartScraper @Inject constructor(
             } ?: ""
             
             seenNames.add(name.lowercase())
-            products.add(createProduct(name, price, originalPrice, imageUrl))
+            products.add(createProduct(name, price, originalPrice, imageUrl, contextText = element.text()))
             
             if (products.size >= 15) break
         }
@@ -503,9 +504,16 @@ class InstamartScraper @Inject constructor(
     /**
      * Create a product with standard fields
      */
-    private fun createProduct(name: String, price: Double, originalPrice: Double?, imageUrl: String): Product {
+    private fun createProduct(
+        name: String,
+        price: Double,
+        originalPrice: Double?,
+        imageUrl: String,
+        contextText: String? = null
+    ): Product {
+        val finalName = appendQuantityToNameIfMissing(name, contextText)
         return Product(
-            name = name.trim(),
+            name = finalName.trim(),
             price = price,
             originalPrice = originalPrice,
             imageUrl = imageUrl,

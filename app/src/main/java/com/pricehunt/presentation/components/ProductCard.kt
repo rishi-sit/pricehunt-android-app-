@@ -159,9 +159,25 @@ fun ProductCard(
                     }
                 }
                 
+                // Extract and display quantity
+                val quantity = remember(product.name) {
+                    SearchIntelligence.parseQuantity(product.name)?.toDisplayString()
+                }
+                quantity?.let { qty ->
+                    Text(
+                        qty,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                
                 // Per-unit price for comparison (e.g., ₹4.5/100g) - shown as a badge
                 val perUnitPrice = remember(product) {
                     SearchIntelligence.calculatePerUnitPrice(product)
+                }
+                val perPiecePrice = remember(product) {
+                    SearchIntelligence.calculatePerPiecePrice(product)
                 }
                 perUnitPrice?.let { pup ->
                     Surface(
@@ -170,6 +186,20 @@ fun ProductCard(
                     ) {
                         Text(
                             "💰 ${pup.toDisplayString()}",
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF4CAF50),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                if (perPiecePrice != null && perUnitPrice?.unitType != "count") {
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            "💰 ${perPiecePrice.toDisplayString()}",
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color(0xFF4CAF50),

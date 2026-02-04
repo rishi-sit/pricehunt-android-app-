@@ -224,8 +224,9 @@ class BlinkitScraper @Inject constructor(
             
             seenNames.add(alt.lowercase())
             
+            val finalName = appendQuantityToNameIfMissing(alt, container?.text())
             products.add(Product(
-                name = alt,
+                name = finalName,
                 price = price,
                 originalPrice = originalPrice,
                 imageUrl = imageUrl,
@@ -274,8 +275,9 @@ class BlinkitScraper @Inject constructor(
                 
                 seenNames.add(name.lowercase())
                 
+                val finalName = appendQuantityToNameIfMissing(name.trim(), element.text())
                 products.add(Product(
-                    name = name.trim(),
+                    name = finalName,
                     price = price,
                     originalPrice = originalPrice,
                     imageUrl = imageUrl,
@@ -319,8 +321,9 @@ class BlinkitScraper @Inject constructor(
                 
                 seenNames.add(name.lowercase())
                 
+                val finalName = appendQuantityToNameIfMissing(name.trim(), parent?.text())
                 products.add(Product(
-                    name = name.trim(),
+                    name = finalName,
                     price = price,
                     originalPrice = originalPrice,
                     imageUrl = imageUrl,

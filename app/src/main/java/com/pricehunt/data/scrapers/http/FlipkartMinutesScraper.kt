@@ -121,8 +121,9 @@ class FlipkartMinutesScraper @Inject constructor(
                             productUrl = "$baseUrl/search?q=${URLEncoder.encode(name, "UTF-8")}&marketplace=GROCERY&pincode=$pincode"
                         }
                         
+                        val finalName = appendQuantityToNameIfMissing(name.trim(), card.text())
                         products.add(Product(
-                            name = name.trim(),
+                            name = finalName,
                             price = price,
                             originalPrice = originalPrice,
                             imageUrl = imageUrl,

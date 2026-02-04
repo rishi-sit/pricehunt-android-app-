@@ -84,7 +84,7 @@ class ProductRepository @Inject constructor(
      * Search all platforms and return RAW results (no filtering).
      * 
      * IMPORTANT: This method does NOT filter or rank results.
-     * All intelligence is handled by the backend Gemini AI.
+     * All intelligence is handled by the backend AI (Mistral/Gemini).
      * 
      * Results are emitted progressively as each platform responds.
      */
@@ -458,6 +458,7 @@ class ProductRepository @Inject constructor(
         val queryLower = searchQuery.lowercase().trim()
         val queryWords = queryLower.split(" ").filter { it.isNotBlank() }
         val primaryKeyword = queryWords.firstOrNull() ?: queryLower
+        val meaningfulQueryWords = queryWords.filter { it.length >= 3 }
         
         println("🔍 Best Deal Search: '$searchQuery' → Primary keyword: '$primaryKeyword'")
         
@@ -466,7 +467,9 @@ class ProductRepository @Inject constructor(
             "juice", "jam", "jelly", "sauce", "syrup", "flavour", "flavor", 
             "essence", "extract", "candy", "chocolate", "ice cream", "shake",
             "smoothie", "squash", "drink", "beverage", "powder", "mix", "bar",
-            "cake", "pastry", "muffin", "cookie", "biscuit", "wafer", "toffee"
+            "cake", "pastry", "muffin", "cookie", "biscuit", "wafer", "toffee",
+            "chips", "chipp", "crisps", "snack", "snacks", "salted", "roasted",
+            "fry", "fried"
         )
         
         // Score each product for relevance
@@ -476,6 +479,18 @@ class ProductRepository @Inject constructor(
             
             var relevanceScore = 0
             var reason = ""
+
+            val matchesQuery = if (meaningfulQueryWords.isNotEmpty()) {
+                meaningfulQueryWords.any { nameLower.contains(it) }
+            } else {
+                nameLower.contains(primaryKeyword)
+            }
+
+            if (!matchesQuery) {
+                relevanceScore = -100
+                reason = "no query match"
+                return@map Pair(product, relevanceScore)
+            }
             
             // +50: Name starts with the search keyword (most relevant)
             if (nameWords.firstOrNull()?.contains(primaryKeyword) == true) {

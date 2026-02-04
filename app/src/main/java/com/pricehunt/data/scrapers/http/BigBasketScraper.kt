@@ -35,12 +35,25 @@ class BigBasketScraper @Inject constructor(
                 // BigBasket is an SPA - use WebView directly
                 println("$platformName: Loading $searchUrl (WebView)...")
                 webViewHelper.setLocation(pincode)
-                val html = webViewHelper.loadAndGetHtml(
+                val waitSelector = "img[src*='bbassets'], img[src*='bigbasket'], [data-qa*='product'], [data-testid*='product']"
+                var html = webViewHelper.loadAndGetHtml(
                     url = searchUrl, 
                     timeoutMs = 12_000L, // 12 seconds
+                    waitForSelector = waitSelector,
                     pincode = pincode
                 )
                 
+                if (html.isNullOrBlank()) {
+                    // Retry once with a longer wait if the first load was empty
+                    println("$platformName: Empty HTML, retrying with longer wait...")
+                    html = webViewHelper.loadAndGetHtml(
+                        url = searchUrl,
+                        timeoutMs = 16_000L,
+                        waitForSelector = waitSelector,
+                        pincode = pincode
+                    )
+                }
+
                 if (html.isNullOrBlank()) {
                     println("$platformName: ✗ WebView returned empty")
                     return@withContext emptyList()
@@ -61,6 +74,29 @@ class BigBasketScraper @Inject constructor(
                 if (products.isEmpty()) {
                     println("$platformName: Standard extraction failed, trying custom...")
                     products = extractBigBasketCustom(html, pincode)
+                }
+
+                // If still empty, retry once with a longer wait and re-extract
+                if (products.isEmpty()) {
+                    println("$platformName: Retrying load for extraction...")
+                    val retryHtml = webViewHelper.loadAndGetHtml(
+                        url = searchUrl,
+                        timeoutMs = 18_000L,
+                        waitForSelector = waitSelector,
+                        pincode = pincode
+                    )
+                    if (!retryHtml.isNullOrBlank()) {
+                        products = ResilientExtractor.extractProducts(
+                            html = retryHtml,
+                            platformName = platformName,
+                            platformColor = platformColor,
+                            deliveryTime = deliveryTime,
+                            baseUrl = baseUrl
+                        )
+                        if (products.isEmpty()) {
+                            products = extractBigBasketCustom(retryHtml, pincode)
+                        }
+                    }
                 }
                 
                 if (products.isEmpty()) {
@@ -117,8 +153,9 @@ class BigBasketScraper @Inject constructor(
                 val price = match.groupValues[2].toDoubleOrNull() ?: return@forEach
                 
                 if (name.length > 3 && price in 10.0..5000.0) {
+                    val finalName = appendQuantityToNameIfMissing(name.trim(), null)
                     products.add(Product(
-                        name = name.trim(),
+                        name = finalName,
                         price = price,
                         originalPrice = null,
                         imageUrl = "",
@@ -183,8 +220,9 @@ class BigBasketScraper @Inject constructor(
                 productUrl = "$baseUrl$productUrl"
             }
             
+            val finalName = appendQuantityToNameIfMissing(name.trim(), container.text())
             products.add(Product(
-                name = name.trim(),
+                name = finalName,
                 price = price,
                 originalPrice = null,
                 imageUrl = imageUrl,
